@@ -11,7 +11,7 @@ las 3 rutas reales del negocio: solo montura, ya tiene fórmula, combo completo.
 | Monofocal | Examen + montura + lente monofocal, fotocromático, AR, protector pantalla | $350.000 | Menores de 37 |
 | Progresivo digital gama alta | Examen + montura + lente progresivo, fotocromático, AR, protector pantalla | $550.000 | 38–59 |
 | Bifocal | Examen + montura + lente bifocal, sin filtros | $300.000 | 60+ |
-| Transitions última generación + AR Clarity | Examen + montura + lente premium | *(confirmar precio con Dra. Angie)* | Upsell opcional |
+| Transitions última generación + AR Clarity | Examen + montura + lente premium | $600.000 | Upsell opcional |
 | Solo montura (promo pauta) | Montura sola / traspaso de cristal | $80.000 | Cualquiera |
 
 Regla de clasificación por edad (el bot no la dice tal cual, es guía interna del Dr(a) al cerrar): <37 → Monofocal · 38–59 → Progresivo · 60+ → Bifocal (el Dr(a) confirma con el examen).
@@ -116,5 +116,5 @@ ser **plantillas (HSM) aprobadas por Meta**.
 - [ ] Reemplazar los botones actuales del Bot ALAVISION 1 por los de este documento (todos ≤20 caracteres).
 - [ ] Actualizar el Mensaje 1 con el precio de la promo ($80.000) y el nuevo menú de 3 rutas.
 - [ ] Cargar la tabla de combos/precios como referencia interna del Dr(a) (no se envía tal cual al paciente).
-- [ ] Confirmar precio de Transitions + AR Clarity antes de ofrecerlo como upsell.
+- [x] Precio de Transitions + AR Clarity confirmado: $600.000.
 - [ ] Crear etiquetas nuevas: `#SoloMontura`, `#Renovacion`, `#Combo`, `#PrimeraVez`, `#InteresAlto`.
