@@ -163,6 +163,41 @@
   }
   .combo-inc{ font-size:13.5px; color:var(--ink-soft); line-height:1.5; }
 
+  /* ---------- Stage stepper (pipeline) ---------- */
+  .stage-list{ display:flex; flex-direction:column; gap:2px; }
+  .stage-row{
+    display:grid; grid-template-columns:34px minmax(0,1fr); gap:14px;
+    padding:11px 8px; border-radius:10px; align-items:start;
+  }
+  .stage-row:hover{ background:var(--surface-2); }
+  .stage-num{
+    width:30px; height:30px; border-radius:50%; background:var(--accent);
+    color:#fff; font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px;
+    display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .stage-row.won .stage-num{ background:var(--gold); }
+  .stage-row.lost .stage-num{ background:var(--ink-faint); }
+  .stage-name{ font-weight:700; font-size:14.5px; }
+  .stage-tags{ display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 5px; }
+  .stage-pill{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600;
+    padding:2px 8px; border-radius:20px;
+  }
+  .stage-pill.phase{ background:var(--accent-tint); color:var(--accent-strong); }
+  .stage-pill.trigger{ background:var(--gold-tint); color:var(--gold); }
+  .stage-desc{ font-size:13.5px; color:var(--ink-soft); }
+
+  /* ---------- Email capture cards ---------- */
+  .email-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .email-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px;
+  }
+  .email-moment{ font-weight:700; font-size:14px; color:var(--accent-strong); }
+  .email-script{ font-size:13.5px; font-style:italic; color:var(--ink); background:var(--accent-tint);
+    border-radius:8px; padding:8px 10px; }
+  .email-why{ font-size:12.5px; color:var(--ink-faint); }
+
   /* ---------- Conversation ---------- */
   .rama{
     border-left:3px solid var(--border); padding-left:20px; margin-bottom:30px;
@@ -272,13 +307,16 @@
 <div class="shell">
   <nav class="toc" id="toc">
     <div class="toc-brand">Bot ALaVision</div>
+    <a class="nav-link" href="#pipeline">Pipeline completo</a>
     <a class="nav-link" href="#combos">Combos y precios</a>
     <a class="nav-link" href="#m1">Mensaje 1</a>
     <a class="nav-link" href="#r1">Rama 1 · Fórmula</a>
     <a class="nav-link" href="#r2">Rama 2 · Examen</a>
     <a class="nav-link" href="#r3">Rama 3 · Montura</a>
+    <a class="nav-link" href="#objeciones">Objeciones</a>
     <a class="nav-link" href="#remarketing">Remarketing</a>
-    <a class="nav-link" href="#neuro">Neuromarketing</a>
+    <a class="nav-link" href="#correo">Cuándo pedir el correo</a>
+    <a class="nav-link" href="#neuro">Gatillos mentales</a>
     <a class="nav-link" href="#checklist">Checklist</a>
   </nav>
 
@@ -296,8 +334,89 @@
       </div>
     </header>
 
+    <section id="pipeline">
+      <div class="section-head"><span class="section-num">01</span><h2>Pipeline completo — de lead a cliente fiel</h2></div>
+      <p class="section-intro">Las 12 etapas mapeadas a AIDA (Atención → Interés → Deseo → Acción) más
+      postventa. La Etapa 6 es la que faltaba en la v2: la objeción se resuelve en el momento, no se deja
+      para el remarketing de 24 h.</p>
+      <div class="stage-list">
+        <div class="stage-row">
+          <div class="stage-num">1</div>
+          <div><div class="stage-name">Lead nuevo</div>
+          <div class="stage-tags"><span class="stage-pill phase">Atención</span><span class="stage-pill trigger">Curiosidad</span></div>
+          <div class="stage-desc">Acaba de escribir desde el anuncio.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">2</div>
+          <div><div class="stage-name">Bienvenida enviada</div>
+          <div class="stage-tags"><span class="stage-pill phase">Atención → Interés</span><span class="stage-pill trigger">Autoridad</span></div>
+          <div class="stage-desc">Sale el Mensaje 1, firmado por la Dra. Angie.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">3</div>
+          <div><div class="stage-name">Calificando necesidad</div>
+          <div class="stage-tags"><span class="stage-pill phase">Interés</span><span class="stage-pill trigger">Compromiso</span></div>
+          <div class="stage-desc">Eligió fórmula / examen / montura — primer sí pequeño.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">4</div>
+          <div><div class="stage-name">Perfil completo</div>
+          <div class="stage-tags"><span class="stage-pill phase">Interés → Deseo</span><span class="stage-pill trigger">Personalización</span></div>
+          <div class="stage-desc">Edad y actividad capturadas, combo identificado.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">5</div>
+          <div><div class="stage-name">Propuesta enviada (precio)</div>
+          <div class="stage-tags"><span class="stage-pill phase">Deseo</span><span class="stage-pill trigger">Anclaje de precio</span></div>
+          <div class="stage-desc">Se entrega el combo + precio. Aquí se pide el correo por primera vez.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">6</div>
+          <div><div class="stage-name">Objeción / Evaluando</div>
+          <div class="stage-tags"><span class="stage-pill phase">Deseo con resistencia</span><span class="stage-pill trigger">Prueba social + escasez</span></div>
+          <div class="stage-desc">Respondió "Lo pienso" o "Más información" — se resuelve ya (ver Objeciones).</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">7</div>
+          <div><div class="stage-name">Cita agendada</div>
+          <div class="stage-tags"><span class="stage-pill phase">Acción</span><span class="stage-pill trigger">Compromiso y coherencia</span></div>
+          <div class="stage-desc">Confirmó día y hora. Se pide el correo para la confirmación.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">8</div>
+          <div><div class="stage-name">Recordatorio enviado</div>
+          <div class="stage-tags"><span class="stage-pill phase">Acción</span><span class="stage-pill trigger">Aversión a la pérdida</span></div>
+          <div class="stage-desc">Aviso 24 h y 2 h antes de la cita.</div></div>
+        </div>
+        <div class="stage-row">
+          <div class="stage-num">9</div>
+          <div><div class="stage-name">Atendido en consultorio</div>
+          <div class="stage-tags"><span class="stage-pill phase">Acción</span><span class="stage-pill trigger">Autoridad presencial</span></div>
+          <div class="stage-desc">Examen realizado, la Dra. cierra en persona.</div></div>
+        </div>
+        <div class="stage-row won">
+          <div class="stage-num">10</div>
+          <div><div class="stage-name">Ganado — Compra realizada</div>
+          <div class="stage-tags"><span class="stage-pill phase">Satisfacción</span><span class="stage-pill trigger">Reciprocidad</span></div>
+          <div class="stage-desc">Pagó. Se pide el correo para factura y programa de descuentos.</div></div>
+        </div>
+        <div class="stage-row won">
+          <div class="stage-num">11</div>
+          <div><div class="stage-name">Postventa / Fidelización</div>
+          <div class="stage-tags"><span class="stage-pill phase">Lealtad</span><span class="stage-pill trigger">Prueba social + anclaje futuro</span></div>
+          <div class="stage-desc">Encuesta, solicitud de reseña, recordatorio de renovación en 6-12 meses.</div></div>
+        </div>
+        <div class="stage-row lost">
+          <div class="stage-num">12</div>
+          <div><div class="stage-name">Perdido / No interesado</div>
+          <div class="stage-tags"><span class="stage-pill phase">—</span></div>
+          <div class="stage-desc">Declinó explícitamente. Si dejó correo, sigue en nutrición mensual.</div></div>
+        </div>
+      </div>
+    </section>
+
     <section id="combos">
-      <div class="section-head"><span class="section-num">01</span><h2>Combos y precios</h2></div>
+      <div class="section-head"><span class="section-num">02</span><h2>Combos y precios</h2></div>
       <p class="section-intro">Es la referencia interna que usa el Dr(a) para armar el mensaje de cierre en
       cada rama — no se envía tal cual al paciente.</p>
       <div class="combo-grid">
@@ -340,7 +459,7 @@
     </section>
 
     <section id="m1">
-      <div class="section-head"><span class="section-num">02</span><h2>Mensaje 1 — Bienvenida</h2></div>
+      <div class="section-head"><span class="section-num">03</span><h2>Mensaje 1 — Bienvenida</h2></div>
       <p class="section-intro">Dispara siempre que un contacto nuevo escribe desde el anuncio de monturas.
       La montura es el gancho de la pauta, pero la pregunta va directo a lo que la gente
       realmente busca: cotizar. "Solo la montura" queda al final, a propósito.</p>
@@ -466,10 +585,64 @@
       </div>
     </section>
 
+    <section id="objeciones">
+      <div class="section-head"><span class="section-num">04</span><h2>Manejo de objeciones (Etapa 6)</h2></div>
+      <p class="section-intro">No se deja la duda para el remarketing de 24 h — se responde en la misma
+      conversación, justo después de la propuesta de precio.</p>
+
+      <div class="rama">
+        <div class="rama-title"><h3>Si responde "Más información"</h3></div>
+        <div class="msg">
+          <div class="bubble">Claro, le cuento: el combo incluye examen, garantía de un año y el ajuste de la
+          montura sin costo. ¿Qué le genera duda?</div>
+          <div class="chips">
+            <span class="chip">El precio <span class="count">9/20</span></span>
+            <span class="chip">La garantía <span class="count">11/20</span></span>
+            <span class="chip">Ya quiero agendar <span class="count">17/20</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rama">
+        <div class="rama-title"><h3>Si responde "Lo pienso"</h3></div>
+        <div class="msg">
+          <div class="bubble">Claro, tómese su tiempo 🙏 Esta semana varios pacientes con su misma necesidad ya
+          aprovecharon la promo. ¿Le guardo el cupo por 24 horas?</div>
+          <div class="chips">
+            <span class="chip">Sí, guárdemelo <span class="count">14/20</span></span>
+            <span class="chip">Aún no <span class="count">7/20</span></span>
+            <span class="chip">No por ahora <span class="count">12/20</span></span>
+          </div>
+        </div>
+        <div class="outcome">
+          <span>"Sí, guárdemelo" &rarr; vuelve a la propuesta con urgencia real de 24 h ·</span>
+          <span>"Aún no" &rarr; remarketing 24 h normal ·</span>
+          <span>"No por ahora" &rarr; Perdido, pero sigue en nutrición por correo si ya lo dio</span>
+        </div>
+      </div>
+    </section>
+
     <section id="remarketing">
-      <div class="section-head"><span class="section-num">03</span><h2>Remarketing</h2></div>
-      <p class="section-intro">Misma arquitectura de pipelines del documento base: 24 horas para cualquiera
-      que no respondió, 30 días solo para los marcados <span class="mono">#InteresAlto</span> que no cerraron.</p>
+      <div class="section-head"><span class="section-num">05</span><h2>Remarketing</h2></div>
+      <p class="section-intro">Todo el remarketing que necesita el bot, del más inmediato al más lento.</p>
+
+      <div class="rama remarketing">
+        <div class="rama-title"><h3>Recordatorio de cita</h3><span class="rama-badge">24 h y 2 h antes</span></div>
+        <div class="msg">
+          <div class="msg-label">24 horas antes</div>
+          <div class="bubble">¡Hola! 😊 Le recuerdo su cita mañana a las [hora] con la Dra. Angie. ¿Confirma
+          que asiste?</div>
+          <div class="chips">
+            <span class="chip">Sí, confirmo <span class="count">12/20</span></span>
+            <span class="chip">Necesito cambiar <span class="count">16/20</span></span>
+            <span class="chip">Debo cancelar <span class="count">13/20</span></span>
+          </div>
+        </div>
+        <div class="msg">
+          <div class="msg-label">2 horas antes (sin botones, solo aviso)</div>
+          <div class="bubble">Ya casi es su hora 👓 La esperamos en [dirección]. ¡Nos vemos!</div>
+        </div>
+      </div>
 
       <div class="rama remarketing">
         <div class="rama-title"><h3>24 horas · sin respuesta</h3></div>
@@ -496,15 +669,73 @@
         </div>
       </div>
 
+      <div class="rama remarketing">
+        <div class="rama-title"><h3>Postventa · 6-12 meses después de ganado</h3></div>
+        <div class="msg">
+          <div class="bubble">¡Hola! 😊 Ya va siendo hora de revisar su fórmula. ¿Agendamos su control con la
+          Dra. Angie?</div>
+          <div class="chips">
+            <span class="chip">Sí, agendar <span class="count">11/20</span></span>
+            <span class="chip">Más adelante <span class="count">12/20</span></span>
+            <span class="chip">No por ahora <span class="count">12/20</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rama remarketing">
+        <div class="rama-title"><h3>Nutrición por correo · mensual</h3><span class="rama-badge">para los que dieron email pero no compraron</span></div>
+        <div class="msg free-text">
+          <div class="bubble">Contenido corto y útil (no venta directa): cuidado de lentes, cuándo cambiar la
+          fórmula, testimonios, recordatorio de la promo vigente. Mantiene tibio al lead sin gastar WhatsApp.</div>
+        </div>
+      </div>
+
       <div class="callout">
         <span>&#9888;</span>
-        <span><b>Importante</b> — R24 y R30 salen fuera de la ventana de 24 h de WhatsApp: deben enviarse como
-        <b>plantillas (HSM) aprobadas por Meta</b>, o no llegan.</span>
+        <span><b>Importante</b> — Recordatorio, R24 y R30 salen fuera de la ventana de 24 h de WhatsApp: deben
+        enviarse como <b>plantillas (HSM) aprobadas por Meta</b>, o no llegan.</span>
+      </div>
+    </section>
+
+    <section id="correo">
+      <div class="section-head"><span class="section-num">06</span><h2>Cuándo pedir el correo</h2></div>
+      <p class="section-intro"><b>Nunca en el Mensaje 1</b> — pedirlo antes de dar algo de valor rompe el tono
+      de "doctora que asesora" y se siente como venta de datos. Estos son los 4 momentos correctos:</p>
+      <div class="email-grid">
+        <div class="email-card">
+          <div class="email-moment">Etapa 5 · Al enviar la cotización</div>
+          <div class="email-script">"¿A qué correo le envío la cotización en detalle y una guía gratis de
+          cuidado de sus lentes?"</div>
+          <div class="email-why">Reciprocidad: ya recibió valor, pedir algo a cambio se siente justo.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">Etapa 7 · Al agendar la cita</div>
+          <div class="email-script">"Le mando la confirmación también por correo para que no se le olvide."</div>
+          <div class="email-why">Utilidad práctica + aversión a la pérdida.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">Etapa 6 · Si dice "Lo pienso"</div>
+          <div class="email-script">"Le regalo por correo la guía '5 señales de que necesita cambiar sus
+          lentes' mientras lo piensa."</div>
+          <div class="email-why">Reciprocidad; mantiene al lead en la base aunque no compre ya.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">Etapa 10 · Post-compra</div>
+          <div class="email-script">"Para enviarle su factura y activarlo en el programa de descuentos."</div>
+          <div class="email-why">Utilidad legal (factura) + incentivo futuro.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <span>&#9432;</span>
+        <span><b>Autorización de datos (Ley 1581 de 2012)</b> — agregar la primera vez que se pide el correo:
+        "Al darme su correo autoriza que se lo usemos para enviarle su cotización e información de nuestros
+        servicios." Crear el campo <b>Correo electrónico</b> + etiqueta <span class="mono">#BaseEmail</span>
+        para exportarlo a la herramienta de mail marketing.</span>
       </div>
     </section>
 
     <section id="neuro">
-      <div class="section-head"><span class="section-num">04</span><h2>Neuromarketing aplicado</h2></div>
+      <div class="section-head"><span class="section-num">07</span><h2>Gatillos mentales aplicados</h2></div>
       <p class="section-intro">Por qué cada pieza del guion está escrita así.</p>
       <div class="principle-grid">
         <div class="principle"><div class="principle-name">Autoridad</div><div class="principle-body">Firma
@@ -529,13 +760,13 @@
     </section>
 
     <section id="checklist">
-      <div class="section-head"><span class="section-num">05</span><h2>Checklist de este ajuste</h2></div>
-      <div class="checklist" id="checklist"></div>
+      <div class="section-head"><span class="section-num">08</span><h2>Checklist de este ajuste</h2></div>
+      <div class="checklist" id="checklist-list"></div>
       <div id="checklist-progress"></div>
     </section>
 
     <footer>
-      <span>Óptica ALaVision · Bot Kommo v2</span>
+      <span>Óptica ALaVision · Bot Kommo v3</span>
       <span>Para Nicol — configuración sin código</span>
     </footer>
   </main>
@@ -548,13 +779,18 @@
     "Reordenar el Mensaje 1: \"Ya tengo fórmula\" primero, \"Solo la montura\" al final",
     "Acortar la rama de \"Solo la montura\" a 2 mensajes (antes eran 3)",
     "Agregar el desvío: si en la Rama 3 dicen \"Necesito lente\", saltar a la Rama 1",
+    "Agregar la Etapa 6 (Objeción/Evaluando) con sus 2 mensajes al pipeline",
+    "Programar los 2 recordatorios de cita (24 h y 2 h antes)",
+    "Crear la automatización de remarketing postventa (6-12 meses después de \"Ganado\")",
+    "Crear el campo Correo electrónico y la etiqueta #BaseEmail",
+    "Agregar la línea de autorización de datos (Ley 1581) la primera vez que se pide el correo",
+    "Conectar #BaseEmail a la herramienta de mail marketing",
     "Cargar la tabla de combos/precios como referencia interna del Dr(a)",
-    "Confirmar que el upsell de Transitions + AR Clarity solo se ofrece si preguntan",
-    "Crear etiquetas nuevas: #SoloMontura #Renovacion #Combo #PrimeraVez #InteresAlto #InteresMedio",
-    "Enviar a Meta las 2 plantillas HSM de remarketing (24 h y 30 días) para aprobación"
+    "Crear etiquetas: #SoloMontura #Renovacion #Combo #PrimeraVez #InteresAlto #InteresMedio",
+    "Enviar a Meta las plantillas HSM de remarketing (recordatorio, 24 h y 30 días) para aprobación"
   ];
-  var list = document.getElementById('checklist');
-  var KEY = 'alavision-bot-checklist-v3';
+  var list = document.getElementById('checklist-list');
+  var KEY = 'alavision-bot-checklist-v4';
   var state = {};
   try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
 
