@@ -1,0 +1,598 @@
+<title>Bot Kommo ALaVision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef4f3;
+    --surface:#ffffff;
+    --surface-2:#e2ece9;
+    --ink:#152e2a;
+    --ink-soft:#45625c;
+    --ink-faint:#7c9992;
+    --accent:#0e7c74;
+    --accent-strong:#0a5c56;
+    --accent-tint:#e3f2ef;
+    --gold:#a9772f;
+    --gold-tint:#f6ecdb;
+    --warn:#a8460b;
+    --warn-tint:#fbe9dd;
+    --border:#d3e2de;
+    --chip-bg:#ffffff;
+    --shadow: 0 1px 2px rgba(15,45,40,.06), 0 6px 16px -8px rgba(15,45,40,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d1917;
+      --surface:#14211f;
+      --surface-2:#192826;
+      --ink:#e7efed;
+      --ink-soft:#a7c1bb;
+      --ink-faint:#6f8b85;
+      --accent:#3ab6a9;
+      --accent-strong:#63d3c6;
+      --accent-tint:#152a27;
+      --gold:#dba859;
+      --gold-tint:#26221a;
+      --warn:#e78a4e;
+      --warn-tint:#2a1d15;
+      --border:#25423d;
+      --chip-bg:#182a27;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 24px -10px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1917;
+    --surface:#14211f;
+    --surface-2:#192826;
+    --ink:#e7efed;
+    --ink-soft:#a7c1bb;
+    --ink-faint:#6f8b85;
+    --accent:#3ab6a9;
+    --accent-strong:#63d3c6;
+    --accent-tint:#152a27;
+    --gold:#dba859;
+    --gold-tint:#26221a;
+    --warn:#e78a4e;
+    --warn-tint:#2a1d15;
+    --border:#25423d;
+    --chip-bg:#182a27;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 24px -10px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Source Serif 4", Georgia, serif;
+    font-size:16.5px;
+    line-height:1.6;
+  }
+  h1,h2,h3,.eyebrow,.nav-link,.chip,.tag,button,.mono{
+    font-family:"Libre Franklin", "Segoe UI", Arial, sans-serif;
+  }
+  h1,h2,h3{ text-wrap:balance; color:var(--ink); margin:0 0 .4em; }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+
+  a{ color:var(--accent-strong); }
+
+  .shell{
+    display:grid;
+    grid-template-columns: 232px minmax(0,780px);
+    justify-content:center;
+    gap:48px;
+    max-width:1180px;
+    margin:0 auto;
+    padding:40px 24px 120px;
+  }
+  @media (max-width: 880px){
+    .shell{ grid-template-columns: 1fr; padding-top:0; }
+  }
+
+  /* ---------- Sidebar nav ---------- */
+  nav.toc{
+    position:sticky; top:24px; align-self:start;
+    display:flex; flex-direction:column; gap:2px;
+    padding:18px 6px;
+  }
+  @media (max-width:880px){
+    nav.toc{
+      position:sticky; top:0; z-index:20; align-self:stretch;
+      flex-direction:row; overflow-x:auto; gap:4px;
+      background:var(--bg);
+      border-bottom:1px solid var(--border);
+      padding:10px 16px;
+      -webkit-overflow-scrolling:touch;
+    }
+    nav.toc::-webkit-scrollbar{ display:none; }
+  }
+  .toc-brand{
+    font-weight:800; font-size:13px; letter-spacing:.04em;
+    color:var(--accent-strong); text-transform:uppercase;
+    margin:0 10px 10px;
+  }
+  @media (max-width:880px){ .toc-brand{ display:none; } }
+  .nav-link{
+    display:block; padding:8px 10px; border-radius:8px;
+    color:var(--ink-soft); text-decoration:none;
+    font-size:13.5px; font-weight:600; white-space:nowrap;
+  }
+  .nav-link:hover{ background:var(--surface-2); color:var(--ink); }
+  .nav-link.active{ background:var(--accent-tint); color:var(--accent-strong); }
+
+  /* ---------- Header ---------- */
+  header.masthead{
+    padding:38px 0 22px; border-bottom:2px solid var(--border); margin-bottom:34px;
+  }
+  .eyebrow{
+    font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:10px;
+  }
+  header.masthead h1{ font-size:clamp(28px,4vw,38px); font-weight:800; letter-spacing:-.01em; }
+  .masthead-sub{ color:var(--ink-soft); font-size:16px; max-width:56ch; margin-top:6px;}
+  .masthead-meta{
+    display:flex; gap:18px; flex-wrap:wrap; margin-top:18px;
+    font-family:"IBM Plex Mono", monospace; font-size:12px; color:var(--ink-faint);
+  }
+  .masthead-meta b{ color:var(--ink-soft); font-weight:600; }
+
+  section{ margin-bottom:56px; scroll-margin-top:20px; }
+  .section-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+  .section-num{ font-family:"IBM Plex Mono",monospace; color:var(--ink-faint); font-size:14px; }
+  section h2{ font-size:22px; font-weight:800; }
+  .section-intro{ color:var(--ink-soft); max-width:64ch; margin-bottom:22px; }
+
+  /* ---------- Pricing table ---------- */
+  .combo-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:14px;
+  }
+  .combo-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:18px 18px 16px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .combo-card.upsell{ border-color:var(--gold); background:linear-gradient(180deg,var(--gold-tint),var(--surface) 55%); }
+  .combo-name{ font-weight:700; font-size:15px; }
+  .combo-price{ font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:22px; color:var(--accent-strong); font-variant-numeric:tabular-nums; }
+  .combo-card.upsell .combo-price{ color:var(--gold); }
+  .combo-age{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em;
+  }
+  .combo-inc{ font-size:13.5px; color:var(--ink-soft); line-height:1.5; }
+
+  /* ---------- Conversation ---------- */
+  .rama{
+    border-left:3px solid var(--border); padding-left:20px; margin-bottom:30px;
+  }
+  .rama-title{
+    display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .rama-title h3{ font-size:16.5px; font-weight:700; }
+  .rama-badge{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    background:var(--surface-2); color:var(--ink-soft);
+    padding:3px 9px; border-radius:20px; white-space:nowrap;
+  }
+
+  .msg{ margin-bottom:16px; }
+  .msg-label{
+    font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--accent-strong); margin-bottom:6px;
+  }
+  .bubble{
+    background:var(--accent-tint); border:1px solid var(--border);
+    border-radius:4px 16px 16px 16px; padding:14px 16px;
+    max-width:60ch; font-size:15.5px; color:var(--ink);
+    box-shadow:var(--shadow);
+  }
+  .free-text .bubble{
+    background:var(--surface); border-style:dashed; color:var(--ink-soft); font-style:italic;
+  }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--chip-bg); border:1.5px solid var(--accent);
+    color:var(--accent-strong); font-weight:600; font-size:13px;
+    padding:6px 12px; border-radius:20px;
+  }
+  .chip .count{
+    font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600;
+    color:var(--ink-faint); background:var(--surface-2);
+    padding:1px 6px; border-radius:10px;
+  }
+
+  .outcome{
+    margin-top:10px; font-size:13px; color:var(--ink-faint);
+    display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center;
+  }
+  .outcome .tag{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600;
+    color:var(--accent-strong); background:var(--accent-tint);
+    padding:2px 8px; border-radius:6px;
+  }
+
+  /* remarketing tint */
+  .remarketing .bubble{ background:var(--gold-tint); }
+  .remarketing .msg-label{ color:var(--gold); }
+  .remarketing .chip{ border-color:var(--gold); color:var(--gold); }
+
+  .callout{
+    border:1px solid var(--warn); background:var(--warn-tint);
+    border-radius:10px; padding:14px 16px; font-size:14px; color:var(--ink);
+    display:flex; gap:10px; align-items:flex-start; margin-top:18px;
+  }
+  .callout b{ color:var(--warn); }
+
+  /* ---------- Neuromarketing ---------- */
+  .principle-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .principle{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px;
+  }
+  .principle-name{ font-family:"Libre Franklin",sans-serif; font-weight:700; font-size:14px; color:var(--accent-strong); margin-bottom:5px; }
+  .principle-body{ font-size:14px; color:var(--ink-soft); }
+
+  /* ---------- Checklist ---------- */
+  .checklist{ display:flex; flex-direction:column; gap:2px; }
+  .check-item{
+    display:flex; align-items:flex-start; gap:12px;
+    padding:11px 14px; border-radius:10px; cursor:pointer;
+    border:1px solid transparent;
+  }
+  .check-item:hover{ background:var(--surface-2); }
+  .check-item input{ display:none; }
+  .box{
+    width:19px; height:19px; border-radius:5px; border:1.5px solid var(--accent);
+    flex:none; margin-top:2px; position:relative;
+  }
+  .check-item input:checked ~ .box{ background:var(--accent); }
+  .check-item input:checked ~ .box::after{
+    content:""; position:absolute; left:5px; top:1px; width:5px; height:9px;
+    border:solid white; border-width:0 2px 2px 0; transform:rotate(40deg);
+  }
+  .check-item span.label{ font-size:14.5px; }
+  .check-item input:checked ~ .label{ color:var(--ink-faint); text-decoration:line-through; }
+  #checklist-progress{
+    font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-faint); margin-top:10px;
+  }
+
+  footer{
+    max-width:780px; margin:60px auto 0; padding-top:20px; border-top:1px solid var(--border);
+    font-size:12px; color:var(--ink-faint); font-family:"IBM Plex Mono",monospace;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  ::selection{ background:var(--accent); color:white; }
+</style>
+
+<div class="shell">
+  <nav class="toc" id="toc">
+    <div class="toc-brand">Bot ALaVision</div>
+    <a class="nav-link" href="#combos">Combos y precios</a>
+    <a class="nav-link" href="#m1">Mensaje 1</a>
+    <a class="nav-link" href="#r1">Rama 1 · Fórmula</a>
+    <a class="nav-link" href="#r2">Rama 2 · Examen</a>
+    <a class="nav-link" href="#r3">Rama 3 · Montura</a>
+    <a class="nav-link" href="#remarketing">Remarketing</a>
+    <a class="nav-link" href="#neuro">Neuromarketing</a>
+    <a class="nav-link" href="#checklist">Checklist</a>
+  </nav>
+
+  <main>
+    <header class="masthead">
+      <div class="eyebrow">Kommo · WhatsApp API · Salesbot</div>
+      <h1>Guion del Bot ALaVision</h1>
+      <p class="masthead-sub">Árbol de conversación para precalificar a los pacientes que llegan de la
+      pauta de monturas — enfocado en cotizar rápido, no en la montura: la mayoría ya tiene
+      fórmula y quiere precio.</p>
+      <div class="masthead-meta">
+        <span><b>Versión</b> 3</span>
+        <span><b>Límite de botón</b> 20 caracteres · máx. 3 por mensaje</span>
+        <span><b>Firma</b> Dra. Angie, optómetra</span>
+      </div>
+    </header>
+
+    <section id="combos">
+      <div class="section-head"><span class="section-num">01</span><h2>Combos y precios</h2></div>
+      <p class="section-intro">Es la referencia interna que usa el Dr(a) para armar el mensaje de cierre en
+      cada rama — no se envía tal cual al paciente.</p>
+      <div class="combo-grid">
+        <div class="combo-card">
+          <div class="combo-name">Solo montura</div>
+          <div class="combo-price">$80.000</div>
+          <div class="combo-age">Cualquier edad</div>
+          <div class="combo-inc">Montura de la promo, o traspaso del cristal actual.</div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-name">Monofocal</div>
+          <div class="combo-price">$350.000</div>
+          <div class="combo-age">Menores de 37</div>
+          <div class="combo-inc">Examen + montura + lente monofocal, fotocromático, antireflejo, protector de pantalla.</div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-name">Progresivo digital gama alta</div>
+          <div class="combo-price">$550.000</div>
+          <div class="combo-age">38 – 59 años</div>
+          <div class="combo-inc">Examen + montura + lente progresivo, fotocromático, antireflejo, protector de pantalla.</div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-name">Bifocal</div>
+          <div class="combo-price">$300.000</div>
+          <div class="combo-age">60 y más</div>
+          <div class="combo-inc">Examen + montura + lente bifocal, sin filtros.</div>
+        </div>
+        <div class="combo-card upsell">
+          <div class="combo-name">Transitions última generación + AR Clarity</div>
+          <div class="combo-price">$600.000</div>
+          <div class="combo-age">Upsell opcional</div>
+          <div class="combo-inc">Examen + montura + lente premium. Ofrecer solo si el paciente pregunta por algo de mayor gama.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <span>&#9432;</span>
+        <span><b>Guía de edad</b> (uso interno, no se dice tal cual al paciente): menor de 37 &rarr; Monofocal ·
+        38–59 &rarr; Progresivo · 60+ &rarr; Bifocal. El Dr(a) siempre confirma con el examen.</span>
+      </div>
+    </section>
+
+    <section id="m1">
+      <div class="section-head"><span class="section-num">02</span><h2>Mensaje 1 — Bienvenida</h2></div>
+      <p class="section-intro">Dispara siempre que un contacto nuevo escribe desde el anuncio de monturas.
+      La montura es el gancho de la pauta, pero la pregunta va directo a lo que la gente
+      realmente busca: cotizar. "Solo la montura" queda al final, a propósito.</p>
+      <div class="msg">
+        <div class="msg-label">Bot dice</div>
+        <div class="bubble">¡Hola! 😊 Soy la Dra. Angie, optómetra de Óptica ALaVision. Gracias por escribir
+        por la promo de monturas 👓 ¿Ya tiene su fórmula o quiere agendar el examen?</div>
+        <div class="chips">
+          <span class="chip">Ya tengo fórmula <span class="count">16/20</span></span>
+          <span class="chip">Quiero el examen <span class="count">16/20</span></span>
+          <span class="chip">Solo la montura <span class="count">15/20</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="r1">
+      <div class="rama">
+        <div class="rama-title"><h3>Rama 1 · Ya tengo fórmula</h3><span class="rama-badge">ruta principal — la mayoría llega así</span></div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 2</div>
+          <div class="bubble">Perfecto 🙌 ¿Hace cuánto tiene esa fórmula?</div>
+          <div class="chips">
+            <span class="chip">Menos de 1 año <span class="count">14/20</span></span>
+            <span class="chip">Más de 1 año <span class="count">12/20</span></span>
+            <span class="chip">No recuerdo <span class="count">11/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 3</div>
+          <div class="bubble">¿Qué tipo de lente usa hoy?</div>
+          <div class="chips">
+            <span class="chip">Monofocal <span class="count">9/20</span></span>
+            <span class="chip">Progresivo <span class="count">10/20</span></span>
+            <span class="chip">No sé cuál <span class="count">10/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg free-text">
+          <div class="msg-label">Si responde "No sé cuál" — texto libre</div>
+          <div class="bubble">Tranquilo(a), ¿qué edad tiene?</div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 4 · Cierre — el precio que estaba esperando</div>
+          <div class="bubble">Para su caso le recomiendo el combo <em>[Monofocal $350.000 / Progresivo $550.000]</em>
+          — incluye montura + lente + filtros, todo en una sola cita. ¿Agendamos antes de que se acabe la promo?</div>
+          <div class="chips">
+            <span class="chip">Sí, agendar <span class="count">11/20</span></span>
+            <span class="chip">Más información <span class="count">15/20</span></span>
+            <span class="chip">Lo pienso <span class="count">9/20</span></span>
+          </div>
+        </div>
+        <div class="outcome"><span class="tag">#Renovacion</span><span class="tag">#InteresAlto</span></div>
+      </div>
+    </section>
+
+    <section id="r2">
+      <div class="rama">
+        <div class="rama-title"><h3>Rama 2 · Quiero el examen</h3><span class="rama-badge">combo completo: examen + montura + lente</span></div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 2</div>
+          <div class="bubble">¡Con gusto! ¿Ya ha usado lentes antes?</div>
+          <div class="chips">
+            <span class="chip">Sí, ya uso <span class="count">10/20</span></span>
+            <span class="chip">No, primera vez <span class="count">15/20</span></span>
+            <span class="chip">No estoy seguro <span class="count">15/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg free-text">
+          <div class="msg-label">Mensaje 3 — texto libre, ambas respuestas convergen aquí</div>
+          <div class="bubble">Cuénteme su edad y a qué se dedica, así le armo el combo ideal para su vista.</div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 4 · Cierre (combo dinámico según edad)</div>
+          <div class="bubble">Según lo que me cuenta, el combo ideal es <em>[Monofocal $350.000 / Progresivo
+          $550.000 / Bifocal $300.000]</em> — examen, montura y lente en un solo pago. ¿Agendamos su cita?</div>
+          <div class="chips">
+            <span class="chip">Sí, agendar cita <span class="count">16/20</span></span>
+            <span class="chip">Más información <span class="count">15/20</span></span>
+            <span class="chip">Lo pienso <span class="count">9/20</span></span>
+          </div>
+        </div>
+        <div class="outcome"><span class="tag">#Combo</span><span class="tag">#PrimeraVez / #Renovacion</span><span class="tag">#InteresAlto</span></div>
+      </div>
+    </section>
+
+    <section id="r3">
+      <div class="rama">
+        <div class="rama-title"><h3>Rama 3 · Solo la montura</h3><span class="rama-badge">secundaria y corta — traspaso / reemplazo</span></div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 2</div>
+          <div class="bubble">Cuénteme, ¿el lente que tiene está en buen estado para el traspaso o también
+          necesita uno nuevo?</div>
+          <div class="chips">
+            <span class="chip">Solo traspaso <span class="count">13/20</span></span>
+            <span class="chip">Necesito lente <span class="count">14/20</span></span>
+            <span class="chip">No sé <span class="count">5/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg free-text">
+          <div class="msg-label">Si responde "Necesito lente"</div>
+          <div class="bubble">No es solo montura — pasa a la Rama 1 (Mensaje 2: "¿Hace cuánto tiene esa
+          fórmula?"). Necesita cotización completa, no solo traspaso.</div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 3 · Cierre</div>
+          <div class="bubble">Con gusto 👌 Tenemos monturas desde $80.000, hacemos el traspaso el mismo día.</div>
+          <div class="chips">
+            <span class="chip">Ver monturas <span class="count">12/20</span></span>
+            <span class="chip">Ir al local <span class="count">11/20</span></span>
+            <span class="chip">Hablar c/asesor <span class="count">15/20</span></span>
+          </div>
+        </div>
+        <div class="outcome"><span class="tag">#SoloMontura</span><span class="tag">#InteresMedio</span><span>&rarr; Pipeline 1, etapa "Interesado – Montura"</span></div>
+      </div>
+    </section>
+
+    <section id="remarketing">
+      <div class="section-head"><span class="section-num">03</span><h2>Remarketing</h2></div>
+      <p class="section-intro">Misma arquitectura de pipelines del documento base: 24 horas para cualquiera
+      que no respondió, 30 días solo para los marcados <span class="mono">#InteresAlto</span> que no cerraron.</p>
+
+      <div class="rama remarketing">
+        <div class="rama-title"><h3>24 horas · sin respuesta</h3></div>
+        <div class="msg">
+          <div class="bubble">¡Hola de nuevo! 😊 Soy la Dra. Angie de Óptica ALaVision. ¿Seguimos con su
+          asesoría visual?</div>
+          <div class="chips">
+            <span class="chip">Sí, sigamos <span class="count">11/20</span></span>
+            <span class="chip">Más adelante <span class="count">12/20</span></span>
+            <span class="chip">No me interesa <span class="count">14/20</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rama remarketing">
+        <div class="rama-title"><h3>30 días · #InteresAlto sin cerrar</h3></div>
+        <div class="msg">
+          <div class="bubble">¿Cómo le fue con la decisión de sus lentes? 👓 Sigue vigente la promo de monturas.</div>
+          <div class="chips">
+            <span class="chip">Quiero cotizar <span class="count">14/20</span></span>
+            <span class="chip">Aún lo pienso <span class="count">13/20</span></span>
+            <span class="chip">Ya compré <span class="count">9/20</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span>&#9888;</span>
+        <span><b>Importante</b> — R24 y R30 salen fuera de la ventana de 24 h de WhatsApp: deben enviarse como
+        <b>plantillas (HSM) aprobadas por Meta</b>, o no llegan.</span>
+      </div>
+    </section>
+
+    <section id="neuro">
+      <div class="section-head"><span class="section-num">04</span><h2>Neuromarketing aplicado</h2></div>
+      <p class="section-intro">Por qué cada pieza del guion está escrita así.</p>
+      <div class="principle-grid">
+        <div class="principle"><div class="principle-name">Autoridad</div><div class="principle-body">Firma
+        siempre "Dra. Angie, optómetra" — nunca "el equipo" ni "la empresa".</div></div>
+        <div class="principle"><div class="principle-name">Anclaje de precio</div><div class="principle-body">
+        El cierre nombra todo lo que incluye el combo antes del precio, para que se lea como ahorro frente a
+        comprarlo por separado.</div></div>
+        <div class="principle"><div class="principle-name">Escasez</div><div class="principle-body">"Pocas
+        unidades", "antes de que se acabe la promo" — solo en el cierre, nunca en el Mensaje 1.</div></div>
+        <div class="principle"><div class="principle-name">Compromiso progresivo</div><div class="principle-body">
+        Cada botón es un sí pequeño que prepara el sí grande final: agendar la cita.</div></div>
+        <div class="principle"><div class="principle-name">Efecto de primera opción</div><div class="principle-body">
+        En el Mensaje 1, "Ya tengo fórmula" va primero porque es la respuesta real más frecuente en el
+        mostrador — no "Solo la montura".</div></div>
+        <div class="principle"><div class="principle-name">Aversión a la pérdida</div><div class="principle-body">
+        El remarketing de 30 días no repite el beneficio, recuerda que la promo sigue activa "por ahora".</div></div>
+        <div class="principle"><div class="principle-name">Personalización</div><div class="principle-body">
+        Usar la variable de nombre de Kommo al inicio del Mensaje 1 cuando esté disponible.</div></div>
+        <div class="principle"><div class="principle-name">Reciprocidad</div><div class="principle-body">
+        En la Rama 2 se ofrece revisar gratis si la fórmula sigue vigente antes de pedir la cotización.</div></div>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <div class="section-head"><span class="section-num">05</span><h2>Checklist de este ajuste</h2></div>
+      <div class="checklist" id="checklist"></div>
+      <div id="checklist-progress"></div>
+    </section>
+
+    <footer>
+      <span>Óptica ALaVision · Bot Kommo v2</span>
+      <span>Para Nicol — configuración sin código</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var items = [
+    "Reemplazar los botones actuales del Bot ALAVISION 1 por los de este documento",
+    "Reordenar el Mensaje 1: \"Ya tengo fórmula\" primero, \"Solo la montura\" al final",
+    "Acortar la rama de \"Solo la montura\" a 2 mensajes (antes eran 3)",
+    "Agregar el desvío: si en la Rama 3 dicen \"Necesito lente\", saltar a la Rama 1",
+    "Cargar la tabla de combos/precios como referencia interna del Dr(a)",
+    "Confirmar que el upsell de Transitions + AR Clarity solo se ofrece si preguntan",
+    "Crear etiquetas nuevas: #SoloMontura #Renovacion #Combo #PrimeraVez #InteresAlto #InteresMedio",
+    "Enviar a Meta las 2 plantillas HSM de remarketing (24 h y 30 días) para aprobación"
+  ];
+  var list = document.getElementById('checklist');
+  var KEY = 'alavision-bot-checklist-v3';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
+
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+    var done = Object.keys(state).filter(function(k){return state[k];}).length;
+    document.getElementById('checklist-progress').textContent = done + ' / ' + items.length + ' completado(s)';
+  }
+
+  items.forEach(function(text, i){
+    var label = document.createElement('label');
+    label.className = 'check-item';
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = !!state[i];
+    input.addEventListener('change', function(){ state[i] = input.checked; save(); });
+    var box = document.createElement('span');
+    box.className = 'box';
+    var span = document.createElement('span');
+    span.className = 'label';
+    span.textContent = text;
+    label.appendChild(input);
+    label.appendChild(box);
+    label.appendChild(span);
+    list.appendChild(label);
+  });
+  save();
+
+  // active nav highlight
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+  var sections = links.map(function(l){ return document.querySelector(l.getAttribute('href')); });
+  function onScroll(){
+    var pos = window.scrollY + 120;
+    var idx = 0;
+    sections.forEach(function(s,i){ if (s && s.offsetTop <= pos) idx = i; });
+    links.forEach(function(l,i){ l.classList.toggle('active', i === idx); });
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
