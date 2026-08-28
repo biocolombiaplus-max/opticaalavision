@@ -12,8 +12,16 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);}
-  header{background:var(--accent-strong);color:#fff;padding:14px 20px;font-weight:700;font-size:16px;}
-  .shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 50px);}
+  header{background:var(--accent-strong);color:#fff;padding:14px 20px;font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:center;}
+  header a{color:rgba(255,255,255,.8);font-size:12.5px;font-weight:600;}
+  .tabs{display:flex;gap:2px;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;}
+  .tab{padding:12px 16px;font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;border-bottom:2px solid transparent;}
+  .tab.active{color:var(--accent-strong);border-bottom-color:var(--accent);}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* Conversaciones */
+  .shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 96px);}
   .leads{overflow-y:auto;border-right:1px solid var(--border);background:var(--surface);}
   .lead-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;}
   .lead-item:hover{background:var(--surface-2);}
@@ -24,10 +32,12 @@
   .badge{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:10px;background:var(--surface-2);color:var(--ink-soft);}
   .badge.alto{background:var(--accent-tint);color:var(--accent-strong);}
   .badge.humano{background:var(--warn-tint);color:var(--warn);}
+  .badge.convertido{background:var(--gold-tint);color:var(--gold);}
   .conv{display:flex;flex-direction:column;height:100%;}
   .conv-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-  .conv-header select, .conv-header button{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;}
+  .conv-header select, .conv-header button, .conv-header input{font-family:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;}
   .conv-header button.primary{background:var(--accent);color:#fff;border:none;cursor:pointer;}
+  .conv-header button.gold{background:var(--gold);color:#fff;border:none;cursor:pointer;}
   .thread{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:10px;}
   .msg{max-width:60%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.4;}
   .msg.paciente{align-self:flex-start;background:var(--surface);border:1px solid var(--border);}
@@ -39,17 +49,116 @@
   .composer input{flex:1;padding:10px 12px;border-radius:8px;border:1px solid var(--border);font-size:14px;}
   .composer button{padding:10px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;}
   .empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink-faint);}
+
+  /* Tablas genéricas */
+  .panel{padding:24px 28px;max-width:1100px;}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+  th,td{text-align:left;padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);}
+  th{background:var(--surface-2);color:var(--ink-soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
+  tr:last-child td{border-bottom:none;}
+  .stat-row{display:flex;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;min-width:160px;}
+  .stat-card .num{font-size:24px;font-weight:800;color:var(--accent-strong);}
+  .stat-card .label{font-size:12px;color:var(--ink-soft);}
+  .btn{padding:8px 14px;border-radius:6px;border:1px solid var(--border);background:#fff;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .btn.primary{background:var(--accent);color:#fff;border:none;}
+  .btn.primary:disabled{background:var(--ink-faint);cursor:not-allowed;}
+  .btn.gold{background:var(--gold);color:#fff;border:none;}
+  .form-row{display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .form-row label{font-size:12.5px;font-weight:700;min-width:170px;}
+  .form-row input, .form-row textarea{flex:1;min-width:220px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);font-family:inherit;font-size:13px;}
+  .section-title{font-size:15px;font-weight:800;margin:26px 0 14px;color:var(--accent-strong);}
+  .hint{font-size:12px;color:var(--ink-faint);margin-top:-8px;margin-bottom:14px;}
 </style>
 </head>
 <body>
-<header>Óptica ALaVision · Panel de conversaciones</header>
-<div class="shell">
-  <div class="leads" id="leads"></div>
-  <div class="conv" id="conv"><div class="empty">Selecciona una conversación</div></div>
+<header>
+  <span>Óptica ALaVision · Panel administrativo</span>
+  <a href="/">← Volver a la página pública</a>
+</header>
+<div class="tabs">
+  <div class="tab active" data-view="conversaciones">Conversaciones</div>
+  <div class="tab" data-view="citas">Citas</div>
+  <div class="tab" data-view="remarketing">Remarketing</div>
+  <div class="tab" data-view="configuracion">Configuración</div>
+  <div class="tab" data-view="reportes">Reportes</div>
 </div>
+
+<div class="view active" id="view-conversaciones">
+  <div class="shell">
+    <div class="leads" id="leads"></div>
+    <div class="conv" id="conv"><div class="empty">Selecciona una conversación</div></div>
+  </div>
+</div>
+
+<div class="view" id="view-citas">
+  <div class="panel">
+    <div class="section-title">Citas agendadas</div>
+    <table id="tablaCitas"><thead><tr>
+      <th>Nombre</th><th>Teléfono</th><th>Servicio</th><th>Sede</th><th>Fecha</th><th>Hora</th><th>Origen</th><th>Estado</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="view" id="view-remarketing">
+  <div class="panel">
+    <div class="section-title">Cola de remarketing</div>
+    <p class="hint">El botón "Enviar" solo se activa cuando ya pasó el tiempo de espera configurado para ese mensaje — evita mandar de más y cuida el número de WhatsApp.</p>
+    <table id="tablaRemarketing"><thead><tr>
+      <th>Lead</th><th>Etapa</th><th>Próximo mensaje</th><th>Disponible desde</th><th></th>
+    </tr></thead><tbody></tbody></table>
+
+    <div class="section-title">Plantillas (hasta 10 mensajes, en orden)</div>
+    <div id="plantillasLista"></div>
+  </div>
+</div>
+
+<div class="view" id="view-configuracion">
+  <div class="panel">
+    <div class="section-title">Marca</div>
+    <div class="form-row"><label>Logo</label><input type="file" id="logoFile" accept="image/*" /></div>
+    <div class="section-title">Portada (hero)</div>
+    <div class="form-row"><label>Imagen de fondo</label><input type="file" id="heroFile" accept="image/*" /></div>
+    <div class="form-row"><label>Opacidad del overlay (0-1)</label><input type="number" id="heroOpacity" min="0" max="1" step="0.05" /></div>
+    <div class="section-title">Contacto</div>
+    <div class="form-row"><label>Número de WhatsApp</label><input id="whatsappNumero" placeholder="573xxxxxxxxx" /></div>
+    <div class="section-title">Sede Principal</div>
+    <div class="form-row"><label>Dirección</label><input id="direccionPrincipal" /></div>
+    <div class="form-row"><label>URL de Google Maps (embed)</label><input id="mapsPrincipal" placeholder="https://www.google.com/maps/embed?..." /></div>
+    <div class="section-title">Sede Los Andes</div>
+    <div class="form-row"><label>Dirección</label><input id="direccionLosAndes" /></div>
+    <div class="form-row"><label>URL de Google Maps (embed)</label><input id="mapsLosAndes" placeholder="https://www.google.com/maps/embed?..." /></div>
+    <button class="btn primary" id="guardarConfig">Guardar configuración</button>
+    <span id="configMsg" style="margin-left:12px;font-size:13px;"></span>
+  </div>
+</div>
+
+<div class="view" id="view-reportes">
+  <div class="panel">
+    <div class="section-title">Seguimiento en vivo</div>
+    <div class="stat-row" id="statsLive"></div>
+
+    <div class="section-title">Informe en PDF</div>
+    <div class="form-row"><label>Desde</label><input type="date" id="repDesde" /></div>
+    <div class="form-row"><label>Hasta</label><input type="date" id="repHasta" /></div>
+    <button class="btn gold" id="descargarPdf">Descargar PDF</button>
+  </div>
+</div>
+
 <script>
-let currentId = null;
-let pollTimer = null;
+// ---------- Navegación por pestañas ----------
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    if (tab.dataset.view === 'citas') loadCitas();
+    if (tab.dataset.view === 'remarketing') { loadRemarketing(); loadPlantillas(); }
+    if (tab.dataset.view === 'configuracion') loadConfig();
+    if (tab.dataset.view === 'reportes') loadStatsLive();
+  });
+});
 
 async function api(path, opts) {
   const res = await fetch(path, opts);
@@ -57,20 +166,22 @@ async function api(path, opts) {
   return res.json();
 }
 
-function badgeInteres(nivel) {
-  return `<span class="badge ${nivel === 'alto' ? 'alto' : ''}">${nivel}</span>`;
-}
+// ---------- Conversaciones ----------
+let currentId = null;
+
+function badgeInteres(nivel) { return `<span class="badge ${nivel === 'alto' ? 'alto' : ''}">${nivel}</span>`; }
 
 function renderLeads(leads) {
   const el = document.getElementById('leads');
   el.innerHTML = leads.map(l => `
     <div class="lead-item ${l.id === currentId ? 'active' : ''}" data-id="${l.id}">
       <div class="lead-name">${l.nombre || l.wa_id}</div>
-      <div class="lead-meta">${l.etapa} · ${new Date(l.actualizado_en).toLocaleString('es-CO')}</div>
+      <div class="lead-meta">${l.etapa} · ${l.origen_campana || 'directo'} · ${new Date(l.actualizado_en).toLocaleString('es-CO')}</div>
       <div class="badges">
         ${badgeInteres(l.nivel_interes)}
         ${l.necesita_humano ? '<span class="badge humano">necesita humano</span>' : ''}
         ${l.ia_pausada ? '<span class="badge">IA pausada</span>' : ''}
+        ${l.convertido ? '<span class="badge convertido">✓ cliente</span>' : ''}
       </div>
     </div>
   `).join('');
@@ -88,13 +199,15 @@ function renderConv(lead, mensajes) {
   const el = document.getElementById('conv');
   el.innerHTML = `
     <div class="conv-header">
-      <div><b>${lead.nombre || lead.wa_id}</b> — ${lead.wa_id}</div>
+      <div><b>${lead.nombre || lead.wa_id}</b> — ${lead.wa_id} <span style="color:var(--ink-faint)">(${lead.origen_campana || 'directo'})</span></div>
       <div style="display:flex;gap:8px;align-items:center;">
         <select id="etapaSelect">
           ${['nuevo','calificando','propuesta_enviada','objecion','cita_agendada','ganado','perdido']
             .map(e => `<option value="${e}" ${e === lead.etapa ? 'selected' : ''}>${e}</option>`).join('')}
         </select>
         <button class="primary" id="pauseBtn">${lead.ia_pausada ? 'Reactivar IA' : 'Pausar IA'}</button>
+        <button class="gold" id="convertBtn">${lead.convertido ? 'Quitar "cliente"' : 'Marcar cliente'}</button>
+        ${lead.correo ? `<button id="emailBtn">Correo rápido</button>` : ''}
       </div>
     </div>
     <div class="thread" id="thread">
@@ -125,9 +238,35 @@ function renderConv(lead, mensajes) {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ pausada: !lead.ia_pausada })
     });
-    openLead(lead.id);
-    loadLeads();
+    openLead(lead.id); loadLeads();
   });
+
+  document.getElementById('convertBtn').addEventListener('click', async () => {
+    let valor = 0;
+    if (!lead.convertido) {
+      valor = Number(prompt('¿Por cuánto fue la compra? (solo el número, en pesos)', '0')) || 0;
+    }
+    await api(`/api/leads/${lead.id}/conversion`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ convertido: !lead.convertido, valor_compra: valor })
+    });
+    openLead(lead.id); loadLeads();
+  });
+
+  const emailBtn = document.getElementById('emailBtn');
+  if (emailBtn) {
+    emailBtn.addEventListener('click', async () => {
+      const asunto = prompt('Asunto del correo:', 'Seguimiento de tu asesoría — Óptica ALaVision');
+      if (!asunto) return;
+      const cuerpo = prompt('Mensaje:', 'Hola, quedamos atentos si deseas continuar con tu cotización.');
+      if (!cuerpo) return;
+      await api(`/api/leads/${lead.id}/correo`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ asunto, cuerpo })
+      });
+      openLead(lead.id);
+    });
+  }
 
   const send = async () => {
     const input = document.getElementById('composerInput');
@@ -141,9 +280,7 @@ function renderConv(lead, mensajes) {
     openLead(lead.id);
   };
   document.getElementById('sendBtn').addEventListener('click', send);
-  document.getElementById('composerInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') send();
-  });
+  document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
 }
 
 async function openLead(id) {
@@ -154,10 +291,138 @@ async function openLead(id) {
 }
 
 loadLeads();
-setInterval(() => {
-  loadLeads();
-  if (currentId) openLead(currentId);
-}, 8000);
+setInterval(() => { loadLeads(); if (currentId) openLead(currentId); }, 8000);
+
+// ---------- Citas ----------
+async function loadCitas() {
+  const citas = await api('/api/citas');
+  const tbody = document.querySelector('#tablaCitas tbody');
+  tbody.innerHTML = citas.map(c => `
+    <tr>
+      <td>${c.nombre}</td><td>${c.telefono}</td><td>${c.servicio}</td><td>${c.sede}</td>
+      <td>${c.fecha}</td><td>${c.hora}</td><td>${c.origen_campana || '-'}</td>
+      <td>
+        <select data-id="${c.id}" class="estadoCita">
+          ${['pendiente','confirmada','cancelada','atendida'].map(e => `<option value="${e}" ${e===c.estado?'selected':''}>${e}</option>`).join('')}
+        </select>
+      </td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('.estadoCita').forEach(sel => {
+    sel.addEventListener('change', () => api(`/api/citas/${sel.dataset.id}/estado`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ estado: sel.value })
+    }));
+  });
+}
+
+// ---------- Remarketing ----------
+async function loadRemarketing() {
+  const estado = await api('/api/remarketing/estado');
+  const tbody = document.querySelector('#tablaRemarketing tbody');
+  tbody.innerHTML = estado.map(({lead, siguiente}) => {
+    if (!siguiente) return `<tr><td>${lead.nombre||lead.wa_id}</td><td>${lead.etapa}</td><td colspan="3">Ya recibió los 10 mensajes</td></tr>`;
+    const disponible = siguiente.disponibleAhora;
+    return `<tr>
+      <td>${lead.nombre||lead.wa_id}</td><td>${lead.etapa}</td>
+      <td>#${siguiente.plantilla.orden} — ${siguiente.plantilla.texto.slice(0,60)}...</td>
+      <td>${new Date(siguiente.disponibleDesde).toLocaleString('es-CO')}</td>
+      <td><button class="btn primary" data-id="${lead.id}" ${disponible?'':'disabled'}>Enviar</button></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('button[data-id]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      try { await api(`/api/remarketing/enviar/${btn.dataset.id}`, { method: 'POST' }); }
+      catch (e) { alert('No se pudo enviar: ' + e.message); }
+      loadRemarketing();
+    });
+  });
+}
+
+async function loadPlantillas() {
+  const plantillas = await api('/api/remarketing/plantillas');
+  const el = document.getElementById('plantillasLista');
+  el.innerHTML = plantillas.map(p => `
+    <div class="form-row">
+      <label>#${p.orden} (espera ${p.espera_horas}h)</label>
+      <input data-id="${p.id}" data-field="texto" value="${p.texto.replace(/"/g,'&quot;')}" />
+      <input data-id="${p.id}" data-field="espera_horas" type="number" style="max-width:90px;" value="${p.espera_horas}" />
+      <button class="btn" data-save="${p.id}">Guardar</button>
+    </div>
+  `).join('');
+  el.querySelectorAll('[data-save]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.save;
+      const texto = el.querySelector(`[data-id="${id}"][data-field="texto"]`).value;
+      const espera = el.querySelector(`[data-id="${id}"][data-field="espera_horas"]`).value;
+      await api(`/api/remarketing/plantillas/${id}`, {
+        method: 'PUT', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ texto, espera_horas: Number(espera) })
+      });
+      btn.textContent = '✓'; setTimeout(() => btn.textContent = 'Guardar', 1200);
+    });
+  });
+}
+
+// ---------- Configuración ----------
+async function loadConfig() {
+  const cfg = await api('/api/config');
+  document.getElementById('heroOpacity').value = cfg.hero_opacity ?? '0.7';
+  document.getElementById('whatsappNumero').value = cfg.whatsapp_numero ?? '';
+  document.getElementById('direccionPrincipal').value = cfg.direccion_principal ?? '';
+  document.getElementById('mapsPrincipal').value = cfg.maps_url_principal ?? '';
+  document.getElementById('direccionLosAndes').value = cfg.direccion_los_andes ?? '';
+  document.getElementById('mapsLosAndes').value = cfg.maps_url_los_andes ?? '';
+}
+
+async function subirImagen(inputId, campo) {
+  const input = document.getElementById(inputId);
+  if (!input.files[0]) return;
+  const fd = new FormData();
+  fd.append('archivo', input.files[0]);
+  fd.append('campo', campo);
+  await fetch('/api/config/imagen', { method: 'POST', body: fd });
+}
+
+document.getElementById('guardarConfig').addEventListener('click', async () => {
+  await subirImagen('logoFile', 'logo_url');
+  await subirImagen('heroFile', 'hero_image_url');
+  await api('/api/config', {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      hero_opacity: document.getElementById('heroOpacity').value,
+      whatsapp_numero: document.getElementById('whatsappNumero').value,
+      direccion_principal: document.getElementById('direccionPrincipal').value,
+      maps_url_principal: document.getElementById('mapsPrincipal').value,
+      direccion_los_andes: document.getElementById('direccionLosAndes').value,
+      maps_url_los_andes: document.getElementById('mapsLosAndes').value,
+    })
+  });
+  const msg = document.getElementById('configMsg');
+  msg.textContent = 'Guardado ✓'; setTimeout(() => msg.textContent = '', 2000);
+});
+
+// ---------- Reportes ----------
+async function loadStatsLive() {
+  const leads = await api('/api/leads');
+  const deCampana = leads.filter(l => l.origen_campana && l.origen_campana !== 'directo');
+  const convertidos = leads.filter(l => l.convertido);
+  const valor = convertidos.reduce((s,l) => s + (l.valor_compra||0), 0);
+  const tasa = leads.length ? (convertidos.length/leads.length*100).toFixed(1) : '0.0';
+  document.getElementById('statsLive').innerHTML = `
+    <div class="stat-card"><div class="num">${leads.length}</div><div class="label">Leads totales</div></div>
+    <div class="stat-card"><div class="num">${deCampana.length}</div><div class="label">Desde Meta Ads</div></div>
+    <div class="stat-card"><div class="num">${convertidos.length}</div><div class="label">Convertidos</div></div>
+    <div class="stat-card"><div class="num">${tasa}%</div><div class="label">Tasa de conversión</div></div>
+    <div class="stat-card"><div class="num">$${valor.toLocaleString('es-CO')}</div><div class="label">Valor vendido</div></div>
+  `;
+}
+
+document.getElementById('descargarPdf').addEventListener('click', () => {
+  const desde = document.getElementById('repDesde').value || '1970-01-01';
+  const hasta = document.getElementById('repHasta').value || '2999-12-31';
+  window.open(`/api/reportes/pdf?desde=${desde}&hasta=${hasta}`, '_blank');
+});
 </script>
 </body>
 </html>

@@ -9,6 +9,7 @@ import {
   getRecentMessages,
   updateLeadFromAgent,
   setNombre,
+  setCorreo,
 } from "../db/index.js";
 
 export const webhookRouter = Router();
@@ -42,7 +43,10 @@ async function handleIncoming(body: WhatsAppWebhookBody): Promise<void> {
 
   const waId = message.from;
   const nombrePerfil = change?.value.contacts?.[0]?.profile.name;
-  const lead = getOrCreateLead(waId, nombrePerfil);
+  const origenCampana = message.referral
+    ? message.referral.headline || message.referral.source_type || "Meta Ads"
+    : "";
+  const lead = getOrCreateLead(waId, nombrePerfil, origenCampana);
   if (nombrePerfil && !lead.nombre) setNombre(lead.id, nombrePerfil);
 
   let textoPaciente = "";
@@ -77,6 +81,7 @@ async function handleIncoming(body: WhatsAppWebhookBody): Promise<void> {
     nota_interna: reply.nota_interna,
   });
   addMessage(lead.id, "agente", reply.mensaje, reply.botones);
+  if (reply.correo?.trim()) setCorreo(lead.id, reply.correo.trim());
 
   if (reply.botones.length > 0) {
     await sendWithButtons(waId, reply.mensaje, reply.botones);

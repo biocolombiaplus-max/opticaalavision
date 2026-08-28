@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Óptica ALaVision</title>
+<meta name="description" content="Exámenes visuales, monturas y lentes de fórmula en Cúcuta. Agenda tu cita en línea." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,500&family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161f; --ink-soft:#4a4e5e; --ink-faint:#8b8f9e;
+    --paper:#f6f6f3; --surface:#ffffff;
+    --accent:#1f2a52; --accent-strong:#141b38;
+    --gold:#b08d57; --gold-tint:#f3ebdd; --gold-strong:#8c6d3e;
+    --line:#e4e2dc;
+    --shadow: 0 1px 2px rgba(20,22,31,.04), 0 18px 40px -20px rgba(20,22,31,.25);
+    --radius: 2px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#edeef3; --ink-soft:#a9adbe; --ink-faint:#6b7080;
+      --paper:#0e1016; --surface:#171a22;
+      --accent:#8f9fe6; --accent-strong:#b3bff2;
+      --gold:#d9b876; --gold-tint:#241f14; --gold-strong:#e9cd91;
+      --line:#262a36;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -20px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#edeef3; --ink-soft:#a9adbe; --ink-faint:#6b7080;
+    --paper:#0e1016; --surface:#171a22;
+    --accent:#8f9fe6; --accent-strong:#b3bff2;
+    --gold:#d9b876; --gold-tint:#241f14; --gold-strong:#e9cd91;
+    --line:#262a36;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -20px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Archivo",Arial,sans-serif;line-height:1.55;}
+  h1,h2,h3,.display{font-family:"Bodoni Moda","Times New Roman",serif;font-weight:600;letter-spacing:-.01em;text-wrap:balance;color:var(--ink);}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  section{padding:96px 0;}
+  @media (max-width:720px){ section{padding:64px 0;} .wrap{padding:0 20px;} }
+
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-strong);margin-bottom:14px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:var(--radius);font-weight:600;font-size:14.5px;letter-spacing:.01em;cursor:pointer;border:1px solid transparent;transition:transform .15s ease, opacity .15s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-strong);}
+  .btn-gold{background:var(--gold);color:#1a1508;}
+  .btn-outline{border-color:currentColor;color:var(--ink);}
+  .btn-whatsapp{background:#25d366;color:#06210f;}
+
+  /* ---------- Top utility bar ---------- */
+  .utility{background:var(--accent-strong);color:#fff;font-size:12px;}
+  .utility .wrap{display:flex;justify-content:flex-end;align-items:center;padding:8px 28px;gap:18px;}
+  .utility a{opacity:.85;font-weight:600;letter-spacing:.02em;}
+  .utility a:hover{opacity:1;}
+
+  /* ---------- Header ---------- */
+  header.main{position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Bodoni Moda",serif;font-size:21px;font-weight:700;}
+  .brand img{height:34px;width:auto;}
+  .brand .mark{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
+  nav.links{display:flex;gap:30px;font-size:14px;font-weight:600;}
+  @media (max-width:880px){ nav.links{display:none;} }
+  .nav-actions{display:flex;gap:10px;align-items:center;}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;min-height:86vh;display:flex;align-items:center;overflow:hidden;background:var(--accent-strong);}
+  .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,12,20,.55), rgba(10,12,20,.82));}
+  .hero-decor{position:absolute;inset:0;pointer-events:none;opacity:.5;}
+  .hero .wrap{position:relative;z-index:2;color:#fff;padding-top:60px;padding-bottom:60px;}
+  .hero h1{font-size:clamp(38px,6vw,68px);color:#fff;max-width:16ch;line-height:1.05;}
+  .hero p.lead{font-size:18px;color:rgba(255,255,255,.82);max-width:46ch;margin:22px 0 34px;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .hero-badges{display:flex;gap:28px;margin-top:56px;flex-wrap:wrap;}
+  .hero-badge{font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:8px;}
+  .hero-badge b{color:#fff;font-family:"IBM Plex Mono",monospace;}
+
+  /* ---------- Trust bar ---------- */
+  .trust{background:var(--surface);border-bottom:1px solid var(--line);}
+  .trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:36px 28px;}
+  @media (max-width:720px){ .trust .wrap{grid-template-columns:repeat(2,1fr);} }
+  .trust-stat{text-align:center;}
+  .trust-stat .num{font-family:"Bodoni Moda",serif;font-size:34px;font-weight:700;color:var(--accent);}
+  .trust-stat .label{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+
+  /* ---------- Section headers ---------- */
+  .section-head{max-width:640px;margin-bottom:52px;}
+  .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .section-head h2{font-size:clamp(28px,3.6vw,42px);}
+  .section-head p{color:var(--ink-soft);font-size:16px;margin-top:14px;}
+
+  /* ---------- Servicios ---------- */
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  @media (max-width:880px){ .services{grid-template-columns:1fr;} }
+  .service-card{background:var(--surface);border:1px solid var(--line);padding:36px 30px;border-radius:var(--radius);box-shadow:var(--shadow);}
+  .service-icon{width:46px;height:46px;border-radius:50%;background:var(--gold-tint);color:var(--gold-strong);display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
+  .service-card h3{font-size:21px;margin:0 0 10px;}
+  .service-card p{color:var(--ink-soft);font-size:14.5px;margin:0 0 20px;}
+  .service-card a.link{font-size:13px;font-weight:700;color:var(--accent);}
+
+  /* ---------- Cómo funciona ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+  @media (max-width:880px){ .steps{grid-template-columns:1fr;gap:36px;} }
+  .step{padding:0 24px 0 0;border-left:1px solid var(--line);padding-left:24px;}
+  .step:first-child{border-left:none;padding-left:0;}
+  @media (max-width:880px){ .step{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:24px;} .step:first-child{border-top:none;padding-top:0;} }
+  .step .num{font-family:"Bodoni Moda",serif;font-size:15px;color:var(--gold-strong);margin-bottom:10px;}
+  .step h4{font-size:16.5px;margin:0 0 8px;font-weight:700;}
+  .step p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+
+  /* ---------- Precios ---------- */
+  .pricing{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  @media (max-width:1000px){ .pricing{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .pricing{grid-template-columns:1fr;} }
+  .price-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;display:flex;flex-direction:column;gap:10px;}
+  .price-card.featured{background:var(--accent-strong);border-color:var(--accent-strong);color:#fff;position:relative;}
+  .price-card.featured .price-inc, .price-card.featured .price-age{color:rgba(255,255,255,.7);}
+  .price-tag{position:absolute;top:-12px;right:20px;background:var(--gold);color:#1a1508;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;}
+  .price-name{font-weight:700;font-size:14.5px;}
+  .price-amount{font-family:"Bodoni Moda",serif;font-size:30px;font-weight:700;}
+  .price-card.featured .price-amount{color:var(--gold);}
+  .price-age{font-family:"IBM Plex Mono",monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);}
+  .price-inc{font-size:12.5px;color:var(--ink-soft);flex:1;}
+  .price-gift{font-size:11.5px;font-weight:700;color:var(--gold-strong);}
+  .price-card.featured .price-gift{color:var(--gold);}
+
+  /* ---------- Testimonios ---------- */
+  .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+  @media (max-width:880px){ .testimonials{grid-template-columns:1fr;} }
+  .quote{background:var(--surface);border:1px solid var(--line);padding:30px 26px;border-radius:var(--radius);}
+  .quote .stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:14px;}
+  .quote p{font-size:14.5px;color:var(--ink-soft);font-style:italic;}
+  .quote .who{margin-top:18px;font-size:13px;font-weight:700;}
+
+  /* ---------- Ubicación ---------- */
+  .locations{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:880px){ .locations{grid-template-columns:1fr;} }
+  .loc-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .loc-map{aspect-ratio:16/9;background:var(--line);}
+  .loc-map iframe{width:100%;height:100%;border:0;display:block;}
+  .loc-body{padding:22px 24px;}
+  .loc-body h3{font-size:18px;margin:0 0 6px;}
+  .loc-body p{font-size:13.5px;color:var(--ink-soft);margin:0 0 16px;}
+
+  /* ---------- Agenda tu cita ---------- */
+  .booking{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+  @media (max-width:880px){ .booking-grid{grid-template-columns:1fr;} }
+  form.cita{display:flex;flex-direction:column;gap:14px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .field input, .field select{font-family:inherit;font-size:14.5px;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--line);background:var(--paper);color:var(--ink);}
+  .field input:focus, .field select:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:520px){ .row2{grid-template-columns:1fr;} }
+  #citaMsg{font-size:13.5px;margin-top:6px;min-height:18px;}
+  #citaMsg.ok{color:#1e7a45;}
+  #citaMsg.err{color:#a8460b;}
+  .booking-note{font-size:13px;color:var(--ink-soft);margin-top:16px;}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--accent-strong);color:rgba(255,255,255,.75);padding:56px 0 30px;font-size:13.5px;}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;}
+  footer .brand{color:#fff;}
+  footer a:hover{color:#fff;}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:36px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+
+  .wa-float{position:fixed;bottom:22px;right:22px;z-index:50;background:#25d366;color:#06210f;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);}
+</style>
+</head>
+<body>
+
+<div class="utility">
+  <div class="wrap">
+    <a href="/admin">Módulo administrativo →</a>
+  </div>
+</div>
+
+<header class="main">
+  <div class="wrap nav">
+    <a class="brand" href="#top" id="brandLink">
+      <span class="mark">AV</span>
+      <span id="brandName">ALaVision</span>
+    </a>
+    <nav class="links">
+      <a href="#servicios">Servicios</a>
+      <a href="#precios">Precios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#testimonios">Testimonios</a>
+      <a href="#ubicacion">Ubicación</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="#agenda">Agenda tu cita</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay" id="heroOverlay"></div>
+  <div class="wrap">
+    <div class="eyebrow" style="color:rgba(255,255,255,.75)">Óptica ALaVision · Cúcuta</div>
+    <h1>Tu visión, con la asesoría de una doctora de verdad.</h1>
+    <p class="lead">Examen visual, monturas y lentes de fórmula en un solo lugar. Te
+    escribimos por WhatsApp para asesorarte según tu necesidad, o agenda tu cita aquí mismo.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="#agenda">Agenda tu cita</a>
+      <a class="btn btn-whatsapp" id="heroWhatsapp" href="#" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hero-badge"><b>2</b>&nbsp;sedes en Cúcuta</div>
+      <div class="hero-badge"><b>+10</b>&nbsp;años de experiencia</div>
+      <div class="hero-badge"><b>1 año</b>&nbsp;de garantía</div>
+    </div>
+  </div>
+</section>
+
+<div class="trust">
+  <div class="wrap">
+    <div class="trust-stat"><div class="num">+8.000</div><div class="label">Pacientes atendidos</div></div>
+    <div class="trust-stat"><div class="num">2</div><div class="label">Sedes en Cúcuta</div></div>
+    <div class="trust-stat"><div class="num">4.9★</div><div class="label">Calificación de pacientes</div></div>
+    <div class="trust-stat"><div class="num">1 año</div><div class="label">Garantía en tus lentes</div></div>
+  </div>
+</div>
+
+<section id="servicios">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Servicios</div>
+      <h2>Lo que necesitas, sin vueltas</h2>
+      <p>Cuéntanos qué buscas y te llevamos directo a la opción correcta — sin exámenes ni pasos de más.</p>
+    </div>
+    <div class="services">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M2 12c1.5-4 4-6 6-6s4.5 2 4 6c-.5 4-2.5 6-4.5 6S2.8 16 2 12Z" stroke="currentColor" stroke-width="1.6"/><path d="M22 12c-1.5-4-4-6-6-6s-4.5 2-4 6c.5 4 2.5 6 4.5 6s5.7-2 5.5-6Z" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+        <h3>Solo montura</h3>
+        <p>¿Se te partió o quieres traspasar tu cristal a una montura nueva? Lo resolvemos el mismo día en la sede Los Andes, desde $80.000.</p>
+        <a class="link" href="#agenda">Ver opciones →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 6l1.5 12a2 2 0 0 0 2 1.7h9a2 2 0 0 0 2-1.7L20 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Ya tengo fórmula</h3>
+        <p>Envíanos la foto de tu fórmula por WhatsApp y te cotizamos al toque — montura, lente y filtros en un solo combo.</p>
+        <a class="link" href="#precios">Ver combos →</a>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Examen completo</h3>
+        <p>Chequeo visual con la Dra. Angie, más montura y lente incluidos en el mismo combo. Ideal si es tu primera vez o no recuerdas tu fórmula.</p>
+        <a class="link" href="#agenda">Agendar examen →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como-funciona" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Cómo funciona</div>
+      <h2>De la pregunta a tus lentes nuevos, en 4 pasos</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h4>Nos escribes</h4><p>Por WhatsApp o agendando aquí — nos cuentas qué necesitas.</p></div>
+      <div class="step"><div class="num">02</div><h4>Te asesoramos</h4><p>Según tu edad, actividad y fórmula, te recomendamos el combo ideal.</p></div>
+      <div class="step"><div class="num">03</div><h4>Confirmas tu cita</h4><p>Te confirmamos por correo y WhatsApp, con la ubicación exacta.</p></div>
+      <div class="step"><div class="num">04</div><h4>Recibes tus lentes</h4><p>Examen, montura y lente listos, con un año de garantía.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="precios">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Precios</div>
+      <h2>Combos claros, sin letra pequeña</h2>
+      <p>Todos los combos con examen incluyen la montura de regalo este mes.</p>
+    </div>
+    <div class="pricing">
+      <div class="price-card">
+        <div class="price-name">Solo montura</div>
+        <div class="price-amount">$80k</div>
+        <div class="price-age">Cualquier edad</div>
+        <div class="price-inc">Montura de la promo o traspaso de tu cristal. Sede Los Andes.</div>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Monofocal</div>
+        <div class="price-amount">$350k</div>
+        <div class="price-age">Menor de 37</div>
+        <div class="price-inc">Fotocromático, antireflejo, protector de pantalla.</div>
+        <div class="price-gift">🎁 Montura de regalo</div>
+      </div>
+      <div class="price-card featured">
+        <div class="price-tag">Más elegido</div>
+        <div class="price-name">Progresivo digital</div>
+        <div class="price-amount">$550k</div>
+        <div class="price-age">37 a 59 años</div>
+        <div class="price-inc">Gama alta, protección de pantalla, de lejos y cerca sin línea.</div>
+        <div class="price-gift">🎁 Montura de regalo</div>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Bifocal</div>
+        <div class="price-amount">$300k</div>
+        <div class="price-age">60 y más</div>
+        <div class="price-inc">Lente en policarbonato.</div>
+        <div class="price-gift">🎁 Montura de regalo</div>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Monofocal Premium</div>
+        <div class="price-amount">$600k</div>
+        <div class="price-age">Gama alta</div>
+        <div class="price-inc">Transitions última generación certificado.</div>
+        <div class="price-gift">🎁 Montura de regalo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonios" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Testimonios</div>
+      <h2>Lo que dicen nuestros pacientes</h2>
+    </div>
+    <div class="testimonials" id="testimonialsGrid">
+      <div class="quote"><div class="stars">★★★★★</div><p>"Me asesoraron por WhatsApp antes de ir, llegué sabiendo exactamente qué necesitaba. Muy profesional."</p><div class="who">— Paciente, sede Principal</div></div>
+      <div class="quote"><div class="stars">★★★★★</div><p>"Se me partió la montura y en el mismo día me hicieron el traspaso del cristal. Rapidísimo."</p><div class="who">— Paciente, sede Los Andes</div></div>
+      <div class="quote"><div class="stars">★★★★★</div><p>"La Dra. Angie muy atenta en el examen, y el precio del combo incluía todo, sin sorpresas."</p><div class="who">— Paciente, sede Principal</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="ubicacion">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Ubicación</div>
+      <h2>Encuéntranos en Cúcuta</h2>
+    </div>
+    <div class="locations">
+      <div class="loc-card">
+        <div class="loc-map"><iframe id="mapPrincipal" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <div class="loc-body">
+          <h3>Sede Principal</h3>
+          <p id="direccionPrincipal">Consultorio completo — examen, montura y lente.</p>
+          <a class="btn btn-outline" id="comoLlegarPrincipal" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-map"><iframe id="mapLosAndes" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+        <div class="loc-body">
+          <h3>Sede Los Andes</h3>
+          <p id="direccionLosAndes">Monturas y traspaso de cristal.</p>
+          <a class="btn btn-outline" id="comoLlegarLosAndes" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="booking" id="agenda">
+  <div class="wrap">
+    <div class="booking-grid">
+      <div>
+        <div class="eyebrow">Agenda tu cita</div>
+        <h2 style="font-size:clamp(26px,3.4vw,36px);">Reserva en un minuto</h2>
+        <p style="color:var(--ink-soft);margin-top:14px;max-width:44ch;">Te confirmamos por correo (con cómo llegar) y por WhatsApp. Si prefieres, también puedes escribirnos directamente.</p>
+        <div class="booking-note">Al agendar, autorizas el uso de tus datos para confirmar tu cita, según la Ley 1581 de 2012.</div>
+      </div>
+      <form class="cita" id="citaForm">
+        <div class="row2">
+          <div class="field"><label for="nombre">Nombre completo</label><input id="nombre" name="nombre" required /></div>
+          <div class="field"><label for="telefono">WhatsApp</label><input id="telefono" name="telefono" required placeholder="3xxxxxxxxx" /></div>
+        </div>
+        <div class="field"><label for="correo">Correo</label><input id="correo" name="correo" type="email" required /></div>
+        <div class="row2">
+          <div class="field"><label for="servicio">Servicio</label>
+            <select id="servicio" name="servicio">
+              <option value="Solo montura">Solo montura</option>
+              <option value="Montura + lentes">Montura + lentes</option>
+              <option value="Examen completo" selected>Examen completo</option>
+            </select>
+          </div>
+          <div class="field"><label for="sede">Sede</label>
+            <select id="sede" name="sede">
+              <option value="Principal">Principal</option>
+              <option value="Los Andes">Los Andes</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="fecha">Fecha</label><input id="fecha" name="fecha" type="date" required /></div>
+          <div class="field"><label for="hora">Hora</label><input id="hora" name="hora" type="time" required /></div>
+        </div>
+        <button class="btn btn-primary" type="submit" style="margin-top:6px;">Confirmar cita</button>
+        <div id="citaMsg"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand display" style="font-size:19px;margin-bottom:10px;">ALaVision</div>
+      <p style="max-width:32ch;">Óptica ALaVision — exámenes visuales, monturas y lentes en Cúcuta.</p>
+    </div>
+    <div>
+      <div style="color:#fff;font-weight:700;margin-bottom:10px;">Navegación</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <a href="#servicios">Servicios</a><a href="#precios">Precios</a><a href="#ubicacion">Ubicación</a><a href="#agenda">Agenda tu cita</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-weight:700;margin-bottom:10px;">Contacto</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <a id="footWhatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="/admin">Módulo administrativo</a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© <span id="year"></span> Óptica ALaVision</span>
+    <span>Cúcuta, Colombia</span>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.2.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.2 0-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9 0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.3.5.5.2 1 .1 1.4-.1.4-.2 1.5-.6 1.6-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.1-.4-.2Z"/></svg>
+</a>
+
+<script>
+(function(){
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // captura utm de la campaña para asociar el lead al origen
+  const params = new URLSearchParams(location.search);
+  const origen = params.get('utm_source') || params.get('utm_campaign') || '';
+  if (origen) sessionStorage.setItem('alavision_origen', origen);
+
+  function waLink(phone, text) {
+    const digits = (phone || '').replace(/\D/g, '');
+    return `https://wa.me/${digits}?text=${encodeURIComponent(text || 'Hola, quiero información sobre monturas y lentes.')}`;
+  }
+
+  function applyConfig(cfg) {
+    if (cfg.logo_url) {
+      document.getElementById('brandName').style.display = 'none';
+      const img = document.createElement('img');
+      img.src = cfg.logo_url; img.alt = 'Óptica ALaVision';
+      document.getElementById('brandLink').prepend(img);
+      document.querySelector('.brand .mark').remove();
+    }
+    if (cfg.hero_image_url) {
+      document.getElementById('heroBg').style.backgroundImage = `url(${cfg.hero_image_url})`;
+    }
+    const opacity = cfg.hero_opacity !== undefined ? cfg.hero_opacity : 0.7;
+    document.getElementById('heroOverlay').style.background =
+      `linear-gradient(180deg, rgba(10,12,20,${Math.min(opacity + 0.05, 1)}), rgba(10,12,20,${Math.min(opacity + 0.25, 1)}))`;
+
+    const phone = cfg.whatsapp_numero || '';
+    document.getElementById('heroWhatsapp').href = waLink(phone, 'Hola, vi la página y quiero información sobre monturas y lentes.');
+    document.getElementById('waFloat').href = waLink(phone);
+    document.getElementById('footWhatsapp').href = waLink(phone);
+
+    if (cfg.maps_url_principal) {
+      document.getElementById('mapPrincipal').src = cfg.maps_url_principal;
+      document.getElementById('comoLlegarPrincipal').href = cfg.maps_url_principal;
+    }
+    if (cfg.maps_url_los_andes) {
+      document.getElementById('mapLosAndes').src = cfg.maps_url_los_andes;
+      document.getElementById('comoLlegarLosAndes').href = cfg.maps_url_los_andes;
+    }
+    if (cfg.direccion_principal) document.getElementById('direccionPrincipal').textContent = cfg.direccion_principal;
+    if (cfg.direccion_los_andes) document.getElementById('direccionLosAndes').textContent = cfg.direccion_los_andes;
+  }
+
+  fetch('/api/config').then(r => r.json()).then(applyConfig).catch(() => {
+    // Sin backend disponible (ej. vista previa): deja los valores por defecto.
+    applyConfig({});
+  });
+
+  document.getElementById('citaForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const msg = document.getElementById('citaMsg');
+    const data = Object.fromEntries(new FormData(form).entries());
+    data.origen_campana = sessionStorage.getItem('alavision_origen') || 'directo';
+    msg.className = ''; msg.textContent = 'Enviando...';
+    try {
+      const res = await fetch('/api/citas', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error(await res.text());
+      msg.className = 'ok';
+      msg.textContent = '¡Listo! Te confirmamos por correo y WhatsApp muy pronto.';
+      form.reset();
+    } catch (err) {
+      msg.className = 'err';
+      msg.textContent = 'No pudimos agendar automáticamente. Escríbenos por WhatsApp y te ayudamos directo.';
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -26,4 +26,12 @@ export interface IncomingMessage {
     button_reply?: { id: string; title: string };
     list_reply?: { id: string; title: string };
   };
+  /** Presente cuando el mensaje llega desde un anuncio de "Click to WhatsApp" de Meta Ads. */
+  referral?: {
+    source_url?: string;
+    source_type?: string;
+    headline?: string;
+    body?: string;
+    ctwa_clid?: string;
+  };
 }

@@ -15,6 +15,41 @@ db.pragma("journal_mode = WAL");
 const schema = readFileSync(join(__dirname, "schema.sql"), "utf-8");
 db.exec(schema);
 
+// Migraciones simples: agrega columnas nuevas a "leads" si vienen de una base de datos anterior.
+const leadColumns = new Set(
+  (db.prepare("PRAGMA table_info(leads)").all() as Array<{ name: string }>).map((c) => c.name),
+);
+if (!leadColumns.has("origen_campana")) {
+  db.exec("ALTER TABLE leads ADD COLUMN origen_campana TEXT NOT NULL DEFAULT ''");
+}
+if (!leadColumns.has("convertido")) {
+  db.exec("ALTER TABLE leads ADD COLUMN convertido INTEGER NOT NULL DEFAULT 0");
+}
+if (!leadColumns.has("valor_compra")) {
+  db.exec("ALTER TABLE leads ADD COLUMN valor_compra INTEGER NOT NULL DEFAULT 0");
+}
+
+// Plantillas de remarketing por defecto (editables luego desde el panel admin).
+const plantillasCount = (db.prepare("SELECT COUNT(*) AS n FROM plantillas_remarketing").get() as { n: number }).n;
+if (plantillasCount === 0) {
+  const defaultPlantillas: Array<[number, string, number]> = [
+    [1, "¡Hola! 😊 Vimos que te interesaron nuestras monturas. ¿Seguimos con tu asesoría?", 0],
+    [2, "¿Cómo vas con la decisión de tus lentes? Seguimos disponibles para cotizarte 👓", 24],
+    [3, "Esta semana tenemos cupos para el examen visual con la Dra. Angie. ¿Te agendamos?", 48],
+    [4, "Recuerda que la montura sigue de regalo con cualquier combo este mes 🎁", 72],
+    [5, "¿Ya tienes tu fórmula lista? Con gusto te ayudamos a cotizar tu combo ideal.", 96],
+    [6, "Muchos pacientes ya renovaron sus lentes con nosotros esta temporada 👀", 168],
+    [7, "¿Seguimos pendientes? Cuéntanos si prefieres que te contactemos más adelante.", 168],
+    [8, "Un chequeo visual a tiempo evita molestias más adelante. ¿Agendamos tu cita?", 336],
+    [9, "Última oportunidad de aprovechar la promo de monturas de este mes.", 336],
+    [10, "Quedamos atentos para cuando decidas darle una revisión a tu salud visual 😊", 720],
+  ];
+  const insert = db.prepare(
+    "INSERT INTO plantillas_remarketing (orden, texto, espera_horas) VALUES (?, ?, ?)",
+  );
+  for (const [orden, texto, espera] of defaultPlantillas) insert.run(orden, texto, espera);
+}
+
 export type Etapa =
   | "nuevo"
   | "calificando"
@@ -37,6 +72,9 @@ export interface Lead {
   necesita_humano: number; // 0 | 1
   ia_pausada: number; // 0 | 1
   nota_interna: string;
+  origen_campana: string;
+  convertido: number; // 0 | 1
+  valor_compra: number;
   creado_en: string;
   actualizado_en: string;
 }
@@ -50,13 +88,17 @@ export interface Mensaje {
   creado_en: string;
 }
 
-export function getOrCreateLead(waId: string, nombre?: string): Lead {
+export function getOrCreateLead(waId: string, nombre?: string, origenCampana = ""): Lead {
   const existing = db.prepare("SELECT * FROM leads WHERE wa_id = ?").get(waId) as Lead | undefined;
   if (existing) return existing;
   const info = db
-    .prepare("INSERT INTO leads (wa_id, nombre) VALUES (?, ?)")
-    .run(waId, nombre ?? null);
+    .prepare("INSERT INTO leads (wa_id, nombre, origen_campana) VALUES (?, ?, ?)")
+    .run(waId, nombre ?? null, origenCampana);
   return db.prepare("SELECT * FROM leads WHERE id = ?").get(info.lastInsertRowid) as Lead;
+}
+
+export function getLeadByWaId(waId: string): Lead | undefined {
+  return db.prepare("SELECT * FROM leads WHERE wa_id = ?").get(waId) as Lead | undefined;
 }
 
 export function getLead(id: number): Lead | undefined {
@@ -122,4 +164,152 @@ export function setCorreo(leadId: number, correo: string): void {
 
 export function setNombre(leadId: number, nombre: string): void {
   db.prepare("UPDATE leads SET nombre = ? WHERE id = ?").run(nombre, leadId);
+}
+
+export function setConvertido(leadId: number, convertido: boolean, valorCompra: number): void {
+  db.prepare("UPDATE leads SET convertido = ?, valor_compra = ? WHERE id = ?").run(
+    convertido ? 1 : 0,
+    valorCompra,
+    leadId,
+  );
+}
+
+export function setEtapa(leadId: number, etapa: Etapa): void {
+  db.prepare("UPDATE leads SET etapa = ?, actualizado_en = datetime('now') WHERE id = ?").run(etapa, leadId);
+}
+
+// ---------------- Configuración (branding, imágenes, mapas) ----------------
+
+export function getConfig(): Record<string, string> {
+  const rows = db.prepare("SELECT clave, valor FROM configuracion").all() as Array<{
+    clave: string;
+    valor: string;
+  }>;
+  return Object.fromEntries(rows.map((r) => [r.clave, r.valor]));
+}
+
+export function setConfigValues(values: Record<string, string>): void {
+  const upsert = db.prepare(
+    "INSERT INTO configuracion (clave, valor) VALUES (?, ?) ON CONFLICT(clave) DO UPDATE SET valor = excluded.valor",
+  );
+  const tx = db.transaction((entries: Array<[string, string]>) => {
+    for (const [clave, valor] of entries) upsert.run(clave, valor);
+  });
+  tx(Object.entries(values));
+}
+
+// ---------------- Citas ----------------
+
+export interface Cita {
+  id: number;
+  lead_id: number | null;
+  nombre: string;
+  telefono: string;
+  correo: string;
+  servicio: string;
+  sede: string;
+  fecha: string;
+  hora: string;
+  origen_campana: string;
+  estado: "pendiente" | "confirmada" | "cancelada" | "atendida";
+  creado_en: string;
+}
+
+export interface NuevaCita {
+  lead_id: number | null;
+  nombre: string;
+  telefono: string;
+  correo: string;
+  servicio: string;
+  sede: string;
+  fecha: string;
+  hora: string;
+  origen_campana: string;
+}
+
+export function createCita(c: NuevaCita): Cita {
+  const info = db
+    .prepare(
+      `INSERT INTO citas (lead_id, nombre, telefono, correo, servicio, sede, fecha, hora, origen_campana)
+       VALUES (@lead_id, @nombre, @telefono, @correo, @servicio, @sede, @fecha, @hora, @origen_campana)`,
+    )
+    .run(c);
+  return db.prepare("SELECT * FROM citas WHERE id = ?").get(info.lastInsertRowid) as Cita;
+}
+
+export function listCitas(): Cita[] {
+  return db.prepare("SELECT * FROM citas ORDER BY fecha DESC, hora DESC").all() as Cita[];
+}
+
+export function setCitaEstado(id: number, estado: Cita["estado"]): void {
+  db.prepare("UPDATE citas SET estado = ? WHERE id = ?").run(estado, id);
+}
+
+// ---------------- Remarketing secuenciado ----------------
+
+export interface PlantillaRemarketing {
+  id: number;
+  orden: number;
+  texto: string;
+  espera_horas: number;
+}
+
+export function listPlantillasRemarketing(): PlantillaRemarketing[] {
+  return db
+    .prepare("SELECT * FROM plantillas_remarketing ORDER BY orden ASC")
+    .all() as PlantillaRemarketing[];
+}
+
+export function updatePlantillaRemarketing(id: number, texto: string, esperaHoras: number): void {
+  db.prepare("UPDATE plantillas_remarketing SET texto = ?, espera_horas = ? WHERE id = ?").run(
+    texto,
+    esperaHoras,
+    id,
+  );
+}
+
+export interface EnvioRemarketing {
+  id: number;
+  lead_id: number;
+  plantilla_id: number;
+  enviado_en: string;
+}
+
+export function listEnviosPorLead(leadId: number): EnvioRemarketing[] {
+  return db
+    .prepare("SELECT * FROM remarketing_envios WHERE lead_id = ? ORDER BY enviado_en ASC")
+    .all(leadId) as EnvioRemarketing[];
+}
+
+export function registrarEnvioRemarketing(leadId: number, plantillaId: number): void {
+  db.prepare("INSERT INTO remarketing_envios (lead_id, plantilla_id) VALUES (?, ?)").run(
+    leadId,
+    plantillaId,
+  );
+}
+
+/**
+ * Calcula, para un lead dado, cuál es la siguiente plantilla de remarketing que
+ * se le puede enviar y si ya está en tiempo de hacerlo (para "encender" el botón
+ * en el panel). Devuelve null si ya se enviaron las 10 o si no ha pasado el tiempo.
+ */
+export interface SiguienteRemarketing {
+  plantilla: PlantillaRemarketing;
+  disponibleDesde: string; // fecha ISO desde la que se puede enviar
+  disponibleAhora: boolean;
+}
+
+export function calcularSiguienteRemarketing(leadId: number): SiguienteRemarketing | null {
+  const plantillas = listPlantillasRemarketing();
+  const envios = listEnviosPorLead(leadId);
+  const siguienteOrden = envios.length + 1;
+  const plantilla = plantillas.find((p) => p.orden === siguienteOrden);
+  if (!plantilla) return null; // ya se enviaron todas (máximo 10)
+
+  const ultimoEnvio = envios[envios.length - 1]?.enviado_en;
+  const base = ultimoEnvio ? new Date(ultimoEnvio + "Z") : new Date();
+  const disponibleDesde = new Date(base.getTime() + plantilla.espera_horas * 3600 * 1000);
+  const disponibleAhora = envios.length === 0 ? true : new Date() >= disponibleDesde;
+
+  return { plantilla, disponibleDesde: disponibleDesde.toISOString(), disponibleAhora };
 }

@@ -15,6 +15,7 @@ export interface AgentReply {
   etiquetas: string[];
   necesita_humano: boolean;
   nota_interna: string;
+  correo: string;
 }
 
 const RESPONDER_TOOL: Anthropic.Tool = {
@@ -67,6 +68,11 @@ const RESPONDER_TOOL: Anthropic.Tool = {
         type: "string",
         description: "Nota corta para el equipo humano. Cadena vacía si no aplica.",
       },
+      correo: {
+        type: "string",
+        description:
+          "El correo del paciente, SOLO si te lo acaba de dar en este mensaje. Cadena vacía en cualquier otro caso.",
+      },
     },
     required: [
       "mensaje",
@@ -76,6 +82,7 @@ const RESPONDER_TOOL: Anthropic.Tool = {
       "etiquetas",
       "necesita_humano",
       "nota_interna",
+      "correo",
     ],
     additionalProperties: false,
   },
@@ -94,6 +101,16 @@ export interface IncomingContent {
 }
 
 export async function askAgent(history: Mensaje[], incoming: IncomingContent): Promise<AgentReply> {
+  try {
+    return await askClaude(history, incoming);
+  } catch (err) {
+    console.error("Claude falló, se usa Gemini como respaldo:", err);
+    const { askGemini } = await import("./gemini.js");
+    return askGemini(history, incoming);
+  }
+}
+
+async function askClaude(history: Mensaje[], incoming: IncomingContent): Promise<AgentReply> {
   const userContent: Anthropic.MessageParam["content"] = [];
 
   if (incoming.image) {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
 import { sendText, sendWithButtons } from "../whatsapp/client.js";
+import { sendEmail } from "../notifications/email.js";
 import {
   listLeads,
   getLead,
@@ -73,6 +74,26 @@ crmRouter.post("/api/leads/:id/mensaje", async (req, res) => {
   } catch (err) {
     res.status(502).json({ error: String(err) });
   }
+});
+
+crmRouter.post("/api/leads/:id/correo", async (req, res) => {
+  const lead = getLead(Number(req.params.id));
+  if (!lead) {
+    res.sendStatus(404);
+    return;
+  }
+  if (!lead.correo) {
+    res.status(400).json({ error: "Este lead no tiene correo guardado todavía." });
+    return;
+  }
+  const { asunto, cuerpo } = req.body as { asunto: string; cuerpo: string };
+  const enviado = await sendEmail({
+    to: lead.correo,
+    subject: asunto || "Óptica ALaVision",
+    html: `<div style="font-family:Arial,sans-serif;">${cuerpo.replace(/\n/g, "<br/>")}</div>`,
+  });
+  if (enviado) addMessage(lead.id, "humano", `[Correo] ${asunto}: ${cuerpo}`);
+  res.json({ ok: enviado });
 });
 
 crmRouter.post("/api/leads/:id/etapa", (req, res) => {

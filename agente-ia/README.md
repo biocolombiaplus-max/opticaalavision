@@ -1,55 +1,73 @@
-# Agente IA — Óptica ALaVision
+# Agente IA + Landing + CRM — Óptica ALaVision
 
-Un agente de WhatsApp con IA real (no botones de árbol rígido) + un panel CRM
-propio, a la medida de la óptica. Reemplaza al bot de Kommo: aquí Vale (el
-agente) entiende lo que el paciente escribe, sabe leer fotos de fórmulas, y
-decide sola qué preguntar, qué combo recomendar y cuándo pasar a un humano —
-siguiendo las reglas de negocio de `../estrategia-kommo/`.
+Sistema completo, propio, sin Kommo: una landing page profesional que vende y
+agenda citas, un agente de WhatsApp con IA real (Claude, con Gemini como
+respaldo automático), y un panel administrativo con CRM, control de imágenes
+de la página, seguimiento de campañas de Meta Ads, remarketing secuenciado y
+reportes en PDF.
 
 ## Qué incluye
 
-- **Webhook de WhatsApp Cloud API** (oficial de Meta, sin intermediarios de pago).
-- **Agente con Claude** (`claude-opus-5`) que responde de forma estructurada:
-  cada turno decide el mensaje, hasta 3 botones, la etapa del pipeline, el
-  nivel de interés, las etiquetas, y si hace falta un humano.
-- **Lectura de fórmulas por foto**: si el paciente manda una imagen, el
-  agente la mira directamente e intenta leerla (no solo "detecta que hay una
-  imagen", como en Kommo).
-- **Base de datos propia** (SQLite) con leads, conversación completa y estado.
-- **Panel CRM** simple: lista de conversaciones, ver el hilo completo, pausar
-  la IA y escribir como humano, cambiar la etapa a mano.
+- **Landing page** (`/`) — moderna, con hero, servicios, precios, cómo
+  funciona, testimonios, ubicación (Google Maps) y formulario de "Agenda tu
+  cita". Todo lo editable (logo, foto de portada, opacidad, direcciones,
+  mapas) sale del panel administrativo, no del código.
+- **Panel administrativo** (`/admin`, con usuario y clave) con 5 secciones:
+  - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
+    humano, marcar un lead como cliente (con el valor de la venta), correo
+    rápido.
+  - **Citas**: todas las reservas hechas desde la landing, con su estado.
+  - **Remarketing**: hasta 10 mensajes por lead, en secuencia — el botón de
+    "Enviar" solo se activa cuando ya pasó el tiempo configurado desde el
+    mensaje anterior (así se manda uno por uno, a tiempo, sin saturar el
+    número de WhatsApp). Las 10 plantillas y sus tiempos de espera son
+    editables ahí mismo.
+  - **Configuración**: subir logo y foto de portada, ajustar la opacidad del
+    overlay, direcciones y URLs de Google Maps de las 2 sedes, número de
+    WhatsApp.
+  - **Reportes**: seguimiento en vivo (leads totales, de Meta Ads,
+    convertidos, tasa de conversión, valor vendido) + botón para descargar un
+    PDF de un rango de fechas.
+- **Agente con Claude** (`claude-opus-5`), y **Gemini como respaldo
+  automático** si la llamada a Claude falla — como pediste, ya que Gemini es
+  el que la óptica tiene contratado. Ambos leen fotos de fórmulas
+  directamente (no solo "detectan que hay una imagen", como en Kommo).
+- **Seguimiento de campaña**: cuando un lead llega desde un anuncio de
+  "Click to WhatsApp" de Meta, se guarda automáticamente su origen; en la
+  landing, los `utm_source`/`utm_campaign` del enlace también quedan
+  asociados a la cita. Puedes marcar manualmente quién sí compró para medir
+  la efectividad real de la pauta.
+- **Confirmación de cita por correo y WhatsApp**, con botón "Cómo llegar"
+  hacia la URL de Google Maps que configures.
 
-## Lo que NO incluye (para que no haya sorpresas)
+## Lo que necesitas configurar para que todo funcione (nada de esto lo tengo yo)
 
-- Calendario / agendamiento automático de citas (queda como paso manual del
-  humano cuando el paciente dice que sí quiere agendar).
-- Cobros o pagos en línea.
-- Envío de correos (el agente pide el correo y lo guarda, pero enviar la
-  cotización por email es un paso manual por ahora).
-- Multiusuario/roles en el panel — es un solo usuario y clave para todo el
-  equipo, pensado para un negocio pequeño.
+1. **WhatsApp Cloud API** (igual que antes — ver más abajo).
+2. **Clave de Anthropic** (`ANTHROPIC_API_KEY`) — el agente principal.
+3. **Clave de Gemini** (`GEMINI_API_KEY`) — el respaldo. Se saca gratis en
+   [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (o desde
+   tu cuenta de Google Cloud si ya pagas Gemini ahí). Si en algún momento
+   Google cambia el nombre del modelo y empieza a fallar, ajusta
+   `GEMINI_MODEL` en las variables de entorno.
+4. **Resend** (`RESEND_API_KEY`) — para los correos de confirmación de cita.
+   Cuenta gratis en [resend.com](https://resend.com) (alcanza de sobra para
+   el volumen de una óptica). Necesitas verificar tu dominio ahí para que los
+   correos no caigan en spam — Resend te guía paso a paso.
+5. **URLs de Google Maps** de tus 2 sedes — se configuran desde el panel
+   (`/admin` → Configuración), no hace falta clave de API de Google Maps.
+   Para conseguir la URL: busca tu sede en Google Maps → Compartir → Insertar
+   un mapa → copia el `src="..."` del código que te da.
 
-## Requisitos antes de arrancar
+## Requisitos de WhatsApp Cloud API
 
-1. **Cuenta de WhatsApp Cloud API de Meta** (gratis, directo de Meta, sin
-   intermediario):
-   - Entra a [developers.facebook.com](https://developers.facebook.com) →
-     crear una app tipo "Business" → agregar el producto **WhatsApp**.
-   - Ahí Meta te da: un **número de prueba** (para probar ya mismo) y luego
-     puedes conectar tu número real de la óptica.
-   - Copia el **Token de acceso temporal** (o genera uno permanente con un
-     usuario de sistema) y el **Phone Number ID** — van en `.env`.
-   - En "Configuration → Webhook", pon la URL de tu servidor +
-     `/webhook` (ej. `https://tu-app.up.railway.app/webhook`) y el mismo
-     `WHATSAPP_VERIFY_TOKEN` que pongas en tu `.env`. Suscríbete al campo
-     `messages`.
+- Entra a [developers.facebook.com](https://developers.facebook.com) →
+  crear una app tipo "Business" → agregar el producto **WhatsApp**.
+- Copia el **Token de acceso** y el **Phone Number ID** → van en `.env`.
+- En "Configuration → Webhook", pon la URL de tu servidor + `/webhook`
+  (ej. `https://tu-app.up.railway.app/webhook`) y el mismo
+  `WHATSAPP_VERIFY_TOKEN` de tu `.env`. Suscríbete al campo `messages`.
 
-2. **Clave de la API de Anthropic**: [console.anthropic.com](https://console.anthropic.com)
-   → API Keys → crear una. Este agente usa `claude-opus-5`; el costo es por
-   uso (revisa `estrategia-kommo/` para volumen esperado de conversaciones y
-   así estimar el gasto mensual).
-
-## Instalación local (para probar antes de publicar)
+## Instalación local
 
 ```bash
 npm install
@@ -58,55 +76,59 @@ cp .env.example .env
 npm run dev
 ```
 
-Para que Meta pueda llamar tu webhook mientras pruebas en tu computador,
-necesitas exponerlo a internet temporalmente (ej. con `ngrok http 3000`) y
-usar esa URL de ngrok en la configuración del webhook de Meta.
+- Landing: `http://localhost:3000/`
+- Panel administrativo: `http://localhost:3000/admin` (pide el usuario/clave
+  del `.env`)
 
-El panel CRM queda en `http://localhost:3000/` (te pide el usuario/clave del
-`.env`).
+Para que Meta llame tu webhook mientras pruebas en tu computador, expón el
+puerto con `ngrok http 3000` y usa esa URL en la configuración del webhook.
 
 ## Desplegarlo de verdad (recomendado: Railway)
 
-1. Crea una cuenta en [railway.app](https://railway.app) (tiene plan gratis
-   para empezar, luego es por uso — muy económico para este tamaño de app).
+1. Crea una cuenta en [railway.app](https://railway.app).
 2. "New Project" → "Deploy from GitHub repo" → conecta este repositorio y
    selecciona la carpeta `agente-ia`.
 3. En "Variables", agrega todas las del `.env.example` con tus valores reales.
 4. En "Settings → Volumes", agrega un volumen montado en `/data` y cambia
-   `DB_PATH` a `/data/alavision.db` — así la base de datos no se borra en
-   cada despliegue.
-5. Railway te da una URL pública (`https://tu-app.up.railway.app`) — úsala
-   para configurar el webhook en Meta (`.../webhook`).
-6. Cada vez que se actualice el código de esta carpeta en el repositorio,
-   Railway lo vuelve a publicar solo.
+   `DB_PATH` a `/data/alavision.db` — así ni la base de datos ni las
+   imágenes que subas desde el panel se pierden en cada despliegue.
+5. Railway te da una URL pública — úsala para el webhook de Meta y para
+   compartir la landing.
 
 ## Costos aproximados a tener en cuenta
 
-- **Anthropic (Claude)**: cobra por conversación según tokens usados. Un
-  turno típico de este agente (mensaje corto + contexto) es barato — pide
-  una estimación con tu volumen real de mensajes/mes antes de lanzar a toda
-  la pauta.
-- **WhatsApp Cloud API**: Meta cobra por conversación iniciada (no por
-  mensaje individual), con una franja gratuita mensual. Revisa el precio
-  vigente en tu país en el panel de Meta for Developers.
+- **Anthropic (Claude)**: por uso/tokens. Barato por conversación típica;
+  pide una estimación con tu volumen real antes de lanzar a toda la pauta.
+- **Gemini**: solo se usa si Claude falla — el costo adicional es marginal.
+- **WhatsApp Cloud API**: Meta cobra por conversación iniciada, con franja
+  gratuita mensual.
+- **Resend**: plan gratis cubre varios miles de correos al mes.
 - **Railway**: desde unos pocos dólares al mes para este tamaño de app.
 
-## Cómo usar el panel CRM
+## Remarketing — cómo funciona el "botón que se enciende solo"
 
-- Entra a la URL del servidor con el usuario/clave configurados.
-- A la izquierda ves todas las conversaciones, ordenadas por la más reciente,
-  con su etapa y nivel de interés.
-- Un lead marcado **"necesita humano"** significa que el agente decidió que
-  esa conversación necesita atención de una persona — revísalos primero.
-- **Pausar IA** detiene al agente en esa conversación específica para que tú
-  o la Dra. Angie escriban directamente; **Reactivar IA** se lo devuelve.
-- Puedes cambiar la etapa manualmente en cualquier momento desde el
-  desplegable.
+Cada lead avanza por hasta 10 mensajes en orden. El primero está siempre
+disponible; los siguientes se habilitan según el tiempo configurado en cada
+plantilla (por defecto: inmediato, +24h, +48h, +72h, +4 días, +7 días, +7
+días, +14 días, +14 días, +30 días — una cadencia típica de "insistir rápido
+al inicio, espaciar después"). Tú decides cuándo hacer clic en "Enviar" — el
+sistema solo te dice cuándo ya es momento, nunca envía nada solo. Así evitas
+sobrecostos de WhatsApp y no quemas el número por enviar de más.
 
-## Próximos pasos sugeridos (cuando quieras ampliar)
+## Lo que NO incluye todavía (para que no haya sorpresas)
 
-- Conectar el envío de correo real (cotización en PDF) cuando el agente
-  marca que ya tiene el email.
-- Agregar recordatorio automático de cita (cron + plantilla de WhatsApp).
-- Exportar la base de `#BaseEmail` para mail marketing.
-- Notificación push/Telegram cuando un lead queda marcado "necesita humano".
+- Envío masivo automático — es intencional, para cuidar el número de
+  WhatsApp y los costos, como pediste.
+- Pagos en línea.
+- Multiusuario/roles en el panel — un solo usuario y clave para todo el
+  equipo, pensado para un negocio pequeño.
+- Sincronización automática de campañas de Meta Ads más allá del parámetro
+  de referido que ya llega en el mensaje de WhatsApp y los `utm_*` de la
+  landing — no hay integración directa con el Administrador de Anuncios.
+
+## Próximos pasos sugeridos
+
+- Conectar recordatorio automático de cita (24h y 2h antes) por WhatsApp.
+- Agregar más imágenes editables por sección (servicios, testimonios).
+- Exportar los leads con `#BaseEmail`/correo guardado a una herramienta de
+  mail marketing.
