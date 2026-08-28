@@ -5,6 +5,14 @@ ALAVISION 1 (botón `</> Ver fuente` en el editor del Salesbot), así que usa
 exactamente la misma estructura que Kommo ya reconoce en tu cuenta — no es
 una estructura inventada.
 
+## Corrección (v3): `"conversation": true`
+
+Cambié la última línea del documento de `false` a `true`. Todo lo demás (la
+automatización de pipeline, el disparo con `is_in_starting_block`, las 3
+ramas) ya estaba correcto y verificado contra el JSON real pegado en la
+cuenta — este era el único valor que quedaba sin probar como posible
+interruptor de "bot activo" a nivel de todo el documento.
+
 ## Corrección (v2): `is_in_starting_block`
 
 El paso 1 ahora tiene `"is_in_starting_block": true`. Sin esto, el bot se
