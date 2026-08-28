@@ -4,7 +4,7 @@ import type { AgentReply } from "./agent.js";
 import type { Mensaje } from "../db/index.js";
 import type { IncomingContent } from "./agent.js";
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-3.6-flash";
 
 const JSON_INSTRUCTIONS = `
 Responde ÚNICAMENTE con un objeto JSON (sin texto antes ni después, sin bloques de código)
