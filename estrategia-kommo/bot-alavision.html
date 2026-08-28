@@ -331,6 +331,7 @@
     <a class="nav-link" href="#automatizacion">Código: detectar foto</a>
     <a class="nav-link" href="#correo">Cuándo pedir el correo</a>
     <a class="nav-link" href="#neuro">Gatillos mentales</a>
+    <a class="nav-link" href="#instalacion">Instalación paso a paso</a>
     <a class="nav-link" href="#checklist">Checklist</a>
   </nav>
 
@@ -901,9 +902,9 @@
         unidades", "antes de que se acabe la promo" — solo en el cierre, nunca en el Mensaje 1.</div></div>
         <div class="principle"><div class="principle-name">Compromiso progresivo</div><div class="principle-body">
         Cada botón es un sí pequeño que prepara el sí grande final: agendar la cita.</div></div>
-        <div class="principle"><div class="principle-name">Efecto de primera opción</div><div class="principle-body">
-        En el Mensaje 1, "Ya tengo fórmula" va primero porque es la respuesta real más frecuente en el
-        mostrador — no "Solo la montura".</div></div>
+        <div class="principle"><div class="principle-name">Mensaje explica, botón decide</div><div class="principle-body">
+        Nunca se mete la explicación dentro del botón ("Examen + lente + montura"); el mensaje anterior ya
+        contó qué incluye, el botón solo elige.</div></div>
         <div class="principle"><div class="principle-name">Aversión a la pérdida</div><div class="principle-body">
         El remarketing de 30 días no repite el beneficio, recuerda que la promo sigue activa "por ahora".</div></div>
         <div class="principle"><div class="principle-name">Personalización</div><div class="principle-body">
@@ -913,8 +914,62 @@
       </div>
     </section>
 
+    <section id="instalacion">
+      <div class="section-head"><span class="section-num">10</span><h2>Instalación paso a paso en Kommo</h2></div>
+      <p class="section-intro">El orden importa — cada fase depende de la anterior. Sigue el detalle completo
+      en <span class="mono">guia-instalacion-kommo.md</span> del repositorio; aquí va el mapa de las 8 fases.</p>
+      <div class="stage-list">
+        <div class="stage-row"><div class="stage-num">0</div><div>
+          <div class="stage-name">Requisitos previos</div>
+          <div class="stage-desc">Confirma el proveedor de WhatsApp conectado y el Salesbot / Digital Pipeline habilitado.</div></div></div>
+        <div class="stage-row"><div class="stage-num">1</div><div>
+          <div class="stage-name">Campos personalizados</div>
+          <div class="stage-desc">8 campos en Leads: Documento recibido, Sede, Tipo de necesidad, Nivel de interés, Edad, Actividad, Correo electrónico, Intentos remarketing.</div></div></div>
+        <div class="stage-row"><div class="stage-num">2</div><div>
+          <div class="stage-name">Etiquetas</div>
+          <div class="stage-desc">Crear las 11 etiquetas del documento antes de armar el bot.</div></div></div>
+        <div class="stage-row"><div class="stage-num">3</div><div>
+          <div class="stage-name">Pipelines y etapas</div>
+          <div class="stage-desc">3 embudos: Captación y Cierre (12 etapas), Remarketing 24H, Remarketing 30 días.</div></div></div>
+        <div class="stage-row"><div class="stage-num">4</div><div>
+          <div class="stage-name">Construir el Salesbot</div>
+          <div class="stage-desc">Disparador → condición de imagen → Mensaje 1 → una rama por botón → cada rama con su cierre, etiqueta y cambio de etapa → objeciones.</div></div></div>
+        <div class="stage-row"><div class="stage-num">5</div><div>
+          <div class="stage-name">Remarketing y recordatorios</div>
+          <div class="stage-desc">Espera de 24 h, recordatorio de cita (24 h y 2 h antes), automatización de 30 días con tope de 3 ciclos, postventa a los 6 meses.</div></div></div>
+        <div class="stage-row"><div class="stage-num">6</div><div>
+          <div class="stage-name">Plantillas HSM</div>
+          <div class="stage-desc">Enviar a aprobación de Meta antes de activar los pasos de espera — tarda 24-48 h, hazlo primero.</div></div></div>
+        <div class="stage-row"><div class="stage-num">7</div><div>
+          <div class="stage-name">Pruebas</div>
+          <div class="stage-desc">Celular externo: las 3 ramas, mandar una foto, objeciones, y el remarketing con el tiempo de espera bajado a 5 min.</div></div></div>
+        <div class="stage-row won"><div class="stage-num">8</div><div>
+          <div class="stage-name">Lanzamiento</div>
+          <div class="stage-desc">Bot en vivo + reactivar la campaña de Meta Ads.</div></div></div>
+      </div>
+      <h3>Problemas comunes</h3>
+      <div class="email-grid">
+        <div class="email-card">
+          <div class="email-moment">El botón no aparece en WhatsApp</div>
+          <div class="email-why">Más de 3 botones o más de 20 caracteres — revisa el conteo junto a cada mensaje.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">El bot no se detiene con la foto</div>
+          <div class="email-why">Tu integración no expone "Tipo de mensaje" — usa el respaldo manual (Opción 3) mientras ajustas.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">El remarketing no llega</div>
+          <div class="email-why">La plantilla HSM aún no está aprobada por Meta — revisa el estado en tu proveedor.</div>
+        </div>
+        <div class="email-card">
+          <div class="email-moment">El bot repite una pregunta ya respondida</div>
+          <div class="email-why">Falta el bloque "Detener bot" tras la ruta rápida o el cierre de la rama.</div>
+        </div>
+      </div>
+    </section>
+
     <section id="checklist">
-      <div class="section-head"><span class="section-num">10</span><h2>Checklist de este ajuste</h2></div>
+      <div class="section-head"><span class="section-num">11</span><h2>Checklist de este ajuste</h2></div>
       <div class="checklist" id="checklist-list"></div>
       <div id="checklist-progress"></div>
     </section>
