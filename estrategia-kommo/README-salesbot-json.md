@@ -5,6 +5,14 @@ ALAVISION 1 (botón `</> Ver fuente` en el editor del Salesbot), así que usa
 exactamente la misma estructura que Kommo ya reconoce en tu cuenta — no es
 una estructura inventada.
 
+## Corrección (v2): `is_in_starting_block`
+
+El paso 1 ahora tiene `"is_in_starting_block": true`. Sin esto, el bot se
+ejecuta cuando la automatización del pipeline lo llama (p. ej. "Incoming
+Leads → Cuando se crea en esta etapa → Ejecutar Salesbot") pero no sabe por
+dónde empezar, así que no manda nada. Si ya habías pegado la v1 y no te
+respondía, reemplázala por este archivo.
+
 ## Qué SÍ está resuelto en este JSON (100% listo, solo pegar)
 
 - El Mensaje 1 que ya tenías (se conserva tu texto tal cual lo escribiste).
