@@ -52,3 +52,13 @@ settingsAdminRouter.post("/api/config/imagen", upload.single("archivo"), (req, r
   setConfigValues({ [campo]: url });
   res.json({ ok: true, url });
 });
+
+// Subida genérica de imágenes (logos de marca, fotos de producto) — solo devuelve la URL,
+// sin asociarla a ninguna clave de configuración.
+settingsAdminRouter.post("/api/imagen", upload.single("archivo"), (req, res) => {
+  if (!req.file) {
+    res.status(400).json({ error: "Falta el archivo." });
+    return;
+  }
+  res.json({ ok: true, url: `/uploads/${req.file.filename}` });
+});

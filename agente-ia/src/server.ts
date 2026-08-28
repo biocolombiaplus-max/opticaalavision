@@ -8,6 +8,7 @@ import { citasPublicRouter, citasAdminRouter } from "./citas/routes.js";
 import { settingsPublicRouter, settingsAdminRouter, uploadsDir } from "./settings/routes.js";
 import { remarketingAdminRouter } from "./remarketing/routes.js";
 import { reportsAdminRouter } from "./reports/routes.js";
+import { catalogoPublicRouter, catalogoAdminRouter } from "./catalogo/routes.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,8 +21,9 @@ app.use(webhookRouter);
 // --- Público: la landing y lo que necesita para funcionar ---
 app.use(citasPublicRouter);
 app.use(settingsPublicRouter);
+app.use(catalogoPublicRouter);
 app.use("/uploads", express.static(uploadsDir));
-app.use(express.static(join(__dirname, "public"))); // sirve "/" -> landing/index.html
+app.use(express.static(join(__dirname, "public"))); // sirve "/" -> landing/index.html, "/tienda" -> tienda/index.html
 
 // --- Todo lo de abajo requiere usuario/clave del panel administrativo ---
 app.use(basicAuth);
@@ -31,6 +33,7 @@ app.use(citasAdminRouter);
 app.use(settingsAdminRouter);
 app.use(remarketingAdminRouter);
 app.use(reportsAdminRouter);
+app.use(catalogoAdminRouter);
 
 app.listen(config.port, () => {
   console.log(`Óptica ALaVision — servidor escuchando en el puerto ${config.port}`);

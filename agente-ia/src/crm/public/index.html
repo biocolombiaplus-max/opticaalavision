@@ -80,6 +80,7 @@
   <div class="tab active" data-view="conversaciones">Conversaciones</div>
   <div class="tab" data-view="citas">Citas</div>
   <div class="tab" data-view="remarketing">Remarketing</div>
+  <div class="tab" data-view="tienda">Tienda</div>
   <div class="tab" data-view="configuracion">Configuración</div>
   <div class="tab" data-view="reportes">Reportes</div>
 </div>
@@ -113,6 +114,32 @@
   </div>
 </div>
 
+<div class="view" id="view-tienda">
+  <div class="panel">
+    <div class="section-title">Marcas (logos de la banda en la landing)</div>
+    <div class="form-row">
+      <label>Nombre de la marca</label><input id="marcaNombre" placeholder="Ej: Ray-Ban" />
+      <input type="file" id="marcaLogoFile" accept="image/*" />
+      <button class="btn primary" id="agregarMarca">Agregar</button>
+    </div>
+    <table id="tablaMarcas"><thead><tr><th>Logo</th><th>Nombre</th><th></th></tr></thead><tbody></tbody></table>
+
+    <div class="section-title">Productos</div>
+    <div class="form-row">
+      <input id="prodNombre" placeholder="Nombre del producto" style="min-width:160px;" />
+      <select id="prodMarca"><option value="">Sin marca</option></select>
+      <input id="prodCategoria" placeholder="Categoría (ej: Monturas)" style="max-width:160px;" />
+      <input id="prodPrecio" type="number" placeholder="Precio" style="max-width:120px;" />
+      <input type="file" id="prodImagenFile" accept="image/*" />
+      <label style="min-width:auto;"><input type="checkbox" id="prodDestacado" /> Destacado (más vendidos)</label>
+      <button class="btn primary" id="agregarProducto">Agregar producto</button>
+    </div>
+    <table id="tablaProductos"><thead><tr>
+      <th>Imagen</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Destacado</th><th></th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
 <div class="view" id="view-configuracion">
   <div class="panel">
     <div class="section-title">Marca</div>
@@ -142,6 +169,13 @@
     <div class="form-row"><label>Desde</label><input type="date" id="repDesde" /></div>
     <div class="form-row"><label>Hasta</label><input type="date" id="repHasta" /></div>
     <button class="btn gold" id="descargarPdf">Descargar PDF</button>
+
+    <div class="section-title">Base de datos del test de visión</div>
+    <p class="hint">Cada persona que completa el test de orientación en la landing queda aquí — descárgalos para mail marketing o seguimiento.</p>
+    <button class="btn primary" id="descargarCsv" style="margin-bottom:14px;">Descargar CSV</button>
+    <table id="tablaTestVision"><thead><tr>
+      <th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Edad</th><th>Resultado</th><th>Origen</th><th>Fecha</th>
+    </tr></thead><tbody></tbody></table>
   </div>
 </div>
 
@@ -155,8 +189,9 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById('view-' + tab.dataset.view).classList.add('active');
     if (tab.dataset.view === 'citas') loadCitas();
     if (tab.dataset.view === 'remarketing') { loadRemarketing(); loadPlantillas(); }
+    if (tab.dataset.view === 'tienda') loadTienda();
     if (tab.dataset.view === 'configuracion') loadConfig();
-    if (tab.dataset.view === 'reportes') loadStatsLive();
+    if (tab.dataset.view === 'reportes') { loadStatsLive(); loadTestVision(); }
   });
 });
 
@@ -422,6 +457,98 @@ document.getElementById('descargarPdf').addEventListener('click', () => {
   const desde = document.getElementById('repDesde').value || '1970-01-01';
   const hasta = document.getElementById('repHasta').value || '2999-12-31';
   window.open(`/api/reportes/pdf?desde=${desde}&hasta=${hasta}`, '_blank');
+});
+
+// ---------- Test de visión ----------
+async function loadTestVision() {
+  const rows = await api('/api/test-vision');
+  document.querySelector('#tablaTestVision tbody').innerHTML = rows.map(r => `
+    <tr><td>${r.nombre}</td><td>${r.telefono}</td><td>${r.correo}</td><td>${r.edad}</td>
+    <td>${r.resultado_combo}</td><td>${r.origen_campana || '-'}</td><td>${r.creado_en}</td></tr>
+  `).join('');
+}
+document.getElementById('descargarCsv').addEventListener('click', () => window.open('/api/test-vision/csv', '_blank'));
+
+// ---------- Tienda: marcas y productos ----------
+async function subirImagenGenerica(inputEl) {
+  if (!inputEl.files[0]) return '';
+  const fd = new FormData();
+  fd.append('archivo', inputEl.files[0]);
+  const res = await fetch('/api/imagen', { method: 'POST', body: fd });
+  const data = await res.json();
+  return data.url || '';
+}
+
+async function loadTienda() {
+  const [marcas, productos] = await Promise.all([api('/api/marcas'), api('/api/productos/todos')]);
+
+  document.querySelector('#tablaMarcas tbody').innerHTML = marcas.map(m => `
+    <tr><td><img src="${m.logo_url}" style="height:28px;" /></td><td>${m.nombre}</td>
+    <td><button class="btn" data-del-marca="${m.id}">Eliminar</button></td></tr>
+  `).join('');
+  document.querySelectorAll('[data-del-marca]').forEach(btn => btn.addEventListener('click', async () => {
+    await fetch(`/api/marcas/${btn.dataset.delMarca}`, { method: 'DELETE' });
+    loadTienda();
+  }));
+
+  const selectMarca = document.getElementById('prodMarca');
+  selectMarca.innerHTML = '<option value="">Sin marca</option>' + marcas.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
+
+  const marcaNombre = (id) => marcas.find(m => m.id === id)?.nombre || '-';
+  document.querySelector('#tablaProductos tbody').innerHTML = productos.map(p => `
+    <tr>
+      <td>${p.imagen_url ? `<img src="${p.imagen_url}" style="height:32px;width:32px;object-fit:cover;border-radius:4px;" />` : '—'}</td>
+      <td>${p.nombre}</td><td>${marcaNombre(p.marca_id)}</td><td>${p.categoria}</td>
+      <td>$${p.precio.toLocaleString('es-CO')}</td>
+      <td><input type="checkbox" data-destacado="${p.id}" ${p.destacado ? 'checked' : ''} /></td>
+      <td><button class="btn" data-del-prod="${p.id}">Eliminar</button></td>
+    </tr>
+  `).join('');
+  document.querySelectorAll('[data-destacado]').forEach(chk => chk.addEventListener('change', async () => {
+    await fetch(`/api/productos/${chk.dataset.destacado}`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ destacado: chk.checked })
+    });
+  }));
+  document.querySelectorAll('[data-del-prod]').forEach(btn => btn.addEventListener('click', async () => {
+    await fetch(`/api/productos/${btn.dataset.delProd}`, { method: 'DELETE' });
+    loadTienda();
+  }));
+}
+
+document.getElementById('agregarMarca').addEventListener('click', async () => {
+  const nombre = document.getElementById('marcaNombre').value.trim();
+  const logoInput = document.getElementById('marcaLogoFile');
+  if (!nombre || !logoInput.files[0]) { alert('Falta el nombre o el logo.'); return; }
+  const logo_url = await subirImagenGenerica(logoInput);
+  await fetch('/api/marcas', {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ nombre, logo_url })
+  });
+  document.getElementById('marcaNombre').value = ''; logoInput.value = '';
+  loadTienda();
+});
+
+document.getElementById('agregarProducto').addEventListener('click', async () => {
+  const nombre = document.getElementById('prodNombre').value.trim();
+  if (!nombre) { alert('Falta el nombre del producto.'); return; }
+  const imagen_url = await subirImagenGenerica(document.getElementById('prodImagenFile'));
+  await fetch('/api/productos', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      nombre,
+      marca_id: document.getElementById('prodMarca').value ? Number(document.getElementById('prodMarca').value) : null,
+      categoria: document.getElementById('prodCategoria').value || 'Monturas',
+      precio: Number(document.getElementById('prodPrecio').value) || 0,
+      descripcion: '',
+      imagen_url,
+      destacado: document.getElementById('prodDestacado').checked,
+    })
+  });
+  document.getElementById('prodNombre').value = '';
+  document.getElementById('prodCategoria').value = '';
+  document.getElementById('prodPrecio').value = '';
+  document.getElementById('prodImagenFile').value = '';
+  document.getElementById('prodDestacado').checked = false;
+  loadTienda();
 });
 </script>
 </body>

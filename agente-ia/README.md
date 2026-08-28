@@ -8,11 +8,21 @@ reportes en PDF.
 
 ## Qué incluye
 
-- **Landing page** (`/`) — moderna, con hero, servicios, precios, cómo
-  funciona, testimonios, ubicación (Google Maps) y formulario de "Agenda tu
-  cita". Todo lo editable (logo, foto de portada, opacidad, direcciones,
-  mapas) sale del panel administrativo, no del código.
-- **Panel administrativo** (`/admin`, con usuario y clave) con 5 secciones:
+- **Landing page** (`/`) — hero, banda animada de logos de marcas, sección de
+  "más vendidos", precios, cómo funciona, un **test de orientación visual**
+  interactivo (guionado, sin IA — presentado como la Dra. Angie), testimonios,
+  ubicación (Google Maps) y formulario de "Agenda tu cita". Botones con efecto
+  de brillo/luz al pasar el mouse. Todo lo editable (logo, foto de portada,
+  opacidad, direcciones, mapas, marcas, productos) sale del panel
+  administrativo, no del código.
+- **Tienda virtual** (`/tienda`) — sub-landing estilo Shopify: catálogo
+  filtrable por marca, carrito (guardado en el navegador) y checkout que arma
+  el pedido y lo manda por WhatsApp (no hay pasarela de pagos conectada).
+- **Test de orientación visual**: 4 preguntas cortas + datos de contacto antes
+  de mostrar el resultado — así se arma una base de datos propia, descargable
+  en CSV desde el panel. Es lógica fija (no IA todavía), pensada para verse
+  profesional, no para diagnosticar.
+- **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
   - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
     humano, marcar un lead como cliente (con el valor de la venta), correo
     rápido.
@@ -22,12 +32,15 @@ reportes en PDF.
     mensaje anterior (así se manda uno por uno, a tiempo, sin saturar el
     número de WhatsApp). Las 10 plantillas y sus tiempos de espera son
     editables ahí mismo.
+  - **Tienda**: subir logos de marcas (alimentan la banda animada) y
+    productos (imagen, precio, marca, categoría, si aparece en "más
+    vendidos").
   - **Configuración**: subir logo y foto de portada, ajustar la opacidad del
     overlay, direcciones y URLs de Google Maps de las 2 sedes, número de
     WhatsApp.
   - **Reportes**: seguimiento en vivo (leads totales, de Meta Ads,
-    convertidos, tasa de conversión, valor vendido) + botón para descargar un
-    PDF de un rango de fechas.
+    convertidos, tasa de conversión, valor vendido), descarga de PDF por
+    rango de fechas, y la base de datos del test de visión en CSV.
 - **Agente con Claude** (`claude-opus-5`), y **Gemini como respaldo
   automático** si la llamada a Claude falla — como pediste, ya que Gemini es
   el que la óptica tiene contratado. Ambos leen fotos de fórmulas
@@ -119,7 +132,10 @@ sobrecostos de WhatsApp y no quemas el número por enviar de más.
 
 - Envío masivo automático — es intencional, para cuidar el número de
   WhatsApp y los costos, como pediste.
-- Pagos en línea.
+- **Pagos en línea en la tienda** — el carrito arma el pedido y lo manda por
+  WhatsApp para cerrar la venta ahí; si más adelante quieres cobro real
+  (tarjeta/PSE), se conecta una pasarela como Wompi o PayU, pero necesita
+  cuenta comercial propia primero.
 - Multiusuario/roles en el panel — un solo usuario y clave para todo el
   equipo, pensado para un negocio pequeño.
 - Sincronización automática de campañas de Meta Ads más allá del parámetro

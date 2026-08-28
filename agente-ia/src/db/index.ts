@@ -299,6 +299,141 @@ export interface SiguienteRemarketing {
   disponibleAhora: boolean;
 }
 
+// ---------------- Marcas (logos) ----------------
+
+export interface Marca {
+  id: number;
+  nombre: string;
+  logo_url: string;
+  orden: number;
+  creado_en: string;
+}
+
+export function listMarcas(): Marca[] {
+  return db.prepare("SELECT * FROM marcas ORDER BY orden ASC, id ASC").all() as Marca[];
+}
+
+export function createMarca(nombre: string, logoUrl: string): Marca {
+  const maxOrden = (db.prepare("SELECT COALESCE(MAX(orden), 0) AS m FROM marcas").get() as { m: number }).m;
+  const info = db
+    .prepare("INSERT INTO marcas (nombre, logo_url, orden) VALUES (?, ?, ?)")
+    .run(nombre, logoUrl, maxOrden + 1);
+  return db.prepare("SELECT * FROM marcas WHERE id = ?").get(info.lastInsertRowid) as Marca;
+}
+
+export function deleteMarca(id: number): void {
+  db.prepare("DELETE FROM marcas WHERE id = ?").run(id);
+}
+
+// ---------------- Productos (tienda) ----------------
+
+export interface Producto {
+  id: number;
+  nombre: string;
+  marca_id: number | null;
+  categoria: string;
+  precio: number;
+  descripcion: string;
+  imagen_url: string;
+  destacado: number;
+  orden: number;
+  activo: number;
+  creado_en: string;
+}
+
+export function listProductos(soloActivos = true): Producto[] {
+  const sql = soloActivos
+    ? "SELECT * FROM productos WHERE activo = 1 ORDER BY orden ASC, id DESC"
+    : "SELECT * FROM productos ORDER BY orden ASC, id DESC";
+  return db.prepare(sql).all() as Producto[];
+}
+
+export interface NuevoProducto {
+  nombre: string;
+  marca_id: number | null;
+  categoria: string;
+  precio: number;
+  descripcion: string;
+  imagen_url: string;
+  destacado: boolean;
+}
+
+export function createProducto(p: NuevoProducto): Producto {
+  const info = db
+    .prepare(
+      `INSERT INTO productos (nombre, marca_id, categoria, precio, descripcion, imagen_url, destacado)
+       VALUES (@nombre, @marca_id, @categoria, @precio, @descripcion, @imagen_url, @destacado)`,
+    )
+    .run({ ...p, destacado: p.destacado ? 1 : 0 });
+  return db.prepare("SELECT * FROM productos WHERE id = ?").get(info.lastInsertRowid) as Producto;
+}
+
+export function updateProducto(id: number, p: Partial<NuevoProducto> & { activo?: boolean }): void {
+  const current = db.prepare("SELECT * FROM productos WHERE id = ?").get(id) as Producto | undefined;
+  if (!current) return;
+  const merged = {
+    nombre: p.nombre ?? current.nombre,
+    marca_id: p.marca_id !== undefined ? p.marca_id : current.marca_id,
+    categoria: p.categoria ?? current.categoria,
+    precio: p.precio ?? current.precio,
+    descripcion: p.descripcion ?? current.descripcion,
+    imagen_url: p.imagen_url ?? current.imagen_url,
+    destacado: p.destacado !== undefined ? (p.destacado ? 1 : 0) : current.destacado,
+    activo: p.activo !== undefined ? (p.activo ? 1 : 0) : current.activo,
+    id,
+  };
+  db.prepare(
+    `UPDATE productos SET nombre=@nombre, marca_id=@marca_id, categoria=@categoria, precio=@precio,
+     descripcion=@descripcion, imagen_url=@imagen_url, destacado=@destacado, activo=@activo WHERE id=@id`,
+  ).run(merged);
+}
+
+export function deleteProducto(id: number): void {
+  db.prepare("DELETE FROM productos WHERE id = ?").run(id);
+}
+
+// ---------------- Test de visión (orientación, sin IA) ----------------
+
+export interface TestVisionResultado {
+  id: number;
+  nombre: string;
+  telefono: string;
+  correo: string;
+  edad: number;
+  respuestas: string;
+  resultado_combo: string;
+  origen_campana: string;
+  creado_en: string;
+}
+
+export interface NuevoTestVision {
+  nombre: string;
+  telefono: string;
+  correo: string;
+  edad: number;
+  respuestas: Record<string, string>;
+  resultado_combo: string;
+  origen_campana: string;
+}
+
+export function createTestVision(t: NuevoTestVision): TestVisionResultado {
+  const info = db
+    .prepare(
+      `INSERT INTO test_vision_resultados (nombre, telefono, correo, edad, respuestas, resultado_combo, origen_campana)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .run(t.nombre, t.telefono, t.correo, t.edad, JSON.stringify(t.respuestas), t.resultado_combo, t.origen_campana);
+  return db
+    .prepare("SELECT * FROM test_vision_resultados WHERE id = ?")
+    .get(info.lastInsertRowid) as TestVisionResultado;
+}
+
+export function listTestVision(): TestVisionResultado[] {
+  return db
+    .prepare("SELECT * FROM test_vision_resultados ORDER BY creado_en DESC")
+    .all() as TestVisionResultado[];
+}
+
 export function calcularSiguienteRemarketing(leadId: number): SiguienteRemarketing | null {
   const plantillas = listPlantillasRemarketing();
   const envios = listEnviosPorLead(leadId);

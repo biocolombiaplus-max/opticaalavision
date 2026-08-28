@@ -48,13 +48,26 @@
   @media (max-width:720px){ section{padding:64px 0;} .wrap{padding:0 20px;} }
 
   .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-strong);margin-bottom:14px;}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:var(--radius);font-weight:600;font-size:14.5px;letter-spacing:.01em;cursor:pointer;border:1px solid transparent;transition:transform .15s ease, opacity .15s ease;}
-  .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--accent);color:#fff;}
-  .btn-primary:hover{background:var(--accent-strong);}
-  .btn-gold{background:var(--gold);color:#1a1508;}
+  .btn{position:relative;display:inline-flex;align-items:center;gap:8px;padding:15px 28px;border-radius:var(--radius);
+    font-weight:700;font-size:14.5px;letter-spacing:.01em;cursor:pointer;border:1px solid transparent;
+    transition:transform .2s ease, box-shadow .2s ease;overflow:hidden;isolation:isolate;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn::after{content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.45) 48%, transparent 66%);
+    transform:translateX(-120%);transition:transform .7s cubic-bezier(.2,.7,.3,1);pointer-events:none;}
+  .btn:hover::after{transform:translateX(120%);}
+  .btn span, .btn svg{position:relative;z-index:2;}
+  @media (prefers-reduced-motion: reduce){ .btn::after{display:none;} .btn:hover{transform:none;} }
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 26px -12px color-mix(in srgb, var(--accent) 65%, transparent);}
+  .btn-primary:hover{background:var(--accent-strong);box-shadow:0 16px 34px -12px color-mix(in srgb, var(--accent) 75%, transparent);}
+  .btn-gold{background:linear-gradient(135deg, var(--gold), var(--gold-strong));color:#1a1508;
+    box-shadow:0 10px 26px -12px color-mix(in srgb, var(--gold) 65%, transparent);animation:glow 3.5s ease-in-out infinite;}
+  .btn-gold:hover{box-shadow:0 18px 36px -12px color-mix(in srgb, var(--gold) 80%, transparent);}
+  @keyframes glow{0%,100%{box-shadow:0 10px 26px -12px color-mix(in srgb, var(--gold) 55%, transparent);}
+    50%{box-shadow:0 12px 32px -10px color-mix(in srgb, var(--gold) 85%, transparent);}}
+  @media (prefers-reduced-motion: reduce){ .btn-gold{animation:none;} }
   .btn-outline{border-color:currentColor;color:var(--ink);}
-  .btn-whatsapp{background:#25d366;color:#06210f;}
+  .btn-whatsapp{background:#25d366;color:#06210f;box-shadow:0 10px 24px -12px rgba(37,211,102,.6);}
 
   /* ---------- Top utility bar ---------- */
   .utility{background:var(--accent-strong);color:#fff;font-size:12px;}
@@ -86,6 +99,51 @@
   .hero-badge b{color:#fff;font-family:"IBM Plex Mono",monospace;}
 
   /* ---------- Trust bar ---------- */
+  /* ---------- Banda de marcas ---------- */
+  .brands-band{background:var(--accent-strong);padding:28px 0;overflow:hidden;}
+  .brands-track{display:flex;align-items:center;gap:64px;width:max-content;animation:scrollBrands 28s linear infinite;}
+  .brands-band:hover .brands-track{animation-play-state:paused;}
+  @keyframes scrollBrands{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  .brand-logo{height:34px;display:flex;align-items:center;filter:brightness(0) invert(1);opacity:.78;
+    transition:opacity .2s ease, transform .2s ease;cursor:pointer;}
+  .brand-logo:hover{opacity:1;transform:scale(1.06);}
+  .brand-logo img{height:100%;width:auto;}
+  .brand-logo.text{color:#fff;font-family:"Bodoni Moda",serif;font-size:18px;filter:none;}
+  @media (prefers-reduced-motion: reduce){ .brands-track{animation:none;} }
+
+  /* ---------- Más vendidos ---------- */
+  .bestsellers{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;}
+  @media (max-width:1000px){ .bestsellers{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .bestsellers{grid-template-columns:1fr;} }
+  .prod-card{background:var(--surface);border:1px solid var(--line);border-radius:2px;overflow:hidden;box-shadow:var(--shadow);}
+  .prod-img{aspect-ratio:1/1;background:linear-gradient(135deg,var(--gold-tint),var(--paper));display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;}
+  .prod-img img{width:100%;height:100%;object-fit:cover;}
+  .prod-body{padding:14px;}
+  .prod-brand{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:700;}
+  .prod-name{font-size:13.5px;font-weight:700;margin:3px 0 6px;}
+  .prod-price{font-family:"IBM Plex Mono",monospace;font-size:14.5px;color:var(--accent-strong);}
+
+  /* ---------- Test de visión ---------- */
+  .vision-test{background:var(--accent-strong);color:#fff;}
+  .vision-card{background:var(--surface);color:var(--ink);border-radius:4px;padding:36px 34px;max-width:620px;margin:0 auto;box-shadow:0 30px 60px -20px rgba(0,0,0,.4);}
+  .vt-doctor{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+  .vt-doctor .avatar{width:52px;height:52px;border-radius:50%;background:var(--gold-tint);color:var(--gold-strong);
+    display:flex;align-items:center;justify-content:center;font-family:"Bodoni Moda",serif;font-weight:700;font-size:19px;}
+  .vt-doctor .name{font-weight:800;font-size:15px;}
+  .vt-doctor .role{font-size:12px;color:var(--ink-soft);}
+  .vt-progress{display:flex;gap:6px;margin-bottom:22px;}
+  .vt-dot{height:4px;flex:1;background:var(--line);border-radius:2px;overflow:hidden;}
+  .vt-dot i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease;}
+  .vt-question{font-size:18px;font-weight:700;margin-bottom:18px;font-family:"Bodoni Moda",serif;}
+  .vt-options{display:flex;flex-direction:column;gap:10px;}
+  .vt-option{padding:13px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;
+    transition:border-color .15s ease, background .15s ease;}
+  .vt-option:hover{border-color:var(--gold);background:var(--gold-tint);}
+  .vt-form input{width:100%;padding:12px 14px;border-radius:6px;border:1px solid var(--line);font-size:14px;margin-bottom:12px;font-family:inherit;}
+  .vt-result{text-align:center;}
+  .vt-result .combo{font-family:"Bodoni Moda",serif;font-size:26px;color:var(--accent-strong);margin:10px 0;}
+  .vt-disclaimer{font-size:11.5px;color:var(--ink-faint);margin-top:16px;line-height:1.5;}
+
   .trust{background:var(--surface);border-bottom:1px solid var(--line);}
   .trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:36px 28px;}
   @media (max-width:720px){ .trust .wrap{grid-template-columns:repeat(2,1fr);} }
@@ -193,14 +251,14 @@
       <span id="brandName">ALaVision</span>
     </a>
     <nav class="links">
-      <a href="#servicios">Servicios</a>
+      <a href="#tienda-destacados">Tienda</a>
       <a href="#precios">Precios</a>
-      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#test-vision">Test de visión</a>
       <a href="#testimonios">Testimonios</a>
       <a href="#ubicacion">Ubicación</a>
     </nav>
     <div class="nav-actions">
-      <a class="btn btn-primary" href="#agenda">Agenda tu cita</a>
+      <a class="btn btn-primary" href="#agenda"><span>Agenda tu cita</span></a>
     </div>
   </div>
 </header>
@@ -214,8 +272,8 @@
     <p class="lead">Examen visual, monturas y lentes de fórmula en un solo lugar. Te
     escribimos por WhatsApp para asesorarte según tu necesidad, o agenda tu cita aquí mismo.</p>
     <div class="hero-actions">
-      <a class="btn btn-gold" href="#agenda">Agenda tu cita</a>
-      <a class="btn btn-whatsapp" id="heroWhatsapp" href="#" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+      <a class="btn btn-gold" href="#agenda"><span>Agenda tu cita</span></a>
+      <a class="btn btn-whatsapp" id="heroWhatsapp" href="#" target="_blank" rel="noopener"><span>Escríbenos por WhatsApp</span></a>
     </div>
     <div class="hero-badges">
       <div class="hero-badge"><b>2</b>&nbsp;sedes en Cúcuta</div>
@@ -224,6 +282,12 @@
     </div>
   </div>
 </section>
+
+<div class="brands-band">
+  <div class="brands-track" id="brandsTrack">
+    <span style="color:rgba(255,255,255,.6);font-size:12.5px;font-family:'IBM Plex Mono',monospace;">Cargando marcas…</span>
+  </div>
+</div>
 
 <div class="trust">
   <div class="wrap">
@@ -285,6 +349,20 @@
   </div>
 </section>
 
+<section id="tienda-destacados">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Tienda</div>
+      <h2>Lo más vendido</h2>
+      <p>Una muestra de nuestra colección — la tienda completa tiene más opciones y marcas.</p>
+    </div>
+    <div class="bestsellers" id="bestsellersGrid"></div>
+    <div style="text-align:center;margin-top:40px;">
+      <a class="btn btn-outline" href="/tienda"><span>Ver tienda completa →</span></a>
+    </div>
+  </div>
+</section>
+
 <section id="precios">
   <div class="wrap">
     <div class="section-head center">
@@ -332,6 +410,17 @@
   </div>
 </section>
 
+<section id="test-vision" class="vision-test">
+  <div class="wrap">
+    <div class="section-head center" style="color:#fff;">
+      <div class="eyebrow" style="color:var(--gold);">Orientación gratuita</div>
+      <h2 style="color:#fff;">¿Cómo está tu visión?</h2>
+      <p style="color:rgba(255,255,255,.75);">Responde 4 preguntas rápidas y la Dra. Angie te da una orientación de qué tipo de lente podría convenirte.</p>
+    </div>
+    <div class="vision-card" id="visionCard"></div>
+  </div>
+</section>
+
 <section id="testimonios" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
   <div class="wrap">
     <div class="section-head center">
@@ -358,7 +447,7 @@
         <div class="loc-body">
           <h3>Sede Principal</h3>
           <p id="direccionPrincipal">Consultorio completo — examen, montura y lente.</p>
-          <a class="btn btn-outline" id="comoLlegarPrincipal" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+          <a class="btn btn-outline" id="comoLlegarPrincipal" href="#" target="_blank" rel="noopener"><span>Cómo llegar</span></a>
         </div>
       </div>
       <div class="loc-card">
@@ -366,7 +455,7 @@
         <div class="loc-body">
           <h3>Sede Los Andes</h3>
           <p id="direccionLosAndes">Monturas y traspaso de cristal.</p>
-          <a class="btn btn-outline" id="comoLlegarLosAndes" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+          <a class="btn btn-outline" id="comoLlegarLosAndes" href="#" target="_blank" rel="noopener"><span>Cómo llegar</span></a>
         </div>
       </div>
     </div>
@@ -407,7 +496,7 @@
           <div class="field"><label for="fecha">Fecha</label><input id="fecha" name="fecha" type="date" required /></div>
           <div class="field"><label for="hora">Hora</label><input id="hora" name="hora" type="time" required /></div>
         </div>
-        <button class="btn btn-primary" type="submit" style="margin-top:6px;">Confirmar cita</button>
+        <button class="btn btn-primary" type="submit" style="margin-top:6px;"><span>Confirmar cita</span></button>
         <div id="citaMsg"></div>
       </form>
     </div>
@@ -494,6 +583,129 @@
     // Sin backend disponible (ej. vista previa): deja los valores por defecto.
     applyConfig({});
   });
+
+  function money(n) { return '$' + Number(n).toLocaleString('es-CO'); }
+
+  // ---------- Banda de marcas ----------
+  fetch('/api/marcas').then(r => r.json()).then(marcas => {
+    const track = document.getElementById('brandsTrack');
+    if (!marcas.length) {
+      track.innerHTML = '<span style="color:rgba(255,255,255,.55);font-size:12.5px;">Agrega tus marcas desde el panel administrativo →</span>';
+      return;
+    }
+    const item = (m) => `<a class="brand-logo" href="/tienda?marca=${encodeURIComponent(m.nombre)}" title="${m.nombre}"><img src="${m.logo_url}" alt="${m.nombre}"/></a>`;
+    // se duplica la lista para que el scroll infinito sea continuo
+    track.innerHTML = marcas.map(item).join('') + marcas.map(item).join('');
+  }).catch(() => {});
+
+  // ---------- Más vendidos ----------
+  fetch('/api/productos').then(r => r.json()).then(productos => {
+    const destacados = productos.filter(p => p.destacado).slice(0, 10);
+    const el = document.getElementById('bestsellersGrid');
+    if (!destacados.length) {
+      el.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--ink-faint);">Marca productos como "destacado" desde el panel para que aparezcan aquí.</p>';
+      return;
+    }
+    el.innerHTML = destacados.map(p => `
+      <a class="prod-card" href="/tienda">
+        <div class="prod-img">${p.imagen_url ? `<img src="${p.imagen_url}" alt="${p.nombre}"/>` : '👓'}</div>
+        <div class="prod-body">
+          <div class="prod-brand">${p.categoria}</div>
+          <div class="prod-name">${p.nombre}</div>
+          <div class="prod-price">${money(p.precio)}</div>
+        </div>
+      </a>
+    `).join('');
+  }).catch(() => {});
+
+  // ---------- Test de visión (guionado, sin IA — bajo el nombre de la Dra. Angie) ----------
+  const preguntas = [
+    { id: 'usaLentes', texto: '¿Usas lentes actualmente?', opciones: [['si','Sí'],['no','No']] },
+    { id: 'dificultad', texto: '¿Qué se te dificulta más?', opciones: [['lejos','Ver de lejos'],['cerca','Ver de cerca'],['ambas','Ambas'],['ninguna','Ninguna en particular']] },
+    { id: 'pantallas', texto: '¿Cuánto tiempo pasas frente a pantallas al día?', opciones: [['poco','Menos de 2 horas'],['medio','Entre 2 y 6 horas'],['mucho','Más de 6 horas']] },
+    { id: 'aireLibre', texto: '¿Conduces o pasas mucho tiempo al aire libre?', opciones: [['si','Sí'],['no','No']] },
+  ];
+  let vtStep = 0;
+  const vtRespuestas = {};
+
+  function vtProgress() {
+    const total = preguntas.length + 1; // + paso de edad
+    return Array.from({length: total}).map((_, i) => `<div class="vt-dot"><i style="width:${i <= vtStep ? 100 : 0}%"></i></div>`).join('');
+  }
+
+  function renderVisionIntro() {
+    document.getElementById('visionCard').innerHTML = `
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Orientación visual · Óptica ALaVision</div></div></div>
+      <div class="vt-question">Vamos a hacerte unas preguntas cortas para orientarte sobre el tipo de lente que podría convenirte.</div>
+      <div class="vt-options"><div class="vt-option" id="vtStart">Empezar →</div></div>
+      <div class="vt-disclaimer">Esta es una orientación general, no un diagnóstico médico — el examen con la Dra. Angie es el que confirma tu fórmula real.</div>
+    `;
+    document.getElementById('vtStart').addEventListener('click', () => { vtStep = 0; renderVisionQuestion(); });
+  }
+
+  function renderVisionQuestion() {
+    if (vtStep >= preguntas.length) { renderVisionEdadForm(); return; }
+    const p = preguntas[vtStep];
+    document.getElementById('visionCard').innerHTML = `
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Orientación visual</div></div></div>
+      <div class="vt-progress">${vtProgress()}</div>
+      <div class="vt-question">${p.texto}</div>
+      <div class="vt-options">${p.opciones.map(([val,label]) => `<div class="vt-option" data-val="${val}">${label}</div>`).join('')}</div>
+    `;
+    document.querySelectorAll('#visionCard .vt-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        vtRespuestas[p.id] = opt.dataset.val;
+        vtStep++;
+        renderVisionQuestion();
+      });
+    });
+  }
+
+  function renderVisionEdadForm() {
+    document.getElementById('visionCard').innerHTML = `
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Ya casi está tu orientación</div></div></div>
+      <div class="vt-progress">${vtProgress()}</div>
+      <div class="vt-question">Para darte el resultado, cuéntame un poco de ti:</div>
+      <form class="vt-form" id="vtForm">
+        <input name="nombre" placeholder="Nombre completo" required />
+        <input name="edad" type="number" min="1" max="110" placeholder="Edad" required />
+        <input name="telefono" placeholder="WhatsApp" required />
+        <input name="correo" type="email" placeholder="Correo" required />
+        <button class="btn btn-gold" type="submit" style="width:100%;justify-content:center;"><span>Ver mi orientación</span></button>
+      </form>
+      <div class="vt-disclaimer">Al continuar autorizas el uso de tus datos para esta orientación, según la Ley 1581 de 2012.</div>
+    `;
+    document.getElementById('vtForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(e.target).entries());
+      const body = {
+        nombre: datos.nombre, telefono: datos.telefono, correo: datos.correo,
+        edad: Number(datos.edad), respuestas: vtRespuestas,
+        origen_campana: sessionStorage.getItem('alavision_origen') || 'directo',
+      };
+      try {
+        const res = await fetch('/api/test-vision', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        const data = await res.json();
+        renderVisionResultado(data);
+      } catch (err) {
+        document.getElementById('visionCard').innerHTML = '<div class="vt-disclaimer">No pudimos calcular tu resultado ahora — escríbenos por WhatsApp y la Dra. Angie te orienta directo.</div>';
+      }
+    });
+  }
+
+  function renderVisionResultado(data) {
+    document.getElementById('visionCard').innerHTML = `
+      <div class="vt-result">
+        <div class="vt-doctor" style="justify-content:center;"><div class="avatar">DA</div><div style="text-align:left;"><div class="name">Dra. Angie</div><div class="role">Tu orientación</div></div></div>
+        <div class="combo">${data.combo || ''}</div>
+        <p style="color:var(--ink-soft);font-size:14.5px;">${data.texto || ''}</p>
+        <a class="btn btn-primary" href="#agenda"><span>Agendar mi examen</span></a>
+        <div class="vt-disclaimer">Esto es una orientación general, no reemplaza el examen visual.</div>
+      </div>
+    `;
+  }
+
+  renderVisionIntro();
 
   document.getElementById('citaForm').addEventListener('submit', async (e) => {
     e.preventDefault();

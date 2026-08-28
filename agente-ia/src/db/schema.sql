@@ -59,3 +59,39 @@ CREATE TABLE IF NOT EXISTS remarketing_envios (
 );
 
 CREATE INDEX IF NOT EXISTS idx_remarketing_lead ON remarketing_envios(lead_id);
+
+CREATE TABLE IF NOT EXISTS marcas (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  logo_url TEXT NOT NULL,
+  orden INTEGER NOT NULL DEFAULT 0,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS productos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  marca_id INTEGER REFERENCES marcas(id),
+  categoria TEXT NOT NULL DEFAULT 'Monturas',
+  precio INTEGER NOT NULL DEFAULT 0,
+  descripcion TEXT NOT NULL DEFAULT '',
+  imagen_url TEXT NOT NULL DEFAULT '',
+  destacado INTEGER NOT NULL DEFAULT 0,
+  orden INTEGER NOT NULL DEFAULT 0,
+  activo INTEGER NOT NULL DEFAULT 1,
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_productos_marca ON productos(marca_id);
+
+CREATE TABLE IF NOT EXISTS test_vision_resultados (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  telefono TEXT NOT NULL,
+  correo TEXT NOT NULL,
+  edad INTEGER NOT NULL,
+  respuestas TEXT NOT NULL DEFAULT '{}',
+  resultado_combo TEXT NOT NULL DEFAULT '',
+  origen_campana TEXT NOT NULL DEFAULT '',
+  creado_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
