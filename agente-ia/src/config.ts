@@ -8,8 +8,21 @@ function required(name: string): string {
   return value;
 }
 
+const anthropicApiKey = process.env.ANTHROPIC_API_KEY?.trim() || undefined;
+const geminiApiKey = process.env.GEMINI_API_KEY?.trim() || undefined;
+
+if (!anthropicApiKey && !geminiApiKey) {
+  throw new Error(
+    "Necesitas al menos una clave de IA: ANTHROPIC_API_KEY o GEMINI_API_KEY en tu .env. " +
+      "Si solo tienes Gemini, con GEMINI_API_KEY es suficiente — el agente lo usa directamente.",
+  );
+}
+
 export const config = {
-  anthropicApiKey: required("ANTHROPIC_API_KEY"),
+  // Cualquiera de las dos puede faltar — el agente usa la que sí esté configurada
+  // (ver src/ai/agent.ts). Si solo tienes Gemini, deja ANTHROPIC_API_KEY vacía.
+  anthropicApiKey,
+  geminiApiKey,
   whatsapp: {
     accessToken: required("WHATSAPP_ACCESS_TOKEN"),
     phoneNumberId: required("WHATSAPP_PHONE_NUMBER_ID"),

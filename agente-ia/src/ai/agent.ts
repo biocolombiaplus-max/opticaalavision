@@ -3,7 +3,10 @@ import { config } from "../config.js";
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
 import type { Mensaje, Etapa, NivelInteres } from "../db/index.js";
 
-const client = new Anthropic({ apiKey: config.anthropicApiKey });
+// El cliente de Claude solo se crea si hay clave — si solo tienes Gemini
+// (GEMINI_API_KEY en tu .env), esto se queda en null y el agente usa Gemini
+// directamente, sin intentar Claude primero.
+const client = config.anthropicApiKey ? new Anthropic({ apiKey: config.anthropicApiKey }) : null;
 
 const MODEL = "claude-opus-5";
 
@@ -101,6 +104,11 @@ export interface IncomingContent {
 }
 
 export async function askAgent(history: Mensaje[], incoming: IncomingContent): Promise<AgentReply> {
+  if (!client) {
+    // No hay clave de Claude configurada — Gemini es el agente principal, no un respaldo.
+    const { askGemini } = await import("./gemini.js");
+    return askGemini(history, incoming);
+  }
   try {
     return await askClaude(history, incoming);
   } catch (err) {
@@ -111,6 +119,7 @@ export async function askAgent(history: Mensaje[], incoming: IncomingContent): P
 }
 
 async function askClaude(history: Mensaje[], incoming: IncomingContent): Promise<AgentReply> {
+  if (!client) throw new Error("Cliente de Claude no inicializado.");
   const userContent: Anthropic.MessageParam["content"] = [];
 
   if (incoming.image) {

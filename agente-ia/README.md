@@ -56,17 +56,23 @@ reportes en PDF.
 ## Lo que necesitas configurar para que todo funcione (nada de esto lo tengo yo)
 
 1. **WhatsApp Cloud API** (igual que antes — ver más abajo).
-2. **Clave de Anthropic** (`ANTHROPIC_API_KEY`) — el agente principal.
-3. **Clave de Gemini** (`GEMINI_API_KEY`) — el respaldo. Se saca gratis en
-   [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (o desde
-   tu cuenta de Google Cloud si ya pagas Gemini ahí). Si en algún momento
-   Google cambia el nombre del modelo y empieza a fallar, ajusta
-   `GEMINI_MODEL` en las variables de entorno.
-4. **Resend** (`RESEND_API_KEY`) — para los correos de confirmación de cita.
+2. **Solo necesitas UNA clave de IA, no las dos:**
+   - **Si solo tienes Gemini** (tu caso): deja `ANTHROPIC_API_KEY` vacía en el
+     `.env` y llena `GEMINI_API_KEY` con tu clave de Gemini (la de tu cuenta
+     paga, o una gratis en
+     [aistudio.google.com/apikey](https://aistudio.google.com/apikey)).
+     El agente usa Gemini directamente como motor principal — no necesita
+     Claude para nada. Si en algún momento Google cambia el nombre del
+     modelo y empieza a fallar, ajusta `GEMINI_MODEL` en las variables de
+     entorno.
+   - **Si más adelante consigues también Anthropic** (`ANTHROPIC_API_KEY`,
+     console.anthropic.com), el agente pasa a usar Claude como principal y
+     Gemini queda de respaldo automático si Claude falla.
+3. **Resend** (`RESEND_API_KEY`) — para los correos de confirmación de cita.
    Cuenta gratis en [resend.com](https://resend.com) (alcanza de sobra para
    el volumen de una óptica). Necesitas verificar tu dominio ahí para que los
    correos no caigan en spam — Resend te guía paso a paso.
-5. **URLs de Google Maps** de tus 2 sedes — se configuran desde el panel
+4. **URLs de Google Maps** de tus 2 sedes — se configuran desde el panel
    (`/admin` → Configuración), no hace falta clave de API de Google Maps.
    Para conseguir la URL: busca tu sede en Google Maps → Compartir → Insertar
    un mapa → copia el `src="..."` del código que te da.

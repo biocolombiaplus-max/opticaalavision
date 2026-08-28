@@ -1,4 +1,5 @@
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
+import { config } from "../config.js";
 import type { AgentReply } from "./agent.js";
 import type { Mensaje } from "../db/index.js";
 import type { IncomingContent } from "./agent.js";
@@ -39,15 +40,16 @@ function extractJson(text: string): unknown {
 }
 
 /**
- * Respaldo del agente usando Gemini, para cuando la llamada a Claude falla.
+ * Agente con Gemini — se usa como principal si no hay ANTHROPIC_API_KEY configurada,
+ * o como respaldo automático si la llamada a Claude falla.
  * Usa la API REST directa de Google (no un SDK) para no depender de una versión
  * de librería que pueda haber cambiado — si Google ajusta el nombre del modelo,
  * cámbialo con la variable de entorno GEMINI_MODEL.
  */
 export async function askGemini(history: Mensaje[], incoming: IncomingContent): Promise<AgentReply> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = config.geminiApiKey;
   if (!apiKey) {
-    throw new Error("GEMINI_API_KEY no está configurada — no hay respaldo disponible.");
+    throw new Error("GEMINI_API_KEY no está configurada en tu .env.");
   }
 
   const parts: GeminiPart[] = [];
