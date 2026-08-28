@@ -198,6 +198,18 @@
     border-radius:8px; padding:8px 10px; }
   .email-why{ font-size:12.5px; color:var(--ink-faint); }
 
+  /* ---------- Code block ---------- */
+  .code-wrap{ overflow-x:auto; border-radius:10px; }
+  .code-block{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; font-family:"IBM Plex Mono",monospace; font-size:12.5px;
+    line-height:1.6; color:var(--ink); white-space:pre; margin:0;
+  }
+  .sede-badge{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600;
+    padding:2px 8px; border-radius:6px; background:var(--surface-2); color:var(--ink-soft);
+  }
+
   /* ---------- Conversation ---------- */
   .rama{
     border-left:3px solid var(--border); padding-left:20px; margin-bottom:30px;
@@ -310,11 +322,13 @@
     <a class="nav-link" href="#pipeline">Pipeline completo</a>
     <a class="nav-link" href="#combos">Combos y precios</a>
     <a class="nav-link" href="#m1">Mensaje 1</a>
-    <a class="nav-link" href="#r1">Rama 1 · Fórmula</a>
-    <a class="nav-link" href="#r2">Rama 2 · Examen</a>
-    <a class="nav-link" href="#r3">Rama 3 · Montura</a>
+    <a class="nav-link" href="#r1">Rama A · Montura</a>
+    <a class="nav-link" href="#r2">Rama B · +Lentes</a>
+    <a class="nav-link" href="#r3">Rama C · Examen</a>
+    <a class="nav-link" href="#rapida">Ruta rápida · foto</a>
     <a class="nav-link" href="#objeciones">Objeciones</a>
     <a class="nav-link" href="#remarketing">Remarketing</a>
+    <a class="nav-link" href="#automatizacion">Código: detectar foto</a>
     <a class="nav-link" href="#correo">Cuándo pedir el correo</a>
     <a class="nav-link" href="#neuro">Gatillos mentales</a>
     <a class="nav-link" href="#checklist">Checklist</a>
@@ -325,12 +339,12 @@
       <div class="eyebrow">Kommo · WhatsApp API · Salesbot</div>
       <h1>Guion del Bot ALaVision</h1>
       <p class="masthead-sub">Árbol de conversación para precalificar a los pacientes que llegan de la
-      pauta de monturas — enfocado en cotizar rápido, no en la montura: la mayoría ya tiene
-      fórmula y quiere precio.</p>
+      pauta de monturas — con las 2 sedes (Los Andes / Principal) y la ruta rápida cuando
+      mandan la foto de la fórmula sin escribir nada.</p>
       <div class="masthead-meta">
-        <span><b>Versión</b> 3</span>
+        <span><b>Versión</b> 4</span>
         <span><b>Límite de botón</b> 20 caracteres · máx. 3 por mensaje</span>
-        <span><b>Firma</b> Dra. Angie, optómetra</span>
+        <span><b>Bot</b> Vale, asesora · <b>Consultorio</b> Dra. Angie</span>
       </div>
     </header>
 
@@ -350,7 +364,7 @@
           <div class="stage-num">2</div>
           <div><div class="stage-name">Bienvenida enviada</div>
           <div class="stage-tags"><span class="stage-pill phase">Atención → Interés</span><span class="stage-pill trigger">Autoridad</span></div>
-          <div class="stage-desc">Sale el Mensaje 1, firmado por la Dra. Angie.</div></div>
+          <div class="stage-desc">Sale el Mensaje 1, firmado por Vale, la asesora.</div></div>
         </div>
         <div class="stage-row">
           <div class="stage-num">3</div>
@@ -417,176 +431,316 @@
 
     <section id="combos">
       <div class="section-head"><span class="section-num">02</span><h2>Combos y precios</h2></div>
-      <p class="section-intro">Es la referencia interna que usa el Dr(a) para armar el mensaje de cierre en
-      cada rama — no se envía tal cual al paciente.</p>
+      <p class="section-intro">Es la referencia interna que usa Vale para armar el mensaje de cierre en cada
+      rama — no se envía tal cual al paciente. <b>Los 4 combos con examen incluyen la montura de regalo este
+      mes</b> (no se cobran los $80.000 aparte).</p>
       <div class="combo-grid">
         <div class="combo-card">
           <div class="combo-name">Solo montura</div>
           <div class="combo-price">$80.000</div>
-          <div class="combo-age">Cualquier edad</div>
-          <div class="combo-inc">Montura de la promo, o traspaso del cristal actual.</div>
+          <div class="combo-age">Sede Los Andes</div>
+          <div class="combo-inc">Montura de la promo, o traspaso del cristal actual. Sin lente nuevo.</div>
         </div>
         <div class="combo-card">
           <div class="combo-name">Monofocal</div>
           <div class="combo-price">$350.000</div>
-          <div class="combo-age">Menores de 37</div>
-          <div class="combo-inc">Examen + montura + lente monofocal, fotocromático, antireflejo, protector de pantalla.</div>
+          <div class="combo-age">Menor de 37</div>
+          <div class="combo-inc">Lente fotocromático, antireflejo, protector de pantalla + montura de regalo.</div>
+        </div>
+        <div class="combo-card upsell">
+          <div class="combo-name">Monofocal Premium (Transitions última generación)</div>
+          <div class="combo-price">$600.000</div>
+          <div class="combo-age">Menor de 37, gama alta</div>
+          <div class="combo-inc">Igual al monofocal + lente Transitions certificado + montura de regalo.</div>
         </div>
         <div class="combo-card">
           <div class="combo-name">Progresivo digital gama alta</div>
           <div class="combo-price">$550.000</div>
-          <div class="combo-age">38 – 59 años</div>
-          <div class="combo-inc">Examen + montura + lente progresivo, fotocromático, antireflejo, protector de pantalla.</div>
+          <div class="combo-age">37 – 59 años</div>
+          <div class="combo-inc">Lente con protección de pantalla + montura de regalo.</div>
         </div>
         <div class="combo-card">
           <div class="combo-name">Bifocal</div>
           <div class="combo-price">$300.000</div>
           <div class="combo-age">60 y más</div>
-          <div class="combo-inc">Examen + montura + lente bifocal, sin filtros.</div>
-        </div>
-        <div class="combo-card upsell">
-          <div class="combo-name">Transitions última generación + AR Clarity</div>
-          <div class="combo-price">$600.000</div>
-          <div class="combo-age">Upsell opcional</div>
-          <div class="combo-inc">Examen + montura + lente premium. Ofrecer solo si el paciente pregunta por algo de mayor gama.</div>
+          <div class="combo-inc">Lente en policarbonato, sin filtros adicionales + montura de regalo.</div>
         </div>
       </div>
       <div class="callout">
         <span>&#9432;</span>
         <span><b>Guía de edad</b> (uso interno, no se dice tal cual al paciente): menor de 37 &rarr; Monofocal ·
-        38–59 &rarr; Progresivo · 60+ &rarr; Bifocal. El Dr(a) siempre confirma con el examen.</span>
+        37–59 &rarr; Progresivo · 60+ &rarr; Bifocal. Si responde "50+", se pregunta la edad exacta para
+        distinguir Progresivo (50–59) de Bifocal (60+). La Dra. Angie siempre confirma con el examen.</span>
       </div>
     </section>
 
     <section id="m1">
       <div class="section-head"><span class="section-num">03</span><h2>Mensaje 1 — Bienvenida</h2></div>
       <p class="section-intro">Dispara siempre que un contacto nuevo escribe desde el anuncio de monturas.
-      La montura es el gancho de la pauta, pero la pregunta va directo a lo que la gente
-      realmente busca: cotizar. "Solo la montura" queda al final, a propósito.</p>
+      Vale se presenta como asesora, no como la doctora — evita que el bot finja ser la médica.
+      Si el mensaje trae una foto en vez de texto, no se envía esto: pasa directo a la
+      <a href="#rapida">ruta rápida</a>.</p>
       <div class="msg">
         <div class="msg-label">Bot dice</div>
-        <div class="bubble">¡Hola! 😊 Soy la Dra. Angie, optómetra de Óptica ALaVision. Gracias por escribir
-        por la promo de monturas 👓 ¿Ya tiene su fórmula o quiere agendar el examen?</div>
+        <div class="bubble">¡Hola! 😊 Soy Vale, asesora de Óptica ALaVision. Vi tu interés en la promo de
+        monturas 👓 ¿Qué necesitas?</div>
         <div class="chips">
-          <span class="chip">Ya tengo fórmula <span class="count">16/20</span></span>
-          <span class="chip">Quiero el examen <span class="count">16/20</span></span>
-          <span class="chip">Solo la montura <span class="count">15/20</span></span>
+          <span class="chip">Solo montura <span class="count">12/20</span></span>
+          <span class="chip">Montura + lentes <span class="count">17/20</span></span>
+          <span class="chip">Examen + todo <span class="count">14/20</span></span>
         </div>
       </div>
     </section>
 
     <section id="r1">
       <div class="rama">
-        <div class="rama-title"><h3>Rama 1 · Ya tengo fórmula</h3><span class="rama-badge">ruta principal — la mayoría llega así</span></div>
+        <div class="rama-title"><h3>Rama A · Solo montura</h3><span class="rama-badge">sede Los Andes, sin lente nuevo</span></div>
 
         <div class="msg">
           <div class="msg-label">Mensaje 2</div>
-          <div class="bubble">Perfecto 🙌 ¿Hace cuánto tiene esa fórmula?</div>
+          <div class="bubble">¿Qué necesitas hacer?</div>
           <div class="chips">
-            <span class="chip">Menos de 1 año <span class="count">14/20</span></span>
-            <span class="chip">Más de 1 año <span class="count">12/20</span></span>
-            <span class="chip">No recuerdo <span class="count">11/20</span></span>
+            <span class="chip">Cambiarla <span class="count">9/20</span></span>
+            <span class="chip">Se partió <span class="count">9/20</span></span>
+            <span class="chip">Traspasar cristal <span class="count">17/20</span></span>
           </div>
         </div>
 
         <div class="msg">
-          <div class="msg-label">Mensaje 3</div>
-          <div class="bubble">¿Qué tipo de lente usa hoy?</div>
+          <div class="msg-label">Si "Traspasar cristal" — Mensaje 3</div>
+          <div class="bubble">¿Tu cristal está en buen estado?</div>
           <div class="chips">
-            <span class="chip">Monofocal <span class="count">9/20</span></span>
-            <span class="chip">Progresivo <span class="count">10/20</span></span>
-            <span class="chip">No sé cuál <span class="count">10/20</span></span>
+            <span class="chip">Sí <span class="count">2/20</span></span>
+            <span class="chip">Está viejo <span class="count">10/20</span></span>
+            <span class="chip">No sé <span class="count">5/20</span></span>
           </div>
         </div>
-
         <div class="msg free-text">
-          <div class="msg-label">Si responde "No sé cuál" — texto libre</div>
-          <div class="bubble">Tranquilo(a), ¿qué edad tiene?</div>
+          <div class="msg-label">Si "Está viejo" o "No sé"</div>
+          <div class="bubble">Salta a la Rama B — en realidad necesita cotizar un lente nuevo, no es solo traspaso.</div>
         </div>
 
         <div class="msg">
-          <div class="msg-label">Mensaje 4 · Cierre — el precio que estaba esperando</div>
-          <div class="bubble">Para su caso le recomiendo el combo <em>[Monofocal $350.000 / Progresivo $550.000]</em>
-          — incluye montura + lente + filtros, todo en una sola cita. ¿Agendamos antes de que se acabe la promo?</div>
+          <div class="msg-label">Cierre</div>
+          <div class="bubble">¡Listo! 👓 Monturas desde $80.000 en nuestra <span class="sede-badge">sede Los Andes</span>,
+          te hacemos el traspaso ahí mismo. ¿Cómo seguimos?</div>
           <div class="chips">
-            <span class="chip">Sí, agendar <span class="count">11/20</span></span>
-            <span class="chip">Más información <span class="count">15/20</span></span>
-            <span class="chip">Lo pienso <span class="count">9/20</span></span>
+            <span class="chip">Ver monturas <span class="count">12/20</span></span>
+            <span class="chip">Ir a Los Andes <span class="count">14/20</span></span>
+            <span class="chip">Hablar asesor <span class="count">13/20</span></span>
           </div>
         </div>
-        <div class="outcome"><span class="tag">#Renovacion</span><span class="tag">#InteresAlto</span></div>
+        <div class="outcome"><span class="tag">#SoloMontura</span><span class="tag">#SedeLosAndes</span><span class="tag">#InteresMedio</span></div>
       </div>
     </section>
 
     <section id="r2">
       <div class="rama">
-        <div class="rama-title"><h3>Rama 2 · Quiero el examen</h3><span class="rama-badge">combo completo: examen + montura + lente</span></div>
+        <div class="rama-title"><h3>Rama B · Montura + lentes</h3><span class="rama-badge">cotizar con fórmula, sin examen</span></div>
 
         <div class="msg">
           <div class="msg-label">Mensaje 2</div>
-          <div class="bubble">¡Con gusto! ¿Ya ha usado lentes antes?</div>
+          <div class="bubble">¿Tienes fórmula?</div>
           <div class="chips">
-            <span class="chip">Sí, ya uso <span class="count">10/20</span></span>
-            <span class="chip">No, primera vez <span class="count">15/20</span></span>
-            <span class="chip">No estoy seguro <span class="count">15/20</span></span>
+            <span class="chip">Sí <span class="count">2/20</span></span>
+            <span class="chip">Está vieja <span class="count">10/20</span></span>
+            <span class="chip">No tengo <span class="count">8/20</span></span>
           </div>
         </div>
 
         <div class="msg free-text">
-          <div class="msg-label">Mensaje 3 — texto libre, ambas respuestas convergen aquí</div>
-          <div class="bubble">Cuénteme su edad y a qué se dedica, así le armo el combo ideal para su vista.</div>
+          <div class="msg-label">Si "Sí" — Mensaje 3, sin botones, dispara la ruta rápida</div>
+          <div class="bubble">¡Perfecto! Envíame la foto de tu fórmula y te cotizo al toque 📄</div>
         </div>
 
         <div class="msg">
-          <div class="msg-label">Mensaje 4 · Cierre (combo dinámico según edad)</div>
-          <div class="bubble">Según lo que me cuenta, el combo ideal es <em>[Monofocal $350.000 / Progresivo
-          $550.000 / Bifocal $300.000]</em> — examen, montura y lente en un solo pago. ¿Agendamos su cita?</div>
+          <div class="msg-label">Si "Está vieja" — Mensaje 3</div>
+          <div class="bubble">¿Hace cuánto fue tu último examen?</div>
           <div class="chips">
-            <span class="chip">Sí, agendar cita <span class="count">16/20</span></span>
-            <span class="chip">Más información <span class="count">15/20</span></span>
-            <span class="chip">Lo pienso <span class="count">9/20</span></span>
+            <span class="chip">&lt;1 año <span class="count">7/20</span></span>
+            <span class="chip">1–2 años <span class="count">9/20</span></span>
+            <span class="chip">+2 años <span class="count">7/20</span></span>
           </div>
         </div>
-        <div class="outcome"><span class="tag">#Combo</span><span class="tag">#PrimeraVez / #Renovacion</span><span class="tag">#InteresAlto</span></div>
+        <div class="msg">
+          <div class="msg-label">Mensaje 4</div>
+          <div class="bubble">¿Sabes qué tipo de lente usas?</div>
+          <div class="chips">
+            <span class="chip">Monofocal <span class="count">9/20</span></span>
+            <span class="chip">Progresivo <span class="count">10/20</span></span>
+            <span class="chip">No sé <span class="count">5/20</span></span>
+          </div>
+        </div>
+        <div class="msg free-text">
+          <div class="msg-label">Si "No sé" — tablita explicativa</div>
+          <div class="bubble">Monofocal = una sola distancia. Progresivo = de lejos y cerca, sin línea.
+          Bifocal = con la rayita abajo. ¿Cuál se parece al tuyo?</div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Si "No tengo"</div>
+          <div class="bubble">Sin fórmula vigente no podemos cotizar el lente todavía — te conviene el examen primero.</div>
+          <div class="chips">
+            <span class="chip">Agendar examen <span class="count">16/20</span></span>
+            <span class="chip">Solo montura <span class="count">12/20</span></span>
+            <span class="chip">Hablar asesor <span class="count">13/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Cierre (combo ya identificado)</div>
+          <div class="bubble">Para tu caso el combo ideal es <em>[combo]</em> — $[precio], con la montura de
+          regalo este mes 🎁. ¿Agendamos en la <span class="sede-badge">sede principal</span> o prefieres
+          enviarnos la fórmula primero?</div>
+          <div class="chips">
+            <span class="chip">Agendar cita <span class="count">13/20</span></span>
+            <span class="chip">Enviar fórmula <span class="count">14/20</span></span>
+            <span class="chip">Hablar asesor <span class="count">13/20</span></span>
+          </div>
+        </div>
+        <div class="outcome"><span class="tag">#Renovacion</span><span class="tag">#InteresAlto</span><span class="tag">#SedePrincipal</span></div>
       </div>
     </section>
 
     <section id="r3">
       <div class="rama">
-        <div class="rama-title"><h3>Rama 3 · Solo la montura</h3><span class="rama-badge">secundaria y corta — traspaso / reemplazo</span></div>
+        <div class="rama-title"><h3>Rama C · Examen + todo</h3><span class="rama-badge">primera vez o combo completo, sede principal</span></div>
 
         <div class="msg">
           <div class="msg-label">Mensaje 2</div>
-          <div class="bubble">Cuénteme, ¿el lente que tiene está en buen estado para el traspaso o también
-          necesita uno nuevo?</div>
+          <div class="bubble">¿Es tu primera vez usando lentes?</div>
           <div class="chips">
-            <span class="chip">Solo traspaso <span class="count">13/20</span></span>
-            <span class="chip">Necesito lente <span class="count">14/20</span></span>
-            <span class="chip">No sé <span class="count">5/20</span></span>
+            <span class="chip">Primera vez <span class="count">11/20</span></span>
+            <span class="chip">Ya uso lentes <span class="count">13/20</span></span>
+            <span class="chip">No estoy seguro <span class="count">16/20</span></span>
           </div>
         </div>
-
         <div class="msg free-text">
-          <div class="msg-label">Si responde "Necesito lente"</div>
-          <div class="bubble">No es solo montura — pasa a la Rama 1 (Mensaje 2: "¿Hace cuánto tiene esa
-          fórmula?"). Necesita cotización completa, no solo traspaso.</div>
+          <div class="msg-label">Si "Ya uso lentes"</div>
+          <div class="bubble">Converge con la Rama B en su Mensaje 2 ("¿Tienes fórmula?").</div>
         </div>
 
         <div class="msg">
-          <div class="msg-label">Mensaje 3 · Cierre</div>
-          <div class="bubble">Con gusto 👌 Tenemos monturas desde $80.000, hacemos el traspaso el mismo día.</div>
+          <div class="msg-label">Mensaje 3</div>
+          <div class="bubble">¿Qué edad tienes?</div>
           <div class="chips">
-            <span class="chip">Ver monturas <span class="count">12/20</span></span>
-            <span class="chip">Ir al local <span class="count">11/20</span></span>
-            <span class="chip">Hablar c/asesor <span class="count">15/20</span></span>
+            <span class="chip">&lt;37 <span class="count">3/20</span></span>
+            <span class="chip">37–49 <span class="count">6/20</span></span>
+            <span class="chip">50+ <span class="count">3/20</span></span>
           </div>
         </div>
-        <div class="outcome"><span class="tag">#SoloMontura</span><span class="tag">#InteresMedio</span><span>&rarr; Pipeline 1, etapa "Interesado – Montura"</span></div>
+        <div class="msg free-text">
+          <div class="msg-label">Si "50+" — Mensaje 3b, texto libre</div>
+          <div class="bubble">¿Qué edad exacta tienes? Así te recomiendo mejor entre progresivo y bifocal.</div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 4</div>
+          <div class="bubble">¿A qué te dedicas?</div>
+          <div class="chips">
+            <span class="chip">Computador <span class="count">10/20</span></span>
+            <span class="chip">Trabajo activo <span class="count">13/20</span></span>
+            <span class="chip">Otro <span class="count">5/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Mensaje 5</div>
+          <div class="bubble">¿Qué se te dificulta más?</div>
+          <div class="chips">
+            <span class="chip">De lejos <span class="count">8/20</span></span>
+            <span class="chip">De cerca <span class="count">8/20</span></span>
+            <span class="chip">Lejos y cerca <span class="count">13/20</span></span>
+          </div>
+        </div>
+
+        <div class="msg">
+          <div class="msg-label">Cierre</div>
+          <div class="bubble">Según lo que me cuentas, te recomiendo el combo <em>[X]</em> — $[precio], con
+          examen, lente y montura de regalo este mes 🎁. ¿Agendamos tu cita en la
+          <span class="sede-badge">sede principal</span>?</div>
+          <div class="chips">
+            <span class="chip">Sí, agendar <span class="count">11/20</span></span>
+            <span class="chip">Más info <span class="count">9/20</span></span>
+            <span class="chip">Hablar asesor <span class="count">13/20</span></span>
+          </div>
+        </div>
+        <div class="outcome"><span class="tag">#Combo</span><span class="tag">#PrimeraVez / #Renovacion</span><span class="tag">#InteresAlto</span><span class="tag">#SedePrincipal</span></div>
       </div>
     </section>
 
+    <section id="rapida">
+      <div class="section-head"><span class="section-num">04</span><h2>Ruta rápida — fórmula por foto</h2></div>
+      <p class="section-intro">Cuando el mensaje de entrada trae una imagen (con o sin texto, incluso sin
+      saludo — lo más común según tu experiencia en el mostrador), se salta todo el árbol de arriba. Es el
+      lead más caliente que existe.</p>
+      <div class="stage-list">
+        <div class="stage-row"><div class="stage-num">1</div><div><div class="stage-name">Pausar el bot</div><div class="stage-desc">Para esa conversación puntual.</div></div></div>
+        <div class="stage-row"><div class="stage-num">2</div><div><div class="stage-name">Etiquetar</div><div class="stage-desc"><span class="mono">#FormulaRecibida</span> (o <span class="mono">#ImagenRecibida</span> si no se puede confirmar qué es).</div></div></div>
+        <div class="stage-row"><div class="stage-num">3</div><div><div class="stage-name">Notificar al asesor / Dra. Angie</div></div></div>
+        <div class="stage-row"><div class="stage-num">4</div><div><div class="stage-name">Responder automáticamente</div>
+        <div class="bubble" style="margin-top:6px;max-width:56ch;">¡Perfecto! 😊 Ya recibimos tu imagen. La revisamos y te escribimos con la
+        cotización o la opción de montura que buscas 👓</div></div></div>
+        <div class="stage-row"><div class="stage-num">5</div><div><div class="stage-name">Crear tarea</div><div class="stage-desc">"Revisar imagen y cotizar".</div></div></div>
+        <div class="stage-row"><div class="stage-num">6</div><div><div class="stage-name">Campo Documento recibido</div><div class="stage-desc">= Pendiente revisar (el humano lo cambia luego a Fórmula / Foto de montura / Otro).</div></div></div>
+      </div>
+      <div class="callout">
+        <span>&#9888;</span>
+        <span>No le preguntes nada más al bot en automático después de esto — mandar una foto ya es decir
+        "cotízame"; cualquier pregunta extra rompe la conversación.</span>
+      </div>
+    </section>
+
+    <section id="automatizacion">
+      <div class="section-head"><span class="section-num">05</span><h2>Código para Kommo — detectar la foto</h2></div>
+      <p class="section-intro">3 formas de implementar la Sección 4, de la más ideal a la que nunca falla.</p>
+
+      <h3>Opción 1 · Condición nativa (probar primero)</h3>
+      <p class="section-intro">Después del disparador "Mensaje entrante" en el Salesbot, agrega un paso de
+      <b>Condición</b> y revisa el desplegable: en algunas integraciones de WhatsApp con Kommo aparece una
+      opción como <em>"Tipo de mensaje"</em>, <em>"Contiene adjunto"</em> o <em>"Media"</em>. El nombre exacto
+      varía según el proveedor de WhatsApp conectado (API oficial, 360dialog, Wazzup, etc.) — revisa bien ese
+      desplegable. Si existe: <span class="mono">SI "Tipo de mensaje" = Imagen &rarr; sigue el flujo de la
+      Sección 4</span>.</p>
+
+      <h3>Opción 2 · Paso personalizado (código)</h3>
+      <p class="section-intro">Si tu integración no trae ese filtro, agrega el nodo <b>"Paso personalizado
+      (código)"</b> justo después del disparador de mensaje entrante y pega esto:</p>
+      <div class="code-wrap"><pre class="code-block">function run(input, params) {
+  // Mapea aquí la variable del mensaje/adjunto que Kommo te ofrezca
+  // en el panel de "Parámetros" de este paso (busca algo como
+  // {{mensaje.adjunto}}, {{message.attachment}} o similar).
+  var attachment = params.attachment_url || params.message_attachment || "";
+  var text = (params.message_text || "").trim();
+
+  var isImage = attachment.length &gt; 0;
+
+  return {
+    data_out: {
+      es_imagen: isImage ? "si" : "no"
+    }
+  };
+}</pre></div>
+      <p class="section-intro">Luego agrega un paso de Condición que revise <span class="mono">es_imagen =
+      "si"</span> y, si es así, continúa con: etiqueta, notificación, tarea, mensaje automático y pausa del
+      bot (Sección 4).</p>
+      <div class="callout">
+        <span>&#9432;</span>
+        <span><b>Nota honesta</b> — el nombre exacto de las variables de Kommo (<span class="mono">params.xxx</span>)
+        puede cambiar según tu integración de WhatsApp. Si al pegar este código Kommo marca error, abre el
+        panel de "Parámetros" de ese paso, revisa qué variables aparecen disponibles ahí y ajusta solo esos
+        nombres — la lógica de adentro no cambia.</span>
+      </div>
+
+      <h3>Opción 3 · Respaldo manual (cero riesgo, siempre funciona)</h3>
+      <p class="section-intro">Kommo muestra un ícono de adjunto en la lista de chats cuando llega una
+      imagen. Mientras la Opción 1 o 2 quedan bien ajustadas: cada vez que Nicol vea ese ícono, entra, aplica
+      la etiqueta <span class="mono">#FormulaRecibida</span> y pausa el bot con el botón "Detener bot" de esa
+      conversación. Toma 5 segundos por lead y garantiza que ninguno se pierda.</p>
+    </section>
+
     <section id="objeciones">
-      <div class="section-head"><span class="section-num">04</span><h2>Manejo de objeciones (Etapa 6)</h2></div>
+      <div class="section-head"><span class="section-num">06</span><h2>Manejo de objeciones (Etapa 6)</h2></div>
       <p class="section-intro">No se deja la duda para el remarketing de 24 h — se responde en la misma
       conversación, justo después de la propuesta de precio.</p>
 
@@ -623,7 +777,7 @@
     </section>
 
     <section id="remarketing">
-      <div class="section-head"><span class="section-num">05</span><h2>Remarketing</h2></div>
+      <div class="section-head"><span class="section-num">07</span><h2>Remarketing</h2></div>
       <p class="section-intro">Todo el remarketing que necesita el bot, del más inmediato al más lento.</p>
 
       <div class="rama remarketing">
@@ -647,8 +801,7 @@
       <div class="rama remarketing">
         <div class="rama-title"><h3>24 horas · sin respuesta</h3></div>
         <div class="msg">
-          <div class="bubble">¡Hola de nuevo! 😊 Soy la Dra. Angie de Óptica ALaVision. ¿Seguimos con su
-          asesoría visual?</div>
+          <div class="bubble">¡Hola de nuevo! 😊 Soy Vale de Óptica ALaVision. ¿Seguimos con tu asesoría visual?</div>
           <div class="chips">
             <span class="chip">Sí, sigamos <span class="count">11/20</span></span>
             <span class="chip">Más adelante <span class="count">12/20</span></span>
@@ -698,7 +851,7 @@
     </section>
 
     <section id="correo">
-      <div class="section-head"><span class="section-num">06</span><h2>Cuándo pedir el correo</h2></div>
+      <div class="section-head"><span class="section-num">08</span><h2>Cuándo pedir el correo</h2></div>
       <p class="section-intro"><b>Nunca en el Mensaje 1</b> — pedirlo antes de dar algo de valor rompe el tono
       de "doctora que asesora" y se siente como venta de datos. Estos son los 4 momentos correctos:</p>
       <div class="email-grid">
@@ -735,11 +888,12 @@
     </section>
 
     <section id="neuro">
-      <div class="section-head"><span class="section-num">07</span><h2>Gatillos mentales aplicados</h2></div>
+      <div class="section-head"><span class="section-num">09</span><h2>Gatillos mentales aplicados</h2></div>
       <p class="section-intro">Por qué cada pieza del guion está escrita así.</p>
       <div class="principle-grid">
-        <div class="principle"><div class="principle-name">Autoridad</div><div class="principle-body">Firma
-        siempre "Dra. Angie, optómetra" — nunca "el equipo" ni "la empresa".</div></div>
+        <div class="principle"><div class="principle-name">Autoridad + cercanía</div><div class="principle-body">
+        Vale (asesora) lleva toda la conversación de forma cercana; el nombre de la Dra. Angie solo aparece al
+        agendar o confirmar el examen — nunca "el equipo" ni "la empresa".</div></div>
         <div class="principle"><div class="principle-name">Anclaje de precio</div><div class="principle-body">
         El cierre nombra todo lo que incluye el combo antes del precio, para que se lea como ahorro frente a
         comprarlo por separado.</div></div>
@@ -760,13 +914,13 @@
     </section>
 
     <section id="checklist">
-      <div class="section-head"><span class="section-num">08</span><h2>Checklist de este ajuste</h2></div>
+      <div class="section-head"><span class="section-num">10</span><h2>Checklist de este ajuste</h2></div>
       <div class="checklist" id="checklist-list"></div>
       <div id="checklist-progress"></div>
     </section>
 
     <footer>
-      <span>Óptica ALaVision · Bot Kommo v3</span>
+      <span>Óptica ALaVision · Bot Kommo v4</span>
       <span>Para Nicol — configuración sin código</span>
     </footer>
   </main>
@@ -775,22 +929,22 @@
 <script>
 (function(){
   var items = [
-    "Reemplazar los botones actuales del Bot ALAVISION 1 por los de este documento",
-    "Reordenar el Mensaje 1: \"Ya tengo fórmula\" primero, \"Solo la montura\" al final",
-    "Acortar la rama de \"Solo la montura\" a 2 mensajes (antes eran 3)",
-    "Agregar el desvío: si en la Rama 3 dicen \"Necesito lente\", saltar a la Rama 1",
+    "Cambiar la firma del bot de \"Dra. Angie, optómetra\" a \"Vale, asesora\" en Mensaje 1 y remarketing 24 h",
+    "Dejar \"con la Dra. Angie\" solo donde se habla del examen o la cita presencial",
+    "Reconstruir el árbol con las 3 ramas nuevas: Solo montura / Montura + lentes / Examen + todo",
+    "Confirmar que \"montura de regalo este mes\" aparece en el cierre de los 3 combos con examen",
+    "Crear el campo Documento recibido (Pendiente revisar / Fórmula / Foto de montura / Otro)",
+    "Crear la etiqueta #FormulaRecibida y probar la Opción 1 (condición nativa) antes que el código",
+    "Si la Opción 1 no existe en tu integración, montar la Opción 2 (paso personalizado) de la Sección 5",
+    "Explicarle a Nicol la Opción 3 (respaldo manual) para no perder leads mientras se ajusta",
     "Agregar la Etapa 6 (Objeción/Evaluando) con sus 2 mensajes al pipeline",
     "Programar los 2 recordatorios de cita (24 h y 2 h antes)",
-    "Crear la automatización de remarketing postventa (6-12 meses después de \"Ganado\")",
-    "Crear el campo Correo electrónico y la etiqueta #BaseEmail",
-    "Agregar la línea de autorización de datos (Ley 1581) la primera vez que se pide el correo",
-    "Conectar #BaseEmail a la herramienta de mail marketing",
-    "Cargar la tabla de combos/precios como referencia interna del Dr(a)",
-    "Crear etiquetas: #SoloMontura #Renovacion #Combo #PrimeraVez #InteresAlto #InteresMedio",
+    "Crear el campo Correo electrónico y la etiqueta #BaseEmail, y conectarlo a mail marketing",
+    "Crear etiquetas: #SoloMontura #SedeLosAndes #Renovacion #SedePrincipal #Combo #PrimeraVez #InteresAlto #InteresMedio",
     "Enviar a Meta las plantillas HSM de remarketing (recordatorio, 24 h y 30 días) para aprobación"
   ];
   var list = document.getElementById('checklist-list');
-  var KEY = 'alavision-bot-checklist-v4';
+  var KEY = 'alavision-bot-checklist-v5';
   var state = {};
   try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
 
