@@ -29,6 +29,23 @@ if (!leadColumns.has("valor_compra")) {
   db.exec("ALTER TABLE leads ADD COLUMN valor_compra INTEGER NOT NULL DEFAULT 0");
 }
 
+// Migraciones simples: agrega columnas nuevas a "test_vision_resultados" si vienen de una base
+// de datos anterior (antes de la Asesoría virtual con IA).
+const testVisionColumns = new Set(
+  (db.prepare("PRAGMA table_info(test_vision_resultados)").all() as Array<{ name: string }>).map(
+    (c) => c.name,
+  ),
+);
+if (!testVisionColumns.has("resultado_texto")) {
+  db.exec("ALTER TABLE test_vision_resultados ADD COLUMN resultado_texto TEXT NOT NULL DEFAULT ''");
+}
+if (!testVisionColumns.has("imagen_url")) {
+  db.exec("ALTER TABLE test_vision_resultados ADD COLUMN imagen_url TEXT NOT NULL DEFAULT ''");
+}
+if (!testVisionColumns.has("entrada_tipo")) {
+  db.exec("ALTER TABLE test_vision_resultados ADD COLUMN entrada_tipo TEXT NOT NULL DEFAULT 'cuestionario'");
+}
+
 // Plantillas de remarketing por defecto (editables luego desde el panel admin).
 const plantillasCount = (db.prepare("SELECT COUNT(*) AS n FROM plantillas_remarketing").get() as { n: number }).n;
 if (plantillasCount === 0) {
@@ -402,6 +419,9 @@ export interface TestVisionResultado {
   edad: number;
   respuestas: string;
   resultado_combo: string;
+  resultado_texto: string;
+  imagen_url: string;
+  entrada_tipo: string;
   origen_campana: string;
   creado_en: string;
 }
@@ -413,16 +433,31 @@ export interface NuevoTestVision {
   edad: number;
   respuestas: Record<string, string>;
   resultado_combo: string;
+  resultado_texto?: string;
+  imagen_url?: string;
+  entrada_tipo?: string;
   origen_campana: string;
 }
 
 export function createTestVision(t: NuevoTestVision): TestVisionResultado {
   const info = db
     .prepare(
-      `INSERT INTO test_vision_resultados (nombre, telefono, correo, edad, respuestas, resultado_combo, origen_campana)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO test_vision_resultados
+       (nombre, telefono, correo, edad, respuestas, resultado_combo, resultado_texto, imagen_url, entrada_tipo, origen_campana)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
-    .run(t.nombre, t.telefono, t.correo, t.edad, JSON.stringify(t.respuestas), t.resultado_combo, t.origen_campana);
+    .run(
+      t.nombre,
+      t.telefono,
+      t.correo,
+      t.edad,
+      JSON.stringify(t.respuestas),
+      t.resultado_combo,
+      t.resultado_texto ?? "",
+      t.imagen_url ?? "",
+      t.entrada_tipo ?? "cuestionario",
+      t.origen_campana,
+    );
   return db
     .prepare("SELECT * FROM test_vision_resultados WHERE id = ?")
     .get(info.lastInsertRowid) as TestVisionResultado;

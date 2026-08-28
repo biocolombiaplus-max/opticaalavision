@@ -9,6 +9,7 @@ import { settingsPublicRouter, settingsAdminRouter, uploadsDir } from "./setting
 import { remarketingAdminRouter } from "./remarketing/routes.js";
 import { reportsAdminRouter } from "./reports/routes.js";
 import { catalogoPublicRouter, catalogoAdminRouter } from "./catalogo/routes.js";
+import { asesoriaPublicRouter } from "./asesoria/routes.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -22,6 +23,7 @@ app.use(webhookRouter);
 app.use(citasPublicRouter);
 app.use(settingsPublicRouter);
 app.use(catalogoPublicRouter);
+app.use(asesoriaPublicRouter);
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(join(__dirname, "public"))); // sirve "/" -> landing/index.html, "/tienda" -> tienda/index.html
 

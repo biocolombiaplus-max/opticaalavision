@@ -118,10 +118,22 @@ catalogoAdminRouter.get("/api/test-vision", (_req, res) => res.json(listTestVisi
 
 catalogoAdminRouter.get("/api/test-vision/csv", (_req, res) => {
   const rows = listTestVision();
-  const header = "nombre,telefono,correo,edad,resultado_combo,origen_campana,creado_en";
+  const header =
+    "nombre,telefono,correo,edad,resultado_combo,resultado_texto,entrada_tipo,imagen_url,origen_campana,creado_en";
   const csvEscape = (v: string) => `"${String(v).replace(/"/g, '""')}"`;
   const lines = rows.map((r) =>
-    [r.nombre, r.telefono, r.correo, String(r.edad), r.resultado_combo, r.origen_campana, r.creado_en]
+    [
+      r.nombre,
+      r.telefono,
+      r.correo,
+      String(r.edad),
+      r.resultado_combo,
+      r.resultado_texto,
+      r.entrada_tipo,
+      r.imagen_url,
+      r.origen_campana,
+      r.creado_en,
+    ]
       .map(csvEscape)
       .join(","),
   );

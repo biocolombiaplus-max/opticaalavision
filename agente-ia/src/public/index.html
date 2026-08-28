@@ -141,9 +141,19 @@
   .vt-option{padding:13px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;
     transition:border-color .15s ease, background .15s ease;}
   .vt-option:hover{border-color:var(--gold);background:var(--gold-tint);}
-  .vt-form input{width:100%;padding:12px 14px;border-radius:6px;border:1px solid var(--line);font-size:14px;margin-bottom:12px;font-family:inherit;}
+  .vt-form input, .vt-form textarea{width:100%;padding:12px 14px;border-radius:6px;border:1px solid var(--line);font-size:14px;margin-bottom:12px;font-family:inherit;background:var(--surface);color:var(--ink);}
+  .vt-form textarea{resize:vertical;min-height:110px;}
+  .vt-file{border:1.5px dashed var(--line);border-radius:6px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;transition:border-color .15s ease, background .15s ease;}
+  .vt-file:hover{border-color:var(--gold);background:var(--gold-tint);}
+  .vt-file input{display:none;}
+  .vt-file .fname{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+  .vt-back{display:inline-block;margin-bottom:16px;font-size:12.5px;color:var(--ink-faint);cursor:pointer;}
+  .vt-back:hover{color:var(--gold-strong);}
+  .vt-loading{text-align:center;padding:20px 0;color:var(--ink-soft);font-size:14px;}
   .vt-result{text-align:center;}
   .vt-result .combo{font-family:"Fraunces",serif;font-size:26px;color:var(--accent-strong);margin:10px 0;}
+  .vt-result .analisis{font-size:14.5px;color:var(--ink-soft);line-height:1.6;text-align:left;background:var(--paper);border-radius:6px;padding:16px 18px;margin:14px 0 18px;}
+  .vt-result .cta-row{display:flex;flex-direction:column;gap:10px;}
   .vt-disclaimer{font-size:11.5px;color:var(--ink-faint);margin-top:16px;line-height:1.5;}
 
   .trust{background:var(--surface);border-bottom:1px solid var(--line);}
@@ -236,6 +246,13 @@
   .foot-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:36px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 
   .wa-float{position:fixed;bottom:22px;right:22px;z-index:50;background:#25d366;color:#06210f;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);}
+  .asesoria-float{position:fixed;bottom:92px;right:22px;z-index:50;display:flex;align-items:center;gap:9px;
+    background:linear-gradient(135deg, var(--gold), var(--gold-strong));color:#1a1508;padding:12px 18px 12px 14px;
+    border-radius:32px;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);font-weight:700;font-size:13px;
+    animation:glow 3.5s ease-in-out infinite;cursor:pointer;border:none;font-family:inherit;}
+  .asesoria-float:hover{box-shadow:0 16px 32px -8px rgba(0,0,0,.5);}
+  @media (prefers-reduced-motion: reduce){ .asesoria-float{animation:none;} }
+  @media (max-width:560px){ .asesoria-float span{display:none;} .asesoria-float{padding:14px;bottom:90px;} }
 </style>
 </head>
 <body>
@@ -255,7 +272,7 @@
     <nav class="links">
       <a href="#tienda-destacados">Tienda</a>
       <a href="#precios">Precios</a>
-      <a href="#test-vision">Test de visión</a>
+      <a href="#test-vision">Asesoría virtual</a>
       <a href="#testimonios">Testimonios</a>
       <a href="#ubicacion">Ubicación</a>
     </nav>
@@ -415,9 +432,9 @@
 <section id="test-vision" class="vision-test">
   <div class="wrap">
     <div class="section-head center" style="color:#fff;">
-      <div class="eyebrow" style="color:var(--gold);">Orientación gratuita</div>
-      <h2 style="color:#fff;">¿Cómo está tu visión?</h2>
-      <p style="color:rgba(255,255,255,.75);">Responde 4 preguntas rápidas y la Dra. Angie te da una orientación de qué tipo de lente podría convenirte.</p>
+      <div class="eyebrow" style="color:var(--gold);">Asesoría virtual gratuita</div>
+      <h2 style="color:#fff;">Cuéntanos tu caso, te asesoramos</h2>
+      <p style="color:rgba(255,255,255,.75);">Responde unas preguntas, sube tu fórmula o cuéntanos tu situación — la analizamos y te damos una recomendación personalizada, lista para agendar por WhatsApp.</p>
     </div>
     <div class="vision-card" id="visionCard"></div>
   </div>
@@ -531,6 +548,11 @@
   </div>
 </footer>
 
+<a class="asesoria-float" href="#test-vision" aria-label="Habla con nuestra asesora virtual">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+  <span>Asesoría virtual</span>
+</a>
+
 <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.2.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.2 0-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9 0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.3.5.5.2 1 .1 1.4-.1.4-.2 1.5-.6 1.6-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.1-.4-.2Z"/></svg>
 </a>
@@ -565,6 +587,7 @@
       `linear-gradient(180deg, rgba(10,12,20,${Math.min(opacity + 0.05, 1)}), rgba(10,12,20,${Math.min(opacity + 0.25, 1)}))`;
 
     const phone = cfg.whatsapp_numero || '';
+    window.ALAVISION_WA_NUMERO = phone;
     document.getElementById('heroWhatsapp').href = waLink(phone, 'Hola, vi la página y quiero información sobre monturas y lentes.');
     document.getElementById('waFloat').href = waLink(phone);
     document.getElementById('footWhatsapp').href = waLink(phone);
@@ -620,40 +643,60 @@
     `).join('');
   }).catch(() => {});
 
-  // ---------- Test de visión (guionado, sin IA — bajo el nombre de la Dra. Angie) ----------
+  // ---------- Asesoría virtual con IA (cuestionario, fórmula o texto libre) ----------
   const preguntas = [
     { id: 'usaLentes', texto: '¿Usas lentes actualmente?', opciones: [['si','Sí'],['no','No']] },
     { id: 'dificultad', texto: '¿Qué se te dificulta más?', opciones: [['lejos','Ver de lejos'],['cerca','Ver de cerca'],['ambas','Ambas'],['ninguna','Ninguna en particular']] },
     { id: 'pantallas', texto: '¿Cuánto tiempo pasas frente a pantallas al día?', opciones: [['poco','Menos de 2 horas'],['medio','Entre 2 y 6 horas'],['mucho','Más de 6 horas']] },
     { id: 'aireLibre', texto: '¿Conduces o pasas mucho tiempo al aire libre?', opciones: [['si','Sí'],['no','No']] },
   ];
+  let vtModo = null; // 'cuestionario' | 'formula' | 'texto'
   let vtStep = 0;
-  const vtRespuestas = {};
+  let vtRespuestas = {};
+  let vtSituacion = '';
+  let vtFile = null;
 
-  function vtProgress() {
-    const total = preguntas.length + 1; // + paso de edad
+  function vtProgress(total) {
     return Array.from({length: total}).map((_, i) => `<div class="vt-dot"><i style="width:${i <= vtStep ? 100 : 0}%"></i></div>`).join('');
   }
 
+  function vtBack() {
+    return `<span class="vt-back" id="vtBack">← Volver</span>`;
+  }
+
+  function bindBack(handler) {
+    const el = document.getElementById('vtBack');
+    if (el) el.addEventListener('click', handler);
+  }
+
   function renderVisionIntro() {
+    vtModo = null; vtStep = 0; vtRespuestas = {}; vtSituacion = ''; vtFile = null;
     document.getElementById('visionCard').innerHTML = `
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Orientación visual · Óptica ALaVision</div></div></div>
-      <div class="vt-question">Vamos a hacerte unas preguntas cortas para orientarte sobre el tipo de lente que podría convenirte.</div>
-      <div class="vt-options"><div class="vt-option" id="vtStart">Empezar →</div></div>
-      <div class="vt-disclaimer">Esta es una orientación general, no un diagnóstico médico — el examen con la Dra. Angie es el que confirma tu fórmula real.</div>
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual · Óptica ALaVision</div></div></div>
+      <div class="vt-question">Elige cómo prefieres contarnos tu caso — lo analizamos y te damos una recomendación personalizada.</div>
+      <div class="vt-options">
+        <div class="vt-option" id="vtModoPreguntas">📋 Responder unas preguntas cortas</div>
+        <div class="vt-option" id="vtModoFormula">📄 Subir la foto de mi fórmula</div>
+        <div class="vt-option" id="vtModoTexto">✍️ Contarte mi situación</div>
+      </div>
+      <div class="vt-disclaimer">Esto es una orientación con inteligencia artificial, no un diagnóstico médico — el examen con la Dra. Angie es el que confirma tu fórmula real.</div>
     `;
-    document.getElementById('vtStart').addEventListener('click', () => { vtStep = 0; renderVisionQuestion(); });
+    document.getElementById('vtModoPreguntas').addEventListener('click', () => { vtModo = 'cuestionario'; vtStep = 0; renderVisionQuestion(); });
+    document.getElementById('vtModoFormula').addEventListener('click', () => { vtModo = 'formula'; renderFormulaUpload(); });
+    document.getElementById('vtModoTexto').addEventListener('click', () => { vtModo = 'texto'; renderSituacionForm(); });
   }
 
   function renderVisionQuestion() {
-    if (vtStep >= preguntas.length) { renderVisionEdadForm(); return; }
+    if (vtStep >= preguntas.length) { renderContactForm(); return; }
     const p = preguntas[vtStep];
     document.getElementById('visionCard').innerHTML = `
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Orientación visual</div></div></div>
-      <div class="vt-progress">${vtProgress()}</div>
+      ${vtBack()}
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-progress">${vtProgress(preguntas.length + 1)}</div>
       <div class="vt-question">${p.texto}</div>
       <div class="vt-options">${p.opciones.map(([val,label]) => `<div class="vt-option" data-val="${val}">${label}</div>`).join('')}</div>
     `;
+    bindBack(() => { vtStep > 0 ? (vtStep--, renderVisionQuestion()) : renderVisionIntro(); });
     document.querySelectorAll('#visionCard .vt-option').forEach(opt => {
       opt.addEventListener('click', () => {
         vtRespuestas[p.id] = opt.dataset.val;
@@ -663,48 +706,124 @@
     });
   }
 
-  function renderVisionEdadForm() {
+  function renderFormulaUpload() {
     document.getElementById('visionCard').innerHTML = `
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Dra. Angie</div><div class="role">Ya casi está tu orientación</div></div></div>
-      <div class="vt-progress">${vtProgress()}</div>
-      <div class="vt-question">Para darte el resultado, cuéntame un poco de ti:</div>
-      <form class="vt-form" id="vtForm">
-        <input name="nombre" placeholder="Nombre completo" required />
-        <input name="edad" type="number" min="1" max="110" placeholder="Edad" required />
-        <input name="telefono" placeholder="WhatsApp" required />
-        <input name="correo" type="email" placeholder="Correo" required />
-        <button class="btn btn-gold" type="submit" style="width:100%;justify-content:center;"><span>Ver mi orientación</span></button>
-      </form>
-      <div class="vt-disclaimer">Al continuar autorizas el uso de tus datos para esta orientación, según la Ley 1581 de 2012.</div>
+      ${vtBack()}
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-question">Sube una foto clara de tu fórmula optométrica.</div>
+      <label class="vt-file" id="vtFileLabel">
+        📷 Toca para elegir la foto
+        <div class="fname" id="vtFname"></div>
+        <input type="file" id="vtFileInput" accept="image/png,image/jpeg,image/webp" />
+      </label>
+      <button class="btn btn-gold" id="vtFileNext" style="width:100%;justify-content:center;" disabled><span>Continuar →</span></button>
     `;
-    document.getElementById('vtForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const datos = Object.fromEntries(new FormData(e.target).entries());
-      const body = {
-        nombre: datos.nombre, telefono: datos.telefono, correo: datos.correo,
-        edad: Number(datos.edad), respuestas: vtRespuestas,
-        origen_campana: sessionStorage.getItem('alavision_origen') || 'directo',
-      };
-      try {
-        const res = await fetch('/api/test-vision', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
-        const data = await res.json();
-        renderVisionResultado(data);
-      } catch (err) {
-        document.getElementById('visionCard').innerHTML = '<div class="vt-disclaimer">No pudimos calcular tu resultado ahora — escríbenos por WhatsApp y la Dra. Angie te orienta directo.</div>';
+    bindBack(renderVisionIntro);
+    const input = document.getElementById('vtFileInput');
+    const next = document.getElementById('vtFileNext');
+    input.addEventListener('change', () => {
+      if (input.files[0]) {
+        vtFile = input.files[0];
+        document.getElementById('vtFname').textContent = vtFile.name;
+        next.disabled = false;
       }
+    });
+    next.addEventListener('click', () => { if (vtFile) renderContactForm(); });
+  }
+
+  function renderSituacionForm() {
+    document.getElementById('visionCard').innerHTML = `
+      ${vtBack()}
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-question">Cuéntanos qué se te dificulta, si usas lentes, hace cuánto, a qué te dedicas — lo que quieras compartir.</div>
+      <form class="vt-form" id="vtSituacionForm">
+        <textarea name="situacion" placeholder="Escribe aquí tu situación..." required minlength="10"></textarea>
+        <button class="btn btn-gold" type="submit" style="width:100%;justify-content:center;"><span>Continuar →</span></button>
+      </form>
+    `;
+    bindBack(renderVisionIntro);
+    document.getElementById('vtSituacionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      vtSituacion = new FormData(e.target).get('situacion').trim();
+      renderContactForm();
     });
   }
 
+  function renderContactForm() {
+    const edadRequerida = vtModo === 'cuestionario';
+    document.getElementById('visionCard').innerHTML = `
+      ${vtBack()}
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Ya casi está tu resultado</div></div></div>
+      <div class="vt-question">Para darte el resultado, cuéntame un poco de ti:</div>
+      <form class="vt-form" id="vtForm">
+        <input name="nombre" placeholder="Nombre completo" required />
+        <input name="edad" type="number" min="1" max="110" placeholder="${edadRequerida ? 'Edad' : 'Edad (opcional)'}" ${edadRequerida ? 'required' : ''} />
+        <input name="telefono" placeholder="WhatsApp" required />
+        <input name="correo" type="email" placeholder="Correo" required />
+        <button class="btn btn-gold" type="submit" style="width:100%;justify-content:center;"><span>Ver mi resultado</span></button>
+      </form>
+      <div class="vt-disclaimer">Al continuar autorizas el uso de tus datos para esta asesoría, según la Ley 1581 de 2012.</div>
+    `;
+    bindBack(() => {
+      if (vtModo === 'cuestionario') renderVisionQuestion();
+      else if (vtModo === 'formula') renderFormulaUpload();
+      else renderSituacionForm();
+    });
+    document.getElementById('vtForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(e.target).entries());
+      enviarAsesoria(datos);
+    });
+  }
+
+  async function enviarAsesoria(datos) {
+    document.getElementById('visionCard').innerHTML = `
+      <div class="vt-loading">Analizando tu caso… un momento 👓</div>
+    `;
+    const fd = new FormData();
+    fd.append('nombre', datos.nombre);
+    fd.append('telefono', datos.telefono);
+    fd.append('correo', datos.correo);
+    if (datos.edad) fd.append('edad', datos.edad);
+    fd.append('entrada_tipo', vtModo === 'cuestionario' ? 'cuestionario' : vtModo === 'formula' ? 'formula' : 'texto_libre');
+    fd.append('origen_campana', sessionStorage.getItem('alavision_origen') || 'directo');
+    if (vtModo === 'cuestionario') fd.append('respuestas', JSON.stringify(vtRespuestas));
+    if (vtModo === 'texto') fd.append('situacion', vtSituacion);
+    if (vtModo === 'formula' && vtFile) fd.append('archivo', vtFile);
+
+    try {
+      const res = await fetch('/api/asesoria/analizar', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error');
+      renderVisionResultado(data);
+    } catch (err) {
+      document.getElementById('visionCard').innerHTML = `
+        <div class="vt-result">
+          <div class="vt-question">No pudimos analizar tu caso justo ahora.</div>
+          <p style="color:var(--ink-soft);font-size:14.5px;">Escríbenos directo por WhatsApp y con gusto te asesoramos.</p>
+          <a class="btn btn-primary" id="vtErrWa" href="#" target="_blank" rel="noopener"><span>Escribir por WhatsApp</span></a>
+        </div>
+      `;
+      const phone = window.ALAVISION_WA_NUMERO || '';
+      document.getElementById('vtErrWa').href = waLink(phone, `Hola, soy ${datos.nombre}. Quiero información sobre monturas y lentes.`);
+    }
+  }
+
   function renderVisionResultado(data) {
+    const phone = window.ALAVISION_WA_NUMERO || '';
     document.getElementById('visionCard').innerHTML = `
       <div class="vt-result">
-        <div class="vt-doctor" style="justify-content:center;"><div class="avatar">DA</div><div style="text-align:left;"><div class="name">Dra. Angie</div><div class="role">Tu orientación</div></div></div>
+        <div class="vt-doctor" style="justify-content:center;"><div class="avatar">DA</div><div style="text-align:left;"><div class="name">Vale</div><div class="role">Tu resultado</div></div></div>
         <div class="combo">${data.combo || ''}</div>
-        <p style="color:var(--ink-soft);font-size:14.5px;">${data.texto || ''}</p>
-        <a class="btn btn-primary" href="#agenda"><span>Agendar mi examen</span></a>
-        <div class="vt-disclaimer">Esto es una orientación general, no reemplaza el examen visual.</div>
+        <div class="analisis">${(data.texto || '').replace(/\n/g,'<br>')}</div>
+        <div class="cta-row">
+          <a class="btn btn-gold" id="vtResultWa" href="#" target="_blank" rel="noopener" style="justify-content:center;"><span>Agendar por WhatsApp</span></a>
+          <a class="btn btn-outline" href="#agenda" style="justify-content:center;"><span>O agenda aquí mismo</span></a>
+        </div>
+        <div class="vt-disclaimer">Esto es una orientación con IA, no reemplaza el examen visual.</div>
       </div>
     `;
+    document.getElementById('vtResultWa').href = waLink(phone, data.mensaje_whatsapp || `Hola, quiero agendar mi cita — mi recomendación fue ${data.combo}.`);
   }
 
   renderVisionIntro();

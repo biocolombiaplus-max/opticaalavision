@@ -174,7 +174,7 @@
     <p class="hint">Cada persona que completa el test de orientación en la landing queda aquí — descárgalos para mail marketing o seguimiento.</p>
     <button class="btn primary" id="descargarCsv" style="margin-bottom:14px;">Descargar CSV</button>
     <table id="tablaTestVision"><thead><tr>
-      <th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Edad</th><th>Resultado</th><th>Origen</th><th>Fecha</th>
+      <th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Edad</th><th>Resultado</th><th>Análisis</th><th>Entrada</th><th>Origen</th><th>Fecha</th>
     </tr></thead><tbody></tbody></table>
   </div>
 </div>
@@ -463,8 +463,11 @@ document.getElementById('descargarPdf').addEventListener('click', () => {
 async function loadTestVision() {
   const rows = await api('/api/test-vision');
   document.querySelector('#tablaTestVision tbody').innerHTML = rows.map(r => `
-    <tr><td>${r.nombre}</td><td>${r.telefono}</td><td>${r.correo}</td><td>${r.edad}</td>
-    <td>${r.resultado_combo}</td><td>${r.origen_campana || '-'}</td><td>${r.creado_en}</td></tr>
+    <tr><td>${r.nombre}</td><td>${r.telefono}</td><td>${r.correo}</td><td>${r.edad || '-'}</td>
+    <td>${r.resultado_combo}</td>
+    <td style="max-width:280px;white-space:normal;">${r.resultado_texto || '-'}${r.imagen_url ? ` <a href="${r.imagen_url}" target="_blank" rel="noopener">Ver foto</a>` : ''}</td>
+    <td>${r.entrada_tipo || 'cuestionario'}</td>
+    <td>${r.origen_campana || '-'}</td><td>${r.creado_en}</td></tr>
   `).join('');
 }
 document.getElementById('descargarCsv').addEventListener('click', () => window.open('/api/test-vision/csv', '_blank'));

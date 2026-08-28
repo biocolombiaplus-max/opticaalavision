@@ -9,19 +9,26 @@ reportes en PDF.
 ## Qué incluye
 
 - **Landing page** (`/`) — hero, banda animada de logos de marcas, sección de
-  "más vendidos", precios, cómo funciona, un **test de orientación visual**
-  interactivo (guionado, sin IA — presentado como la Dra. Angie), testimonios,
-  ubicación (Google Maps) y formulario de "Agenda tu cita". Botones con efecto
-  de brillo/luz al pasar el mouse. Todo lo editable (logo, foto de portada,
-  opacidad, direcciones, mapas, marcas, productos) sale del panel
-  administrativo, no del código.
+  "más vendidos", precios, cómo funciona, una **Asesoría virtual con IA**
+  (ver abajo), testimonios, ubicación (Google Maps) y formulario de "Agenda
+  tu cita". Botón flotante de "Asesoría virtual" además del de WhatsApp.
+  Botones con efecto de brillo/luz al pasar el mouse. Todo lo editable (logo,
+  foto de portada, opacidad, direcciones, mapas, marcas, productos) sale del
+  panel administrativo, no del código.
 - **Tienda virtual** (`/tienda`) — sub-landing estilo Shopify: catálogo
   filtrable por marca, carrito (guardado en el navegador) y checkout que arma
   el pedido y lo manda por WhatsApp (no hay pasarela de pagos conectada).
-- **Test de orientación visual**: 4 preguntas cortas + datos de contacto antes
-  de mostrar el resultado — así se arma una base de datos propia, descargable
-  en CSV desde el panel. Es lógica fija (no IA todavía), pensada para verse
-  profesional, no para diagnosticar.
+- **Asesoría virtual con IA**: el visitante elige cómo contarte su caso —
+  responder 4 preguntas cortas, subir la foto de su fórmula, o escribir su
+  situación con sus propias palabras — y Claude/Gemini lo analiza (leyendo la
+  foto si la envió) para darle un resultado personalizado con el combo
+  recomendado y el porqué, nunca una respuesta genérica repetida. Siempre
+  termina con un botón "Agendar por WhatsApp" que abre el chat con un mensaje
+  ya redactado con su nombre y su resultado, listo para que la asesora lo lea
+  y cierre la cita o la venta. Cada análisis queda guardado (con la foto, si
+  la hubo) y aparece en el panel → Reportes, exportable en CSV. Como es una
+  ruta pública que consume IA en cada uso, tiene un límite de solicitudes por
+  visitante (8 cada 15 minutos) para evitar abuso/spam.
 - **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
   - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
     humano, marcar un lead como cliente (con el valor de la venta), correo
@@ -40,7 +47,8 @@ reportes en PDF.
     WhatsApp.
   - **Reportes**: seguimiento en vivo (leads totales, de Meta Ads,
     convertidos, tasa de conversión, valor vendido), descarga de PDF por
-    rango de fechas, y la base de datos del test de visión en CSV.
+    rango de fechas, y la base de datos de la Asesoría virtual en CSV (con
+    el análisis de cada persona y el link a su foto, si subió una).
 - **Agente con Claude** (`claude-opus-5`), y **Gemini como respaldo
   automático** si la llamada a Claude falla — como pediste, ya que Gemini es
   el que la óptica tiene contratado. Ambos leen fotos de fórmulas
@@ -116,9 +124,11 @@ puerto con `ngrok http 3000` y usa esa URL en la configuración del webhook.
 
 ## Costos aproximados a tener en cuenta
 
-- **Anthropic (Claude)**: por uso/tokens. Barato por conversación típica;
-  pide una estimación con tu volumen real antes de lanzar a toda la pauta.
-- **Gemini**: solo se usa si Claude falla — el costo adicional es marginal.
+- **Anthropic (Claude) o Gemini**: por uso/tokens. Barato por conversación o
+  análisis típico; pide una estimación con tu volumen real antes de lanzar a
+  toda la pauta. Ahora hay dos puntos que consumen IA: el agente de WhatsApp
+  y la Asesoría virtual de la landing (con límite de 8 análisis cada 15
+  minutos por visitante para controlar el gasto).
 - **WhatsApp Cloud API**: Meta cobra por conversación iniciada, con franja
   gratuita mensual.
 - **Resend**: plan gratis cubre varios miles de correos al mes.

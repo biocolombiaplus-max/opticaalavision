@@ -92,6 +92,9 @@ CREATE TABLE IF NOT EXISTS test_vision_resultados (
   edad INTEGER NOT NULL,
   respuestas TEXT NOT NULL DEFAULT '{}',
   resultado_combo TEXT NOT NULL DEFAULT '',
+  resultado_texto TEXT NOT NULL DEFAULT '',
+  imagen_url TEXT NOT NULL DEFAULT '',
+  entrada_tipo TEXT NOT NULL DEFAULT 'cuestionario',
   origen_campana TEXT NOT NULL DEFAULT '',
   creado_en TEXT NOT NULL DEFAULT (datetime('now'))
 );
