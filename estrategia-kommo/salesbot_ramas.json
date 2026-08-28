@@ -1,0 +1,1433 @@
+{
+    "1": {
+        "block_uuid": "d5833824-a9fc-4b1a-b399-e9bb20b2a07d",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¡Hola! 😊 Soy la Dra Angie , optómetra de Óptica ALAVISION. Vi que le interesaron\nnuestras monturas\nPara orientarte mejor, ¿Qué estás buscando?👇",
+                    "type": "external",
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Solo montura"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Montura + lentes"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Todo/examen/lente"
+                        }
+                    ],
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Solo montura",
+                        "params": [
+                            {
+                                "handler": "action",
+                                "params": {
+                                    "name": "change_status",
+                                    "params": {
+                                        "value": 110760167,
+                                        "pipeline_id": 14340843
+                                    }
+                                }
+                            },
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 10
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Montura + lentes",
+                        "params": [
+                            {
+                                "handler": "action",
+                                "params": {
+                                    "name": "change_status",
+                                    "params": {
+                                        "value": 110760167,
+                                        "pipeline_id": 14340843
+                                    }
+                                }
+                            },
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 20
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Todo/examen/lente",
+                        "params": [
+                            {
+                                "handler": "action",
+                                "params": {
+                                    "name": "change_status",
+                                    "params": {
+                                        "value": 110760167,
+                                        "pipeline_id": 14340843
+                                    }
+                                }
+                            },
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 30
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "3": {
+        "block_uuid": "7f94fb90-e430-4bb0-bf0a-7112dd9c3e12",
+        "question": [
+            {
+                "handler": "conditions",
+                "params": {
+                    "logic": "and",
+                    "result": [
+                        {
+                            "handler": "goto",
+                            "params": {
+                                "type": "question",
+                                "step": 1
+                            }
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "term1": "{{message_text}}",
+                            "term2": "¡Hola! Quiero cotizar mi formula",
+                            "operation": "contains",
+                            "value_type": "custom_value"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "10": {
+        "block_uuid": "dfb5824d-0c73-4af6-a4b8-8be711db691d",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Qué necesitas hacer?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Cambiarla"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Se partió"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Traspasar cristal"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Cambiarla",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 12
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Se partió",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 12
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Traspasar cristal",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 11
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "11": {
+        "block_uuid": "b6b2259c-34f9-4612-b5db-d6bcb134c1d9",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Tu cristal está en buen estado?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Sí"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Está viejo"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "No sé"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Sí",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 12
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Está viejo",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 20
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "No sé",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 20
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "12": {
+        "block_uuid": "50ebdc04-9688-4de9-8407-d65e0132971d",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¡Listo! 👓 Monturas desde $80.000 en nuestra sede Los Andes, te hacemos el traspaso ahí mismo. ¿Cómo seguimos?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Ver monturas"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Ir a Los Andes"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Ver monturas",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Ir a Los Andes",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "20": {
+        "block_uuid": "74653fdb-e515-4ed1-8fcd-e293df40def7",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Tienes fórmula?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Sí"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Está vieja"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "No tengo"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Sí",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 21
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Está vieja",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 22
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "No tengo",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 25
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "21": {
+        "block_uuid": "35cb2ed6-2c1d-4b16-b4d3-86b75b7a4c1b",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¡Perfecto! Envíame la foto de tu fórmula y te cotizo al toque 📄",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": []
+                }
+            }
+        ]
+    },
+    "22": {
+        "block_uuid": "ead64605-fc1b-463d-8e48-c0c7d6a07d6c",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Hace cuánto fue tu último examen?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "<1 año"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "1–2 años"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "+2 años"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "<1 año",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 23
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "1–2 años",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 23
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "+2 años",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 23
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "23": {
+        "block_uuid": "0d9141a2-b751-44cc-b541-37b6a62a7223",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Sabes qué tipo de lente usas?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Monofocal"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Progresivo"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "No sé"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Monofocal",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 24
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Progresivo",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": "24b"
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "No sé",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": "23b"
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "23b": {
+        "block_uuid": "b63de22d-24ad-48a8-9e30-e972a209212a",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Monofocal = una sola distancia. Progresivo = de lejos y cerca, sin línea. Bifocal = con la rayita abajo. ¿Cuál se parece al tuyo?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Monofocal"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Progresivo"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Bifocal"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Monofocal",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 24
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Progresivo",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": "24b"
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Bifocal",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": "24c"
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "24": {
+        "block_uuid": "47b431fd-ea43-49b7-b467-9dd958dabf8f",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Para tu caso el combo ideal es Monofocal – $350.000, con la montura de regalo este mes 🎁. ¿Agendamos en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Agendar cita"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Agendar cita",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "24b": {
+        "block_uuid": "5073e8cd-6fab-4be4-91bc-35249b88f2ce",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Para tu caso el combo ideal es Progresivo – $550.000, con la montura de regalo este mes 🎁. ¿Agendamos en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Agendar cita"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Agendar cita",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "24c": {
+        "block_uuid": "9505d190-0152-4fe5-a105-f681b55692a9",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Para tu caso el combo ideal es Bifocal – $300.000 (sin filtros adicionales), con la montura de regalo este mes 🎁. ¿Agendamos en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Agendar cita"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Agendar cita",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "25": {
+        "block_uuid": "9a1e9156-89ac-42c6-96a6-828ecb45cfd0",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Sin fórmula vigente no podemos cotizar el lente todavía — te conviene el examen primero.",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Agendar examen"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Solo montura"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Agendar examen",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 30
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Solo montura",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 10
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "30": {
+        "block_uuid": "9ba1a645-7347-46b9-9c0d-647dc3833d3b",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Es tu primera vez usando lentes?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Primera vez"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Ya uso lentes"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "No estoy seguro"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Primera vez",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 31
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Ya uso lentes",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 20
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "No estoy seguro",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 31
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "31": {
+        "block_uuid": "7d1fa0c4-8cd8-4281-93fb-bdbc94cec10f",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Qué edad tienes?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "<37"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "37–49"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "50+"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "<37",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 34
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "37–49",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 35
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "50+",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": "31b"
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "31b": {
+        "block_uuid": "ecb6f54e-fa56-4843-89d8-050cc62477fd",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "¿Tienes entre 50-59 o 60+?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "50–59"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "60+"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "50–59",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 35
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "60+",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 36
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "34": {
+        "block_uuid": "44c9ae2e-fb9d-49fb-b5e3-d51c3bf37a64",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Según lo que me cuentas, te recomiendo el combo Monofocal – $350.000, con examen, lente y montura de regalo este mes 🎁. ¿Agendamos tu cita en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Sí, agendar"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Sí, agendar",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "35": {
+        "block_uuid": "02f2b6db-4fcb-4627-b1fc-ffb6446d5e9e",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Según lo que me cuentas, te recomiendo el combo Progresivo – $550.000, con examen, lente y montura de regalo este mes 🎁. ¿Agendamos tu cita en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Sí, agendar"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Sí, agendar",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "36": {
+        "block_uuid": "cd8d4681-d3ef-46c3-8568-29d318d08c56",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Según lo que me cuentas, te recomiendo el combo Bifocal – $300.000 (sin filtros adicionales), con examen y montura de regalo este mes 🎁. ¿Agendamos tu cita en la sede principal?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "Sí, agendar"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Más información"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Hablar asesor"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "Sí, agendar",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Más información",
+                        "params": [
+                            {
+                                "handler": "goto",
+                                "params": {
+                                    "type": "question",
+                                    "step": 90
+                                }
+                            }
+                        ],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Hablar asesor",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "90": {
+        "block_uuid": "d56cf218-dbf7-4016-8e00-e034bbbead82",
+        "question": [
+            {
+                "handler": "send_message",
+                "params": {
+                    "tag": "",
+                    "text": "Claro, te cuento: el combo incluye examen, garantía de un año y ajuste de montura sin costo. ¿Qué te genera duda?",
+                    "type": "external",
+                    "recipient": {
+                        "type": "all_contacts",
+                        "way_of_communication": "over_all"
+                    },
+                    "is_in_starting_block": false,
+                    "send_to_all_chat_sources": true,
+                    "on_error": null,
+                    "buttons": [
+                        {
+                            "type": "inline",
+                            "text": "El precio"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "La garantía"
+                        },
+                        {
+                            "type": "inline",
+                            "text": "Ya quiero agendar"
+                        }
+                    ]
+                }
+            }
+        ],
+        "answer": [
+            {
+                "handler": "buttons",
+                "params": [
+                    {
+                        "value": "El precio",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "La garantía",
+                        "params": [],
+                        "synonyms": []
+                    },
+                    {
+                        "value": "Ya quiero agendar",
+                        "params": [],
+                        "synonyms": []
+                    }
+                ]
+            }
+        ]
+    },
+    "conversation": false
+}
