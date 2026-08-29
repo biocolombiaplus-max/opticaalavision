@@ -10,6 +10,8 @@ import { remarketingAdminRouter } from "./remarketing/routes.js";
 import { reportsAdminRouter } from "./reports/routes.js";
 import { catalogoPublicRouter, catalogoAdminRouter } from "./catalogo/routes.js";
 import { asesoriaPublicRouter } from "./asesoria/routes.js";
+import { chatPublicRouter } from "./chat/routes.js";
+import { monturaPublicRouter } from "./montura/routes.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -24,6 +26,8 @@ app.use(citasPublicRouter);
 app.use(settingsPublicRouter);
 app.use(catalogoPublicRouter);
 app.use(asesoriaPublicRouter);
+app.use(chatPublicRouter);
+app.use(monturaPublicRouter);
 app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(join(__dirname, "public"))); // sirve "/" -> landing/index.html, "/tienda" -> tienda/index.html
 

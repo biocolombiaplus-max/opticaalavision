@@ -5,6 +5,7 @@ import { extname } from "path";
 import { uploadsDir } from "../settings/routes.js";
 import { createTestVision } from "../db/index.js";
 import { askAsesoria } from "../ai/asesoria.js";
+import { createIpRateLimiter } from "../lib/rateLimit.js";
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadsDir),
@@ -25,23 +26,9 @@ const upload = multer({
   },
 });
 
-// Límite simple por IP en memoria — esta ruta es pública y cada llamada consume IA (Claude/Gemini),
-// así que se protege de abuso/spam sin necesitar infraestructura adicional (Redis, etc.).
-const LIMITE_VENTANA_MS = 15 * 60 * 1000;
-const LIMITE_MAX_SOLICITUDES = 8;
-const contadorPorIp = new Map<string, number[]>();
-
-function permitido(ip: string): boolean {
-  const ahora = Date.now();
-  const previas = (contadorPorIp.get(ip) ?? []).filter((t) => ahora - t < LIMITE_VENTANA_MS);
-  if (previas.length >= LIMITE_MAX_SOLICITUDES) {
-    contadorPorIp.set(ip, previas);
-    return false;
-  }
-  previas.push(ahora);
-  contadorPorIp.set(ip, previas);
-  return true;
-}
+// Esta ruta es pública y cada llamada consume IA (Claude/Gemini), así que se protege de
+// abuso/spam con un límite simple por IP.
+const permitido = createIpRateLimiter(8, 15 * 60 * 1000);
 
 export const asesoriaPublicRouter = Router();
 

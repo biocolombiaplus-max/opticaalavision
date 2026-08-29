@@ -9,16 +9,24 @@ reportes en PDF.
 ## Qué incluye
 
 - **Landing page** (`/`) — hero, banda animada de logos de marcas, sección de
-  "más vendidos", precios, cómo funciona, una **Asesoría virtual con IA**
-  (ver abajo), testimonios, ubicación (Google Maps) y formulario de "Agenda
-  tu cita". Botón flotante de "Asesoría virtual" además del de WhatsApp.
-  Botones con efecto de brillo/luz al pasar el mouse. Todo lo editable (logo,
-  foto de portada, opacidad, direcciones, mapas, marcas, productos) sale del
-  panel administrativo, no del código.
+  "más vendidos", precios, cómo funciona, **Encuentra tu combo ideal** y
+  **Encuentra tu montura ideal** (ver abajo), testimonios, ubicación (Google
+  Maps) y formulario de "Agenda tu cita". Botón flotante de **"Asesoría
+  virtual"** (chat en vivo) además del de WhatsApp. Botones con efecto de
+  brillo/luz al pasar el mouse. Todo lo editable (logo, foto de portada,
+  opacidad, direcciones, mapas, marcas, productos) sale del panel
+  administrativo, no del código.
 - **Tienda virtual** (`/tienda`) — sub-landing estilo Shopify: catálogo
   filtrable por marca, carrito (guardado en el navegador) y checkout que arma
   el pedido y lo manda por WhatsApp (no hay pasarela de pagos conectada).
-- **Asesoría virtual con IA**: el visitante elige cómo contarte su caso —
+- **Chat en vivo ("Asesoría virtual")** — botón flotante en toda la landing
+  que abre una ventana de chat real con Vale (el mismo agente con IA del
+  WhatsApp, ver abajo), sin salir de la página. Cada conversación queda en el
+  CRM (`/admin` → Conversaciones) igual que las de WhatsApp, identificada como
+  origen "chat_web" — si una asesora pausa la IA y responde desde el panel, su
+  respuesta le llega al visitante ahí mismo (con una sincronización de fondo
+  cada pocos segundos).
+- **Encuentra tu combo ideal**: el visitante elige cómo contarte su caso —
   responder 4 preguntas cortas, subir la foto de su fórmula, o escribir su
   situación con sus propias palabras — y Claude/Gemini lo analiza (leyendo la
   foto si la envió) para darle un resultado personalizado con el combo
@@ -26,9 +34,20 @@ reportes en PDF.
   termina con un botón "Agendar por WhatsApp" que abre el chat con un mensaje
   ya redactado con su nombre y su resultado, listo para que la asesora lo lea
   y cierre la cita o la venta. Cada análisis queda guardado (con la foto, si
-  la hubo) y aparece en el panel → Reportes, exportable en CSV. Como es una
-  ruta pública que consume IA en cada uso, tiene un límite de solicitudes por
-  visitante (8 cada 15 minutos) para evitar abuso/spam.
+  la hubo) y aparece en el panel → Reportes, exportable en CSV.
+- **Encuentra tu montura ideal**: el visitante sube una selfie y la IA analiza
+  la forma de su rostro (ovalado, redondo, cuadrado, etc.) para recomendarle
+  qué estilos de montura le favorecen, cruzando esa recomendación con tu
+  catálogo real (`/admin` → Tienda) para mostrarle productos concretos con
+  foto y precio — y el mismo cierre con botón de WhatsApp. Esto NO es un
+  "probador" tipo realidad aumentada (no superpone la montura sobre la foto
+  en tiempo real) — eso necesitaría fotos de cada montura recortadas sin
+  fondo, que hoy no tienes; si más adelante consigues esas fotos, se puede
+  agregar como una mejora sobre esta misma base. No guarda base de datos de
+  quién la usó (a diferencia del test de "Encuentra tu combo ideal").
+  Ambas herramientas de IA de la landing (además del chat) tienen un límite
+  de solicitudes por visitante para evitar abuso/spam, ya que cada uso
+  consume IA.
 - **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
   - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
     humano, marcar un lead como cliente (con el valor de la venta), correo
@@ -73,6 +92,25 @@ reportes en PDF.
      Claude para nada. Si en algún momento Google cambia el nombre del
      modelo y empieza a fallar, ajusta `GEMINI_MODEL` en las variables de
      entorno.
+
+     ⚠️ **Importante sobre tu clave de Gemini**: tu suscripción paga de
+     Gemini (la app de Gemini / Google One) es una cosa, y la **clave de la
+     API de desarrollador** (la que pusiste en `GEMINI_API_KEY`) es otra
+     totalmente aparte — no se conectan automáticamente. Mientras el
+     proyecto de Google Cloud detrás de esa clave no tenga facturación
+     activada, queda en el **nivel gratuito**, con un límite muy bajo (por
+     ejemplo, 20 solicitudes al día para algunos modelos) — se agota en
+     minutos con clientes reales usando el chat y las herramientas de la
+     landing. Para que el bot funcione de verdad en producción:
+     1. Ve a [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+        (con la misma cuenta de tu clave) → busca la opción de **facturación
+        / upgrade a pago por uso ("Pay-as-you-go")**.
+     2. Vincula una tarjeta o cuenta de facturación de Google Cloud a ese
+        proyecto — el costo por conversación es bajo (ver "Costos
+        aproximados" más abajo), pero sin esto el límite gratuito se queda
+        corto casi de inmediato.
+     3. Si ves respuestas fallidas o el mensaje de error mencionando "quota"
+        o "Free Tier" en los logs de Railway, esta es la causa.
    - **Si más adelante consigues también Anthropic** (`ANTHROPIC_API_KEY`,
      console.anthropic.com), el agente pasa a usar Claude como principal y
      Gemini queda de respaldo automático si Claude falla.
@@ -126,9 +164,12 @@ puerto con `ngrok http 3000` y usa esa URL en la configuración del webhook.
 
 - **Anthropic (Claude) o Gemini**: por uso/tokens. Barato por conversación o
   análisis típico; pide una estimación con tu volumen real antes de lanzar a
-  toda la pauta. Ahora hay dos puntos que consumen IA: el agente de WhatsApp
-  y la Asesoría virtual de la landing (con límite de 8 análisis cada 15
-  minutos por visitante para controlar el gasto).
+  toda la pauta. Ahora hay cuatro puntos que consumen IA: el agente de
+  WhatsApp, el chat en vivo de la landing, "Encuentra tu combo ideal" y
+  "Encuentra tu montura ideal" (los tres de la landing tienen límite de
+  solicitudes por visitante para controlar el gasto). Ver la nota sobre
+  facturación de Gemini más arriba — sin eso, ninguno de estos va a
+  funcionar más allá de unas pocas pruebas al día.
 - **WhatsApp Cloud API**: Meta cobra por conversación iniciada, con franja
   gratuita mensual.
 - **Resend**: plan gratis cubre varios miles de correos al mes.

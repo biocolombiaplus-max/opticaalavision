@@ -253,6 +253,61 @@
   .asesoria-float:hover{box-shadow:0 16px 32px -8px rgba(0,0,0,.5);}
   @media (prefers-reduced-motion: reduce){ .asesoria-float{animation:none;} }
   @media (max-width:560px){ .asesoria-float span{display:none;} .asesoria-float{padding:14px;bottom:90px;} }
+
+  /* ---------- Chat en vivo ---------- */
+  .chat-panel{position:fixed;bottom:158px;right:22px;z-index:55;width:370px;max-width:calc(100vw - 32px);
+    height:min(560px, calc(100vh - 190px));background:var(--surface);border-radius:14px;box-shadow:0 30px 70px -18px rgba(0,0,0,.5);
+    display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);}
+  .chat-panel[hidden]{display:none;}
+  .chat-header{background:var(--accent-strong);color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+  .chat-header .avatar{width:38px;height:38px;border-radius:50%;background:var(--gold-tint);color:var(--gold-strong);
+    display:flex;align-items:center;justify-content:center;font-family:"Fraunces",serif;font-weight:700;font-size:15px;flex-shrink:0;}
+  .chat-header .info{flex:1;min-width:0;}
+  .chat-header .name{font-weight:800;font-size:14px;}
+  .chat-header .status{font-size:11.5px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px;}
+  .chat-header .status i{width:7px;height:7px;border-radius:50%;background:#25d366;display:inline-block;}
+  .chat-header .close{background:none;border:none;color:rgba(255,255,255,.8);cursor:pointer;font-size:20px;line-height:1;padding:4px;}
+  .chat-header .close:hover{color:#fff;}
+  .chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--paper);}
+  .msg{max-width:82%;padding:10px 13px;border-radius:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;}
+  .msg.cliente{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:3px;}
+  .msg.agente{align-self:flex-start;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-bottom-left-radius:3px;}
+  .msg.sistema{align-self:center;font-size:11.5px;color:var(--ink-faint);text-align:center;max-width:95%;}
+  .msg-chips{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:90%;}
+  .msg-chip{background:var(--surface);border:1.5px solid var(--gold);color:var(--gold-strong);border-radius:20px;
+    padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s ease;}
+  .msg-chip:hover{background:var(--gold-tint);}
+  .chat-typing{align-self:flex-start;display:flex;gap:4px;padding:10px 13px;}
+  .chat-typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-faint);animation:typingDot 1.2s infinite ease-in-out;}
+  .chat-typing i:nth-child(2){animation-delay:.15s;} .chat-typing i:nth-child(3){animation-delay:.3s;}
+  @keyframes typingDot{0%,60%,100%{opacity:.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-3px);}}
+  .chat-inputbar{border-top:1px solid var(--line);padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--surface);}
+  .chat-inputbar input[type=text]{flex:1;border:1px solid var(--line);border-radius:20px;padding:10px 15px;font-size:13.5px;
+    font-family:inherit;background:var(--paper);color:var(--ink);}
+  .chat-inputbar button{border:none;background:var(--accent);color:#fff;width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .chat-inputbar button.attach{background:transparent;color:var(--ink-soft);}
+  .chat-inputbar button:disabled{opacity:.5;cursor:default;}
+  .chat-inputbar input[type=file]{display:none;}
+  @media (max-width:480px){ .chat-panel{right:16px;bottom:150px;width:calc(100vw - 32px);} }
+
+  /* ---------- Encuentra tu montura ideal ---------- */
+  .montura-card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:36px 34px;max-width:680px;margin:0 auto;box-shadow:var(--shadow);}
+  .montura-upload{border:1.5px dashed var(--line);border-radius:8px;padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .15s ease, background .15s ease;}
+  .montura-upload:hover{border-color:var(--gold);background:var(--gold-tint);}
+  .montura-upload input{display:none;}
+  .montura-upload .icon{font-size:34px;margin-bottom:10px;}
+  .montura-preview{max-width:180px;border-radius:8px;margin:0 auto 16px;overflow:hidden;box-shadow:var(--shadow);}
+  .montura-badge{display:inline-block;background:var(--gold-tint);color:var(--gold-strong);font-family:"IBM Plex Mono",monospace;
+    font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:12px;}
+  .montura-productos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin:20px 0;}
+  .montura-prod{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--paper);text-align:left;}
+  .montura-prod .img{aspect-ratio:1/1;background:linear-gradient(135deg,var(--gold-tint),var(--paper));display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
+  .montura-prod .img img{width:100%;height:100%;object-fit:cover;}
+  .montura-prod .body{padding:10px 12px;}
+  .montura-prod .cat{font-size:9.5px;text-transform:uppercase;color:var(--ink-faint);font-weight:700;}
+  .montura-prod .nom{font-size:12.5px;font-weight:700;margin:2px 0;}
+  .montura-prod .precio{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--gold-strong);font-weight:700;}
 </style>
 </head>
 <body>
@@ -272,7 +327,8 @@
     <nav class="links">
       <a href="#tienda-destacados">Tienda</a>
       <a href="#precios">Precios</a>
-      <a href="#test-vision">Asesoría virtual</a>
+      <a href="#test-vision">Encuentra tu combo</a>
+      <a href="#montura-ideal">Tu montura ideal</a>
       <a href="#testimonios">Testimonios</a>
       <a href="#ubicacion">Ubicación</a>
     </nav>
@@ -432,11 +488,22 @@
 <section id="test-vision" class="vision-test">
   <div class="wrap">
     <div class="section-head center" style="color:#fff;">
-      <div class="eyebrow" style="color:var(--gold);">Asesoría virtual gratuita</div>
+      <div class="eyebrow" style="color:var(--gold);">Análisis personalizado gratuito</div>
       <h2 style="color:#fff;">Cuéntanos tu caso, te asesoramos</h2>
       <p style="color:rgba(255,255,255,.75);">Responde unas preguntas, sube tu fórmula o cuéntanos tu situación — la analizamos y te damos una recomendación personalizada, lista para agendar por WhatsApp.</p>
     </div>
     <div class="vision-card" id="visionCard"></div>
+  </div>
+</section>
+
+<section id="montura-ideal" style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head center">
+      <div class="eyebrow">Con inteligencia artificial</div>
+      <h2>Encuentra tu montura ideal</h2>
+      <p style="color:var(--ink-soft);">Sube una selfie de frente, con buena luz — analizamos la forma de tu rostro y te mostramos qué estilos de montura te favorecen más, de nuestro catálogo real.</p>
+    </div>
+    <div class="montura-card" id="monturaCard"></div>
   </div>
 </section>
 
@@ -548,10 +615,32 @@
   </div>
 </footer>
 
-<a class="asesoria-float" href="#test-vision" aria-label="Habla con nuestra asesora virtual">
+<button class="asesoria-float" id="chatToggle" aria-label="Habla con nuestra asesora virtual">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
   <span>Asesoría virtual</span>
-</a>
+</button>
+
+<div class="chat-panel" id="chatPanel" hidden>
+  <div class="chat-header">
+    <div class="avatar">DA</div>
+    <div class="info">
+      <div class="name">Vale · Óptica ALaVision</div>
+      <div class="status"><i></i> En línea</div>
+    </div>
+    <button class="close" id="chatClose" aria-label="Cerrar chat">×</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <form class="chat-inputbar" id="chatForm">
+    <button type="button" class="attach" id="chatAttachBtn" aria-label="Adjuntar foto">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h9.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M3 16l4.5-4.5a2 2 0 0 1 2.8 0L15 16"/><path d="M17 15v6M14 18h6"/></svg>
+    </button>
+    <input type="file" id="chatFileInput" accept="image/png,image/jpeg,image/webp" />
+    <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off" />
+    <button type="submit" aria-label="Enviar">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </form>
+</div>
 
 <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.2.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.3.4-.4.1-.1.2-.2.2-.4.1-.2 0-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9 0 1.1.8 2.2.9 2.4.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.3.5.5.2 1 .1 1.4-.1.4-.2 1.5-.6 1.6-1.2.2-.6.2-1.1.1-1.2-.1-.1-.2-.1-.4-.2Z"/></svg>
@@ -643,7 +732,7 @@
     `).join('');
   }).catch(() => {});
 
-  // ---------- Asesoría virtual con IA (cuestionario, fórmula o texto libre) ----------
+  // ---------- Encuentra tu combo ideal con IA (cuestionario, fórmula o texto libre) ----------
   const preguntas = [
     { id: 'usaLentes', texto: '¿Usas lentes actualmente?', opciones: [['si','Sí'],['no','No']] },
     { id: 'dificultad', texto: '¿Qué se te dificulta más?', opciones: [['lejos','Ver de lejos'],['cerca','Ver de cerca'],['ambas','Ambas'],['ninguna','Ninguna en particular']] },
@@ -672,7 +761,7 @@
   function renderVisionIntro() {
     vtModo = null; vtStep = 0; vtRespuestas = {}; vtSituacion = ''; vtFile = null;
     document.getElementById('visionCard').innerHTML = `
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual · Óptica ALaVision</div></div></div>
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Análisis personalizado · Óptica ALaVision</div></div></div>
       <div class="vt-question">Elige cómo prefieres contarnos tu caso — lo analizamos y te damos una recomendación personalizada.</div>
       <div class="vt-options">
         <div class="vt-option" id="vtModoPreguntas">📋 Responder unas preguntas cortas</div>
@@ -691,7 +780,7 @@
     const p = preguntas[vtStep];
     document.getElementById('visionCard').innerHTML = `
       ${vtBack()}
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Análisis personalizado</div></div></div>
       <div class="vt-progress">${vtProgress(preguntas.length + 1)}</div>
       <div class="vt-question">${p.texto}</div>
       <div class="vt-options">${p.opciones.map(([val,label]) => `<div class="vt-option" data-val="${val}">${label}</div>`).join('')}</div>
@@ -709,7 +798,7 @@
   function renderFormulaUpload() {
     document.getElementById('visionCard').innerHTML = `
       ${vtBack()}
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Análisis personalizado</div></div></div>
       <div class="vt-question">Sube una foto clara de tu fórmula optométrica.</div>
       <label class="vt-file" id="vtFileLabel">
         📷 Toca para elegir la foto
@@ -734,7 +823,7 @@
   function renderSituacionForm() {
     document.getElementById('visionCard').innerHTML = `
       ${vtBack()}
-      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Asesoría virtual</div></div></div>
+      <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Análisis personalizado</div></div></div>
       <div class="vt-question">Cuéntanos qué se te dificulta, si usas lentes, hace cuánto, a qué te dedicas — lo que quieras compartir.</div>
       <form class="vt-form" id="vtSituacionForm">
         <textarea name="situacion" placeholder="Escribe aquí tu situación..." required minlength="10"></textarea>
@@ -848,6 +937,244 @@
       msg.textContent = 'No pudimos agendar automáticamente. Escríbenos por WhatsApp y te ayudamos directo.';
     }
   });
+
+  // ---------- Chat en vivo con Vale ----------
+  let chatSessionId = localStorage.getItem('alavision_chat_session');
+  if (!chatSessionId) {
+    chatSessionId = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+    localStorage.setItem('alavision_chat_session', chatSessionId);
+  }
+  let chatAbierto = false;
+  let chatCargado = false;
+  let chatUltimoLargo = 0;
+  let chatPollInterval = null;
+  let chatArchivo = null;
+  let chatHistorialCargando = false;
+
+  function chatEscapeHtml(s) {
+    const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  function chatRenderMensaje(m) {
+    const box = document.getElementById('chatMessages');
+    if (m.rol === 'paciente') {
+      box.insertAdjacentHTML('beforeend', `<div class="msg cliente">${chatEscapeHtml(m.texto)}</div>`);
+    } else if (m.rol === 'agente' || m.rol === 'humano') {
+      box.insertAdjacentHTML('beforeend', `<div class="msg agente">${chatEscapeHtml(m.texto)}</div>`);
+      if (m.botones && m.botones.length) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-chips';
+        m.botones.forEach(b => {
+          const chip = document.createElement('div');
+          chip.className = 'msg-chip';
+          chip.textContent = b;
+          chip.addEventListener('click', () => chatEnviar(b));
+          wrap.appendChild(chip);
+        });
+        box.appendChild(wrap);
+      }
+    }
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function chatMostrarEscribiendo(mostrar) {
+    let el = document.getElementById('chatTyping');
+    if (mostrar && !el) {
+      const box = document.getElementById('chatMessages');
+      box.insertAdjacentHTML('beforeend', '<div class="chat-typing" id="chatTyping"><i></i><i></i><i></i></div>');
+      box.scrollTop = box.scrollHeight;
+    } else if (!mostrar && el) {
+      el.remove();
+    }
+  }
+
+  async function chatCargarHistorial() {
+    try {
+      const res = await fetch(`/api/chat/historial?session_id=${encodeURIComponent(chatSessionId)}`);
+      const mensajes = await res.json();
+      const box = document.getElementById('chatMessages');
+      if (mensajes.length === 0) {
+        box.innerHTML = '<div class="msg agente">¡Hola! Soy Vale, asesora de Óptica ALaVision 😊 ¿En qué te puedo ayudar hoy?</div>';
+      } else {
+        box.innerHTML = '';
+        mensajes.forEach(chatRenderMensaje);
+      }
+      // Math.max evita pisar el contador si ya se envió un mensaje mientras esta carga estaba en curso.
+      chatUltimoLargo = Math.max(chatUltimoLargo, mensajes.length);
+    } catch (err) {
+      document.getElementById('chatMessages').innerHTML = '<div class="msg agente">¡Hola! Soy Vale, asesora de Óptica ALaVision 😊 ¿En qué te puedo ayudar hoy?</div>';
+    }
+  }
+
+  async function chatPoll() {
+    try {
+      const res = await fetch(`/api/chat/historial?session_id=${encodeURIComponent(chatSessionId)}`);
+      const mensajes = await res.json();
+      if (mensajes.length > chatUltimoLargo) {
+        mensajes.slice(chatUltimoLargo).forEach(chatRenderMensaje);
+        chatUltimoLargo = mensajes.length;
+      }
+    } catch (err) { /* silencioso: solo es sincronización de fondo */ }
+  }
+
+  async function chatAbrir() {
+    chatAbierto = true;
+    document.getElementById('chatPanel').hidden = false;
+    if (!chatCargado) {
+      chatCargado = true;
+      chatHistorialCargando = true;
+      const enviarBtn = document.querySelector('#chatForm button[type=submit]');
+      enviarBtn.disabled = true;
+      await chatCargarHistorial();
+      enviarBtn.disabled = false;
+      chatHistorialCargando = false;
+    }
+    if (!chatPollInterval) chatPollInterval = setInterval(chatPoll, 6000);
+    document.getElementById('chatInput').focus();
+  }
+  function chatCerrar() {
+    chatAbierto = false;
+    document.getElementById('chatPanel').hidden = true;
+    if (chatPollInterval) { clearInterval(chatPollInterval); chatPollInterval = null; }
+  }
+
+  document.getElementById('chatToggle').addEventListener('click', () => { chatAbierto ? chatCerrar() : chatAbrir(); });
+  document.getElementById('chatClose').addEventListener('click', chatCerrar);
+
+  document.getElementById('chatAttachBtn').addEventListener('click', () => document.getElementById('chatFileInput').click());
+  document.getElementById('chatFileInput').addEventListener('change', (e) => {
+    if (e.target.files[0]) {
+      chatArchivo = e.target.files[0];
+      document.getElementById('chatInput').placeholder = `📷 ${chatArchivo.name} — escribe algo y envía`;
+    }
+  });
+
+  async function chatEnviar(textoForzado) {
+    if (chatHistorialCargando) return;
+    const input = document.getElementById('chatInput');
+    const texto = (textoForzado !== undefined ? textoForzado : input.value).trim();
+    if (!texto && !chatArchivo) return;
+
+    chatRenderMensaje({ rol: 'paciente', texto: chatArchivo ? `${texto} [imagen adjunta]` : texto });
+    chatUltimoLargo += 1; // ya se contó localmente — evita que el sondeo de fondo lo duplique mientras espera la IA
+    input.value = '';
+    const archivo = chatArchivo;
+    chatArchivo = null;
+    document.getElementById('chatInput').placeholder = 'Escribe tu mensaje...';
+    document.getElementById('chatFileInput').value = '';
+    chatMostrarEscribiendo(true);
+
+    const fd = new FormData();
+    fd.append('session_id', chatSessionId);
+    fd.append('texto', texto);
+    fd.append('origen_campana', sessionStorage.getItem('alavision_origen') || 'chat_web');
+    if (archivo) fd.append('archivo', archivo);
+
+    try {
+      const res = await fetch('/api/chat/mensaje', { method: 'POST', body: fd });
+      const data = await res.json();
+      chatMostrarEscribiendo(false);
+      if (!res.ok) throw new Error(data.error || 'Error');
+      if (data.pausada) {
+        chatRenderMensaje({ rol: 'agente', texto: 'Un asesor de nuestro equipo va a responderte en breve — sigue atento aquí mismo.' });
+      } else if (data.mensaje) {
+        chatRenderMensaje({ rol: 'agente', texto: data.mensaje, botones: data.botones });
+        chatUltimoLargo += 1;
+      }
+    } catch (err) {
+      chatMostrarEscribiendo(false);
+      chatRenderMensaje({ rol: 'agente', texto: 'No pude responder justo ahora — intenta de nuevo o escríbenos por WhatsApp.' });
+    }
+  }
+
+  document.getElementById('chatForm').addEventListener('submit', (e) => { e.preventDefault(); chatEnviar(); });
+
+  // ---------- Encuentra tu montura ideal ----------
+  let monturaArchivo = null;
+
+  function renderMonturaIntro() {
+    monturaArchivo = null;
+    document.getElementById('monturaCard').innerHTML = `
+      <label class="montura-upload" id="monturaUploadLabel">
+        <div class="icon">🤳</div>
+        <div style="font-weight:700;margin-bottom:6px;">Toca para subir tu selfie</div>
+        <div style="font-size:12.5px;color:var(--ink-soft);">De frente, con buena luz, sin gafas puestas</div>
+        <input type="file" id="monturaFileInput" accept="image/png,image/jpeg,image/webp" capture="user" />
+      </label>
+    `;
+    document.getElementById('monturaFileInput').addEventListener('change', (e) => {
+      if (e.target.files[0]) { monturaArchivo = e.target.files[0]; renderMonturaNombre(); }
+    });
+  }
+
+  function renderMonturaNombre() {
+    const url = URL.createObjectURL(monturaArchivo);
+    document.getElementById('monturaCard').innerHTML = `
+      <div style="text-align:center;">
+        <div class="montura-preview"><img src="${url}" alt="Tu foto" /></div>
+        <form class="vt-form" id="monturaForm" style="max-width:320px;margin:0 auto;">
+          <input name="nombre" placeholder="Tu nombre (opcional)" />
+          <button class="btn btn-gold" type="submit" style="width:100%;justify-content:center;"><span>Analizar mi rostro</span></button>
+        </form>
+        <div class="vt-back" id="monturaBack" style="margin-top:14px;">← Elegir otra foto</div>
+      </div>
+    `;
+    document.getElementById('monturaBack').addEventListener('click', renderMonturaIntro);
+    document.getElementById('monturaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nombre = new FormData(e.target).get('nombre');
+      enviarMontura(nombre);
+    });
+  }
+
+  async function enviarMontura(nombre) {
+    document.getElementById('monturaCard').innerHTML = '<div class="vt-loading">Analizando tu rostro… un momento 👓</div>';
+    const fd = new FormData();
+    if (nombre) fd.append('nombre', nombre);
+    fd.append('archivo', monturaArchivo);
+    try {
+      const res = await fetch('/api/montura/analizar', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error');
+      renderMonturaResultado(data);
+    } catch (err) {
+      document.getElementById('monturaCard').innerHTML = `
+        <div style="text-align:center;">
+          <p style="color:var(--ink-soft);">No pudimos analizar tu foto justo ahora.</p>
+          <div class="vt-back" id="monturaRetry">← Intentar de nuevo</div>
+        </div>`;
+      document.getElementById('monturaRetry').addEventListener('click', renderMonturaIntro);
+    }
+  }
+
+  function renderMonturaResultado(data) {
+    const phone = window.ALAVISION_WA_NUMERO || '';
+    const productosHtml = (data.productos || []).map(p => `
+      <a class="montura-prod" href="/tienda">
+        <div class="img">${p.imagen_url ? `<img src="${p.imagen_url}" alt="${p.nombre}"/>` : '👓'}</div>
+        <div class="body">
+          <div class="cat">${p.categoria}</div>
+          <div class="nom">${p.nombre}</div>
+          <div class="precio">${money(p.precio)}</div>
+        </div>
+      </a>
+    `).join('');
+    document.getElementById('monturaCard').innerHTML = `
+      <div style="text-align:center;">
+        <div class="montura-badge">Rostro ${data.forma_rostro}</div>
+        <p style="color:var(--ink-soft);font-size:14.5px;max-width:52ch;margin:0 auto 6px;">${data.texto || ''}</p>
+      </div>
+      ${productosHtml ? `<div class="montura-productos">${productosHtml}</div>` : ''}
+      <div class="cta-row" style="max-width:340px;margin:20px auto 0;">
+        <a class="btn btn-gold" id="monturaResultWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;"><span>Ver opciones por WhatsApp</span></a>
+        <div class="vt-back" id="monturaOtra" style="text-align:center;margin-top:12px;">← Probar con otra foto</div>
+      </div>
+    `;
+    document.getElementById('monturaResultWa').href = waLink(phone, data.mensaje_whatsapp || `Hola, quiero ver monturas que me favorezcan.`);
+    document.getElementById('monturaOtra').addEventListener('click', renderMonturaIntro);
+  }
+
+  renderMonturaIntro();
 })();
 </script>
 </body>
