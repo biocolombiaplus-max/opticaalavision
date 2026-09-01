@@ -1128,22 +1128,32 @@
   let monturaFotoUrl = null;
   let monturaCamStream = null;
   let monturaModelosPromise = null;
-  let monturaLandmarksCache = null;
   let monturaProductosDisponibles = [];
   let monturaProbadorIndex = 0;
-  let monturaBaseImg = null;
   const MONTURA_FRAME_WIDTH_FACTOR = 2.3;
+
+  // ---------- Probador virtual EN VIVO (cámara + seguimiento facial en tiempo real) ----------
+  let liveStream = null;
+  let liveRafId = null;
+  let liveLandmarks = null;
+  let liveNoFaceStreak = 0;
+  let liveVolverCb = null;
+  let liveDetectBusy = false;
 
   function renderMonturaIntro() {
     monturaArchivo = null;
     document.getElementById('monturaCard').innerHTML = `
+      <button class="btn btn-gold" id="monturaBtnEnVivo" type="button" style="width:100%;justify-content:center;margin-bottom:16px;"><span>🎥 Probador en vivo con la cámara</span></button>
+      <div class="vt-disclaimer" style="text-align:center;margin:-6px 0 18px;">Como un filtro de Instagram: enfoca tu rostro y ve las monturas puestas al instante, cambiando entre varias.</div>
+      <div style="text-align:center;font-size:11.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">— o si prefieres, primero un análisis con IA —</div>
       <div class="vt-options" style="max-width:320px;margin:0 auto;">
         <div class="vt-option" id="monturaBtnCam" style="text-align:center;">📷 Tomar una foto</div>
         <div class="vt-option" id="monturaBtnUpload" style="text-align:center;">🖼️ Subir una foto</div>
       </div>
       <input type="file" id="monturaFileInput" accept="image/png,image/jpeg,image/webp" style="display:none;" />
-      <div class="vt-disclaimer" style="text-align:center;margin-top:14px;">De frente, con buena luz, sin gafas puestas — así el probador virtual detecta mejor tus ojos.</div>
+      <div class="vt-disclaimer" style="text-align:center;margin-top:14px;">De frente, con buena luz, sin gafas puestas.</div>
     `;
+    document.getElementById('monturaBtnEnVivo').addEventListener('click', () => renderProbadorEnVivo([], renderMonturaIntro));
     document.getElementById('monturaBtnUpload').addEventListener('click', () => document.getElementById('monturaFileInput').click());
     document.getElementById('monturaFileInput').addEventListener('change', (e) => {
       if (e.target.files[0]) { monturaArchivo = e.target.files[0]; renderMonturaNombre(); }
@@ -1260,7 +1270,7 @@
     `;
     document.getElementById('monturaResultWa').href = waLink(phone, data.mensaje_whatsapp || `Hola, quiero ver monturas que me favorezcan.`);
     document.getElementById('monturaOtra').addEventListener('click', renderMonturaIntro);
-    document.getElementById('monturaProbarBtn').addEventListener('click', () => renderMonturaProbador(data));
+    document.getElementById('monturaProbarBtn').addEventListener('click', () => renderProbadorEnVivo(data.estilos_sugeridos || [], () => renderMonturaResultado(data)));
   }
 
   // ---------- Probador virtual (canvas + detección facial, sin costo de IA) ----------
@@ -1274,19 +1284,28 @@
     return monturaModelosPromise;
   }
 
-  async function renderMonturaProbador(data) {
+  function liveDetener() {
+    if (liveRafId) { cancelAnimationFrame(liveRafId); liveRafId = null; }
+    if (liveStream) { liveStream.getTracks().forEach(t => t.stop()); liveStream = null; }
+    liveLandmarks = null;
+    liveNoFaceStreak = 0;
+  }
+
+  async function renderProbadorEnVivo(estilosSugeridos, volverCb) {
+    liveDetener();
+    liveVolverCb = volverCb;
     document.getElementById('monturaCard').innerHTML = `
-      <div class="vt-back" id="probadorBack">← Volver al resultado</div>
-      <div class="probador-brutal">Probador virtual</div>
+      <div class="vt-back" id="probadorBack">← Cerrar cámara</div>
+      <div class="probador-brutal">Probador en vivo</div>
       <div class="probador-wrap">
         <canvas id="probadorCanvas"></canvas>
-        <div class="probador-loading" id="probadorLoading">Cargando probador…</div>
+        <div class="probador-loading" id="probadorLoading">Activando cámara…</div>
         <div id="probadorOverlay"></div>
       </div>
       <div class="probador-hint" id="probadorHint"></div>
       <div class="cta-row" style="max-width:340px;margin:16px auto 0;" id="probadorCtaRow"></div>
     `;
-    document.getElementById('probadorBack').addEventListener('click', () => renderMonturaResultado(data));
+    document.getElementById('probadorBack').addEventListener('click', () => { liveDetener(); (liveVolverCb || renderMonturaIntro)(); });
 
     try {
       const [, productos] = await Promise.all([
@@ -1294,102 +1313,136 @@
         fetch('/api/productos').then(r => r.json()),
       ]);
 
-      const estilos = (data.estilos_sugeridos || []).map(e => e.toLowerCase());
+      const estilos = (estilosSugeridos || []).map(e => e.toLowerCase());
       const elegibles = productos.filter(p => p.imagen_transparente_url);
       if (elegibles.length === 0) {
         document.getElementById('monturaCard').innerHTML = `
-          <div class="vt-back" id="probadorBackEmpty">← Volver al resultado</div>
+          <div class="vt-back" id="probadorBackEmpty">← Volver</div>
           <div style="text-align:center;padding:20px 0;">
             <p style="color:var(--ink-soft);">Muy pronto vas a poder probarte nuestras monturas aquí mismo — aún estamos preparando las fotos.</p>
           </div>`;
-        document.getElementById('probadorBackEmpty').addEventListener('click', () => renderMonturaResultado(data));
+        document.getElementById('probadorBackEmpty').addEventListener('click', () => (liveVolverCb || renderMonturaIntro)());
         return;
       }
       elegibles.sort((a, b) => {
-        const aMatch = estilos.some(e => a.categoria.toLowerCase().includes(e) || a.nombre.toLowerCase().includes(e)) ? 0 : 1;
-        const bMatch = estilos.some(e => b.categoria.toLowerCase().includes(e) || b.nombre.toLowerCase().includes(e)) ? 0 : 1;
-        return aMatch - bMatch;
+        const score = (p) => estilos.length && estilos.some(e => p.categoria.toLowerCase().includes(e) || p.nombre.toLowerCase().includes(e)) ? 0 : (p.destacado ? 1 : 2);
+        return score(a) - score(b);
       });
-
-      const img = new Image();
-      await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = monturaFotoUrl; });
-      monturaBaseImg = img;
-
-      const canvas = document.getElementById('probadorCanvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-
-      const deteccion = await faceapi
-        .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.4 }))
-        .withFaceLandmarks(true);
-
-      if (!deteccion) {
-        document.getElementById('monturaCard').innerHTML = `
-          <div class="vt-back" id="probadorBackNoFace">← Volver al resultado</div>
-          <div style="text-align:center;padding:20px 0;">
-            <p style="color:var(--ink-soft);">No pudimos detectar tu rostro con claridad en esta foto. Intenta con una foto de frente, con buena luz y sin lentes puestos.</p>
-          </div>`;
-        document.getElementById('probadorBackNoFace').addEventListener('click', () => renderMonturaResultado(data));
-        return;
-      }
-
-      const centro = (pts) => ({
-        x: pts.reduce((s, p) => s + p.x, 0) / pts.length,
-        y: pts.reduce((s, p) => s + p.y, 0) / pts.length,
-      });
-      const cA = centro(deteccion.landmarks.getLeftEye());
-      const cB = centro(deteccion.landmarks.getRightEye());
-      monturaLandmarksCache = {
-        eyeMid: { x: (cA.x + cB.x) / 2, y: (cA.y + cB.y) / 2 },
-        eyeDist: Math.hypot(cB.x - cA.x, cB.y - cA.y),
-        angle: Math.atan2(cB.y - cA.y, cB.x - cA.x),
-      };
-
       monturaProductosDisponibles = elegibles;
       monturaProbadorIndex = 0;
-      const loadingEl = document.getElementById('probadorLoading');
-      if (loadingEl) loadingEl.remove();
-      dibujarProbadorOverlay();
-      renderProbadorControles();
+
+      liveStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
     } catch (err) {
-      console.error('Error en probador virtual:', err);
+      console.error('Error abriendo el probador en vivo:', err);
       document.getElementById('monturaCard').innerHTML = `
-        <div class="vt-back" id="probadorBackErr">← Volver al resultado</div>
+        <div class="vt-back" id="probadorBackErr">← Volver</div>
         <div style="text-align:center;padding:20px 0;">
-          <p style="color:var(--ink-soft);">No pudimos cargar el probador virtual justo ahora.</p>
+          <p style="color:var(--ink-soft);">No pudimos activar la cámara. Revisa los permisos del navegador e intenta de nuevo.</p>
         </div>`;
-      document.getElementById('probadorBackErr').addEventListener('click', () => renderMonturaResultado(data));
+      document.getElementById('probadorBackErr').addEventListener('click', () => (liveVolverCb || renderMonturaIntro)());
+      return;
     }
+
+    const video = document.createElement('video');
+    video.autoplay = true; video.playsInline = true; video.muted = true;
+    video.srcObject = liveStream;
+    await new Promise((resolve) => { video.onloadedmetadata = resolve; });
+    await video.play();
+
+    const canvas = document.getElementById('probadorCanvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const loadingEl = document.getElementById('probadorLoading');
+    if (loadingEl) loadingEl.remove();
+    renderProbadorControles();
+
+    let frame = 0;
+    const DETECTAR_CADA = 4; // ~7-8 detecciones/seg a 30fps — fluido sin saturar el navegador
+    const SUAVIZADO = 0.45;
+
+    async function loop() {
+      if (!liveStream) return;
+      const ctx = canvas.getContext('2d');
+      ctx.save();
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1); // espejo, como un espejo real
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      if (liveLandmarks && liveNoFaceStreak < 20) {
+        const producto = monturaProductosDisponibles[monturaProbadorIndex];
+        const frameImg = liveFrameImgCache[producto.id];
+        if (frameImg && frameImg.complete && frameImg.naturalWidth) {
+          const { eyeMid, eyeDist, angle } = liveLandmarks;
+          const w = eyeDist * MONTURA_FRAME_WIDTH_FACTOR;
+          const h = w * (frameImg.naturalHeight / frameImg.naturalWidth);
+          ctx.save();
+          ctx.translate(eyeMid.x, eyeMid.y);
+          ctx.rotate(angle);
+          ctx.drawImage(frameImg, -w / 2, -h / 2, w, h);
+          ctx.restore();
+        }
+      }
+      ctx.restore();
+
+      const hint = document.getElementById('probadorHint');
+      if (hint) hint.textContent = (!liveLandmarks || liveNoFaceStreak >= 20)
+        ? 'Ubica tu rostro en el cuadro, de frente y con buena luz'
+        : 'Toca una montura para probártela, o desliza para ver más';
+
+      frame++;
+      if (frame % DETECTAR_CADA === 0 && !liveDetectBusy) {
+        liveDetectBusy = true;
+        faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 }))
+          .withFaceLandmarks(true)
+          .then((deteccion) => {
+            if (deteccion) {
+              const centro = (pts) => ({
+                x: pts.reduce((s, p) => s + p.x, 0) / pts.length,
+                y: pts.reduce((s, p) => s + p.y, 0) / pts.length,
+              });
+              const cA = centro(deteccion.landmarks.getLeftEye());
+              const cB = centro(deteccion.landmarks.getRightEye());
+              const nuevo = {
+                eyeMid: { x: (cA.x + cB.x) / 2, y: (cA.y + cB.y) / 2 },
+                eyeDist: Math.hypot(cB.x - cA.x, cB.y - cA.y),
+                angle: Math.atan2(cB.y - cA.y, cB.x - cA.x),
+              };
+              liveLandmarks = liveLandmarks ? {
+                eyeMid: {
+                  x: liveLandmarks.eyeMid.x + (nuevo.eyeMid.x - liveLandmarks.eyeMid.x) * SUAVIZADO,
+                  y: liveLandmarks.eyeMid.y + (nuevo.eyeMid.y - liveLandmarks.eyeMid.y) * SUAVIZADO,
+                },
+                eyeDist: liveLandmarks.eyeDist + (nuevo.eyeDist - liveLandmarks.eyeDist) * SUAVIZADO,
+                angle: liveLandmarks.angle + (nuevo.angle - liveLandmarks.angle) * SUAVIZADO,
+              } : nuevo;
+              liveNoFaceStreak = 0;
+            } else {
+              liveNoFaceStreak++;
+            }
+          })
+          .catch(() => { liveNoFaceStreak++; })
+          .finally(() => { liveDetectBusy = false; });
+      }
+
+      liveRafId = requestAnimationFrame(loop);
+    }
+    loop();
   }
 
-  function dibujarProbadorOverlay() {
-    const canvas = document.getElementById('probadorCanvas');
-    if (!canvas || !monturaBaseImg) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(monturaBaseImg, 0, 0);
-
-    const producto = monturaProductosDisponibles[monturaProbadorIndex];
-    if (!producto || !monturaLandmarksCache) return;
-
-    const frameImg = new Image();
-    frameImg.onload = () => {
-      const { eyeMid, eyeDist, angle } = monturaLandmarksCache;
-      const w = eyeDist * MONTURA_FRAME_WIDTH_FACTOR;
-      const h = w * (frameImg.naturalHeight / frameImg.naturalWidth);
-      ctx.save();
-      ctx.translate(eyeMid.x, eyeMid.y);
-      ctx.rotate(angle);
-      ctx.drawImage(frameImg, -w / 2, -h / 2, w, h);
-      ctx.restore();
-    };
-    frameImg.src = producto.imagen_transparente_url;
+  const liveFrameImgCache = {};
+  function liveCargarFrameImg(producto) {
+    if (liveFrameImgCache[producto.id]) return;
+    const img = new Image();
+    img.src = producto.imagen_transparente_url;
+    liveFrameImgCache[producto.id] = img;
   }
 
   function renderProbadorControles() {
     const producto = monturaProductosDisponibles[monturaProbadorIndex];
     const phone = window.ALAVISION_WA_NUMERO || '';
     const varias = monturaProductosDisponibles.length > 1;
+    monturaProductosDisponibles.forEach(liveCargarFrameImg);
 
     document.getElementById('probadorOverlay').innerHTML = `
       <div class="probador-topbar">
@@ -1397,6 +1450,9 @@
           <div class="nom">${producto.nombre}</div>
           <div class="precio">${money(producto.precio)}</div>
         </div>
+        <button class="probador-arrow" id="probadorCapturar" type="button" aria-label="Guardar foto" style="pointer-events:auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
       </div>
       ${varias ? `
       <div class="probador-side-nav">
@@ -1416,14 +1472,21 @@
       </div>` : ''}
     `;
 
-    document.getElementById('probadorHint').textContent = varias
-      ? 'Toca una montura para probártela, o desliza para ver más'
-      : 'Sube más fotos sin fondo desde el panel para poder comparar entre varias.';
-
     document.getElementById('probadorCtaRow').innerHTML = `
       <a class="btn btn-gold" id="probadorWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;"><span>Me gusta, agendar por WhatsApp</span></a>
     `;
-    document.getElementById('probadorWa').href = waLink(phone, `Hola, me estoy probando monturas virtualmente en la página y me gustó la ${producto.nombre}. ¿Está disponible?`);
+    document.getElementById('probadorWa').href = waLink(phone, `Hola, me estoy probando monturas en vivo en la página y me gustó la ${producto.nombre}. ¿Está disponible?`);
+
+    document.getElementById('probadorCapturar').addEventListener('click', () => {
+      const canvas = document.getElementById('probadorCanvas');
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'mi-montura-alavision.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }, 'image/png');
+    });
 
     if (varias) {
       document.getElementById('probadorPrev').addEventListener('click', () => cambiarProbador(-1));
@@ -1438,7 +1501,6 @@
 
   function seleccionarProbador(idx) {
     monturaProbadorIndex = idx;
-    dibujarProbadorOverlay();
     renderProbadorControles();
   }
 

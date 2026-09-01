@@ -35,17 +35,21 @@ reportes en PDF.
   ya redactado con su nombre y su resultado, listo para que la asesora lo lea
   y cierre la cita o la venta. Cada análisis queda guardado (con la foto, si
   la hubo) y aparece en el panel → Reportes, exportable en CSV.
-- **Encuentra tu montura ideal**: el visitante toma una foto con la cámara o
-  sube una — la IA analiza la forma de su rostro (ovalado, redondo, cuadrado,
-  etc.) y recomienda qué estilos le favorecen. Desde ahí puede entrar al
-  **probador virtual**, estilo filtro de Instagram/Snapchat: nombre y precio
-  sobrepuestos en la foto, flechas a los lados y una fila de miniaturas
-  abajo — tocar cualquier montura la prueba al instante, superpuesta en vivo
-  sobre su propia foto, calculando la posición, el tamaño y la inclinación
-  exacta según sus ojos (misma tecnología de detección facial que apps como
-  la de Ray-Ban o Warby Parker — corre en el navegador del visitante, sin
-  costo de IA por cada uso). Termina con "Me gusta, agendar por WhatsApp"
-  para la montura elegida.
+- **Encuentra tu montura ideal**, con **probador en vivo estilo filtro de
+  Instagram/Snapchat**: el visitante activa la cámara y ve las monturas
+  puestas sobre su propio rostro en tiempo real, moviéndose con él —
+  calculando la posición, el tamaño y la inclinación exacta según sus ojos
+  en cada cuadro de video, cuadro por cuadro (misma tecnología de detección
+  facial que apps como la de Ray-Ban o Warby Parker — corre en el navegador
+  del visitante, sin costo de IA). Toca cualquier miniatura de la fila de
+  abajo para cambiar de montura al instante, sin cortar la cámara, y puede
+  guardar una foto del resultado. Es la puerta de entrada más rápida, desde
+  el botón dorado "🎥 Probador en vivo con la cámara". También sigue
+  disponible la opción de tomar o subir una foto para que la IA analice la
+  forma del rostro (ovalado, redondo, cuadrado, etc.) y recomiende estilos
+  primero — desde ese resultado, "Pruébatelas ahora" abre el mismo probador
+  en vivo, ya con esas recomendaciones priorizadas en la fila de miniaturas.
+  Termina con "Me gusta, agendar por WhatsApp" para la montura elegida.
   **Para que una montura aparezca en el probador**, necesita su "foto sin
   fondo" — y no hace falta ninguna herramienta externa: desde `/admin` →
   Tienda → Productos, el botón **"✂️ Recortar"** (en cada producto ya
