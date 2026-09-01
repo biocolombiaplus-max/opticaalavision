@@ -130,12 +130,14 @@
       <select id="prodMarca"><option value="">Sin marca</option></select>
       <input id="prodCategoria" placeholder="Categoría (ej: Monturas)" style="max-width:160px;" />
       <input id="prodPrecio" type="number" placeholder="Precio" style="max-width:120px;" />
-      <input type="file" id="prodImagenFile" accept="image/*" />
+      <label style="min-width:auto;">Foto normal<input type="file" id="prodImagenFile" accept="image/*" /></label>
+      <label style="min-width:auto;">Foto sin fondo (PNG, para el probador)<input type="file" id="prodImagenTransparenteFile" accept="image/png" /></label>
       <label style="min-width:auto;"><input type="checkbox" id="prodDestacado" /> Destacado (más vendidos)</label>
       <button class="btn primary" id="agregarProducto">Agregar producto</button>
     </div>
+    <p class="hint">La "foto sin fondo" es opcional: es un PNG de la montura sola, recortada, sin fondo ni cara — con eso, esa montura aparece disponible en "Encuentra tu montura ideal" para probarse virtualmente. Puedes recortar el fondo gratis en sitios como remove.bg.</p>
     <table id="tablaProductos"><thead><tr>
-      <th>Imagen</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Destacado</th><th></th>
+      <th>Imagen</th><th>Sin fondo</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Destacado</th><th></th>
     </tr></thead><tbody></tbody></table>
   </div>
 </div>
@@ -501,6 +503,7 @@ async function loadTienda() {
   document.querySelector('#tablaProductos tbody').innerHTML = productos.map(p => `
     <tr>
       <td>${p.imagen_url ? `<img src="${p.imagen_url}" style="height:32px;width:32px;object-fit:cover;border-radius:4px;" />` : '—'}</td>
+      <td>${p.imagen_transparente_url ? '✅' : '—'}</td>
       <td>${p.nombre}</td><td>${marcaNombre(p.marca_id)}</td><td>${p.categoria}</td>
       <td>$${p.precio.toLocaleString('es-CO')}</td>
       <td><input type="checkbox" data-destacado="${p.id}" ${p.destacado ? 'checked' : ''} /></td>
@@ -534,6 +537,7 @@ document.getElementById('agregarProducto').addEventListener('click', async () =>
   const nombre = document.getElementById('prodNombre').value.trim();
   if (!nombre) { alert('Falta el nombre del producto.'); return; }
   const imagen_url = await subirImagenGenerica(document.getElementById('prodImagenFile'));
+  const imagen_transparente_url = await subirImagenGenerica(document.getElementById('prodImagenTransparenteFile'));
   await fetch('/api/productos', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
@@ -543,6 +547,7 @@ document.getElementById('agregarProducto').addEventListener('click', async () =>
       precio: Number(document.getElementById('prodPrecio').value) || 0,
       descripcion: '',
       imagen_url,
+      imagen_transparente_url,
       destacado: document.getElementById('prodDestacado').checked,
     })
   });
@@ -550,6 +555,7 @@ document.getElementById('agregarProducto').addEventListener('click', async () =>
   document.getElementById('prodCategoria').value = '';
   document.getElementById('prodPrecio').value = '';
   document.getElementById('prodImagenFile').value = '';
+  document.getElementById('prodImagenTransparenteFile').value = '';
   document.getElementById('prodDestacado').checked = false;
   loadTienda();
 });

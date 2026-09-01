@@ -35,19 +35,23 @@ reportes en PDF.
   ya redactado con su nombre y su resultado, listo para que la asesora lo lea
   y cierre la cita o la venta. Cada análisis queda guardado (con la foto, si
   la hubo) y aparece en el panel → Reportes, exportable en CSV.
-- **Encuentra tu montura ideal**: el visitante sube una selfie y la IA analiza
-  la forma de su rostro (ovalado, redondo, cuadrado, etc.) para recomendarle
-  qué estilos de montura le favorecen, cruzando esa recomendación con tu
-  catálogo real (`/admin` → Tienda) para mostrarle productos concretos con
-  foto y precio — y el mismo cierre con botón de WhatsApp. Esto NO es un
-  "probador" tipo realidad aumentada (no superpone la montura sobre la foto
-  en tiempo real) — eso necesitaría fotos de cada montura recortadas sin
-  fondo, que hoy no tienes; si más adelante consigues esas fotos, se puede
-  agregar como una mejora sobre esta misma base. No guarda base de datos de
-  quién la usó (a diferencia del test de "Encuentra tu combo ideal").
-  Ambas herramientas de IA de la landing (además del chat) tienen un límite
-  de solicitudes por visitante para evitar abuso/spam, ya que cada uso
-  consume IA.
+- **Encuentra tu montura ideal**: el visitante toma una foto con la cámara o
+  sube una — la IA analiza la forma de su rostro (ovalado, redondo, cuadrado,
+  etc.) y recomienda qué estilos le favorecen. Desde ahí puede entrar al
+  **probador virtual**: superpone en tiempo real, sobre su propia foto, las
+  monturas del catálogo que tengan una "foto sin fondo" cargada — con flechas
+  para ir rotando entre todas las disponibles (ordenadas primero las que la
+  IA recomendó), calculando la posición, el tamaño y la inclinación exacta
+  según sus ojos (con la misma tecnología de detección facial que usan apps
+  como la de Ray-Ban o Warby Parker — corre en el navegador del visitante,
+  sin costo de IA por cada uso). Termina con "Me gusta, agendar por WhatsApp"
+  para la montura que eligió. **Para que una montura aparezca en el
+  probador**, súbele su "foto sin fondo" desde `/admin` → Tienda → Productos
+  (un PNG de la montura sola, recortada — se puede hacer gratis en sitios
+  como remove.bg); las que no tengan esa foto igual aparecen normalmente en
+  la tienda, solo no salen en el probador. El análisis de forma de rostro
+  (con IA) y el probador virtual (sin IA, gratis) tienen límites de
+  solicitudes por visitante independientes para evitar abuso.
 - **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
   - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
     humano, marcar un lead como cliente (con el valor de la venta), correo

@@ -40,6 +40,7 @@ catalogoAdminRouter.post("/api/productos", (req, res) => {
     precio: number;
     descripcion: string;
     imagen_url: string;
+    imagen_transparente_url?: string;
     destacado: boolean;
   };
   res.json(createProducto(body));

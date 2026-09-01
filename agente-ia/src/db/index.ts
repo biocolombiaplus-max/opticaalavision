@@ -46,6 +46,15 @@ if (!testVisionColumns.has("entrada_tipo")) {
   db.exec("ALTER TABLE test_vision_resultados ADD COLUMN entrada_tipo TEXT NOT NULL DEFAULT 'cuestionario'");
 }
 
+// Migraciones simples: agrega columnas nuevas a "productos" si vienen de una base de datos
+// anterior (antes del probador virtual de monturas).
+const productosColumns = new Set(
+  (db.prepare("PRAGMA table_info(productos)").all() as Array<{ name: string }>).map((c) => c.name),
+);
+if (!productosColumns.has("imagen_transparente_url")) {
+  db.exec("ALTER TABLE productos ADD COLUMN imagen_transparente_url TEXT NOT NULL DEFAULT ''");
+}
+
 // Plantillas de remarketing por defecto (editables luego desde el panel admin).
 const plantillasCount = (db.prepare("SELECT COUNT(*) AS n FROM plantillas_remarketing").get() as { n: number }).n;
 if (plantillasCount === 0) {
@@ -352,6 +361,7 @@ export interface Producto {
   precio: number;
   descripcion: string;
   imagen_url: string;
+  imagen_transparente_url: string;
   destacado: number;
   orden: number;
   activo: number;
@@ -372,16 +382,17 @@ export interface NuevoProducto {
   precio: number;
   descripcion: string;
   imagen_url: string;
+  imagen_transparente_url?: string;
   destacado: boolean;
 }
 
 export function createProducto(p: NuevoProducto): Producto {
   const info = db
     .prepare(
-      `INSERT INTO productos (nombre, marca_id, categoria, precio, descripcion, imagen_url, destacado)
-       VALUES (@nombre, @marca_id, @categoria, @precio, @descripcion, @imagen_url, @destacado)`,
+      `INSERT INTO productos (nombre, marca_id, categoria, precio, descripcion, imagen_url, imagen_transparente_url, destacado)
+       VALUES (@nombre, @marca_id, @categoria, @precio, @descripcion, @imagen_url, @imagen_transparente_url, @destacado)`,
     )
-    .run({ ...p, destacado: p.destacado ? 1 : 0 });
+    .run({ ...p, imagen_transparente_url: p.imagen_transparente_url ?? "", destacado: p.destacado ? 1 : 0 });
   return db.prepare("SELECT * FROM productos WHERE id = ?").get(info.lastInsertRowid) as Producto;
 }
 
@@ -395,13 +406,15 @@ export function updateProducto(id: number, p: Partial<NuevoProducto> & { activo?
     precio: p.precio ?? current.precio,
     descripcion: p.descripcion ?? current.descripcion,
     imagen_url: p.imagen_url ?? current.imagen_url,
+    imagen_transparente_url: p.imagen_transparente_url ?? current.imagen_transparente_url,
     destacado: p.destacado !== undefined ? (p.destacado ? 1 : 0) : current.destacado,
     activo: p.activo !== undefined ? (p.activo ? 1 : 0) : current.activo,
     id,
   };
   db.prepare(
     `UPDATE productos SET nombre=@nombre, marca_id=@marca_id, categoria=@categoria, precio=@precio,
-     descripcion=@descripcion, imagen_url=@imagen_url, destacado=@destacado, activo=@activo WHERE id=@id`,
+     descripcion=@descripcion, imagen_url=@imagen_url, imagen_transparente_url=@imagen_transparente_url,
+     destacado=@destacado, activo=@activo WHERE id=@id`,
   ).run(merged);
 }
 

@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS productos (
   precio INTEGER NOT NULL DEFAULT 0,
   descripcion TEXT NOT NULL DEFAULT '',
   imagen_url TEXT NOT NULL DEFAULT '',
+  imagen_transparente_url TEXT NOT NULL DEFAULT '',
   destacado INTEGER NOT NULL DEFAULT 0,
   orden INTEGER NOT NULL DEFAULT 0,
   activo INTEGER NOT NULL DEFAULT 1,
