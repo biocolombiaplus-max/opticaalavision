@@ -69,6 +69,21 @@
   .form-row input, .form-row textarea{flex:1;min-width:220px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);font-family:inherit;font-size:13px;}
   .section-title{font-size:15px;font-weight:800;margin:26px 0 14px;color:var(--accent-strong);}
   .hint{font-size:12px;color:var(--ink-faint);margin-top:-8px;margin-bottom:14px;}
+
+  /* Recortar fondo (editor propio, sin depender de otra herramienta) */
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,25,22,.6);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .modal-overlay[hidden]{display:none;}
+  .modal-box{background:var(--surface);border-radius:12px;padding:22px;max-width:540px;width:100%;max-height:92vh;overflow-y:auto;}
+  .modal-box h3{margin:0 0 6px;font-size:16px;}
+  .recorte-canvas-wrap{border-radius:8px;overflow:hidden;border:1px solid var(--border);
+    background-image:linear-gradient(45deg,#ccc 25%,transparent 25%),linear-gradient(-45deg,#ccc 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#ccc 75%),linear-gradient(-45deg,transparent 75%,#ccc 75%);
+    background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0px;}
+  .recorte-canvas-wrap canvas{width:100%;display:block;cursor:crosshair;}
+  .recorte-controls{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .recorte-controls label{font-size:12.5px;font-weight:700;}
+  .recorte-controls input[type=range]{flex:1;min-width:120px;}
+  .recorte-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;}
 </style>
 </head>
 <body>
@@ -76,6 +91,26 @@
   <span>Óptica ALaVision · Panel administrativo</span>
   <a href="/">← Volver a la página pública</a>
 </header>
+
+<div class="modal-overlay" id="recorteModal" hidden>
+  <div class="modal-box">
+    <h3>Quitar el fondo</h3>
+    <p class="hint">Haz clic sobre el fondo de la foto para volverlo transparente. Si el fondo tiene varias zonas o colores distintos, haz clic en cada una.</p>
+    <div class="recorte-canvas-wrap">
+      <canvas id="recorteCanvas"></canvas>
+    </div>
+    <div class="recorte-controls">
+      <label>Tolerancia</label>
+      <input type="range" id="recorteTolerancia" min="5" max="100" value="35" />
+      <button class="btn" id="recorteDeshacer" type="button">↺ Deshacer</button>
+      <button class="btn" id="recorteReiniciar" type="button">Reiniciar</button>
+    </div>
+    <div class="recorte-actions">
+      <button class="btn" id="recorteCancelar" type="button">Cancelar</button>
+      <button class="btn primary" id="recorteGuardar" type="button">Guardar como foto sin fondo</button>
+    </div>
+  </div>
+</div>
 <div class="tabs">
   <div class="tab active" data-view="conversaciones">Conversaciones</div>
   <div class="tab" data-view="citas">Citas</div>
@@ -132,10 +167,11 @@
       <input id="prodPrecio" type="number" placeholder="Precio" style="max-width:120px;" />
       <label style="min-width:auto;">Foto normal<input type="file" id="prodImagenFile" accept="image/*" /></label>
       <label style="min-width:auto;">Foto sin fondo (PNG, para el probador)<input type="file" id="prodImagenTransparenteFile" accept="image/png" /></label>
+      <button class="btn" id="prodRecortarBtn" type="button">✂️ o recórtala aquí mismo</button>
       <label style="min-width:auto;"><input type="checkbox" id="prodDestacado" /> Destacado (más vendidos)</label>
       <button class="btn primary" id="agregarProducto">Agregar producto</button>
     </div>
-    <p class="hint">La "foto sin fondo" es opcional: es un PNG de la montura sola, recortada, sin fondo ni cara — con eso, esa montura aparece disponible en "Encuentra tu montura ideal" para probarse virtualmente. Puedes recortar el fondo gratis en sitios como remove.bg.</p>
+    <p class="hint">La "foto sin fondo" es opcional: es un PNG de la montura sola, recortada, sin fondo ni cara — con eso, esa montura aparece disponible en "Encuentra tu montura ideal" para probarse virtualmente. Puedes recortarla tú mismo con el botón de arriba (elige primero la foto normal), sin necesitar otra herramienta.</p>
     <table id="tablaProductos"><thead><tr>
       <th>Imagen</th><th>Sin fondo</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Destacado</th><th></th>
     </tr></thead><tbody></tbody></table>
@@ -484,6 +520,116 @@ async function subirImagenGenerica(inputEl) {
   return data.url || '';
 }
 
+async function subirBlobGenerico(blob) {
+  const fd = new FormData();
+  fd.append('archivo', new File([blob], 'recorte.png', { type: 'image/png' }));
+  const res = await fetch('/api/imagen', { method: 'POST', body: fd });
+  const data = await res.json();
+  return data.url || '';
+}
+
+// ---------- Recortar fondo (editor propio: clic para volver transparente) ----------
+let recorteImg = null;
+let recorteHistorial = [];
+let recorteOnSave = null;
+
+function recorteAbrir(imageUrl, onSave) {
+  recorteOnSave = onSave;
+  recorteHistorial = [];
+  document.getElementById('recorteModal').hidden = false;
+  const canvas = document.getElementById('recorteCanvas');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const maxAncho = 900;
+    const escala = Math.min(1, maxAncho / img.naturalWidth);
+    canvas.width = Math.round(img.naturalWidth * escala);
+    canvas.height = Math.round(img.naturalHeight * escala);
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    recorteImg = img;
+  };
+  img.onerror = () => { alert('No pudimos cargar esa foto para recortarla.'); document.getElementById('recorteModal').hidden = true; };
+  img.src = imageUrl;
+}
+
+function recorteGuardarEnHistorial() {
+  const canvas = document.getElementById('recorteCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  recorteHistorial.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+  if (recorteHistorial.length > 12) recorteHistorial.shift();
+}
+
+function recorteFloodFill(ctx, canvas, startX, startY, tolerancia) {
+  const w = canvas.width, h = canvas.height;
+  const imageData = ctx.getImageData(0, 0, w, h);
+  const data = imageData.data;
+  const idx0 = (startY * w + startX) * 4;
+  if (data[idx0 + 3] === 0) return; // ya es transparente ahí
+  const r0 = data[idx0], g0 = data[idx0 + 1], b0 = data[idx0 + 2];
+  const tol2 = tolerancia * tolerancia * 3;
+  const visited = new Uint8Array(w * h);
+  const stack = [startY * w + startX];
+  visited[startY * w + startX] = 1;
+  while (stack.length) {
+    const p = stack.pop();
+    const x = p % w, y = (p / w) | 0;
+    const i = p * 4;
+    const dr = data[i] - r0, dg = data[i + 1] - g0, db = data[i + 2] - b0;
+    if (dr * dr + dg * dg + db * db > tol2) continue;
+    data[i + 3] = 0;
+    if (x > 0 && !visited[p - 1]) { visited[p - 1] = 1; stack.push(p - 1); }
+    if (x < w - 1 && !visited[p + 1]) { visited[p + 1] = 1; stack.push(p + 1); }
+    if (y > 0 && !visited[p - w]) { visited[p - w] = 1; stack.push(p - w); }
+    if (y < h - 1 && !visited[p + w]) { visited[p + w] = 1; stack.push(p + w); }
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+document.getElementById('recorteCanvas').addEventListener('click', (e) => {
+  if (!recorteImg) return;
+  const canvas = e.target;
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.min(canvas.width - 1, Math.max(0, Math.floor((e.clientX - rect.left) * (canvas.width / rect.width))));
+  const y = Math.min(canvas.height - 1, Math.max(0, Math.floor((e.clientY - rect.top) * (canvas.height / rect.height))));
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  recorteGuardarEnHistorial();
+  recorteFloodFill(ctx, canvas, x, y, Number(document.getElementById('recorteTolerancia').value));
+});
+
+document.getElementById('recorteDeshacer').addEventListener('click', () => {
+  if (!recorteHistorial.length) return;
+  const canvas = document.getElementById('recorteCanvas');
+  canvas.getContext('2d', { willReadFrequently: true }).putImageData(recorteHistorial.pop(), 0, 0);
+});
+
+document.getElementById('recorteReiniciar').addEventListener('click', () => {
+  if (!recorteImg) return;
+  const canvas = document.getElementById('recorteCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  recorteGuardarEnHistorial();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(recorteImg, 0, 0, canvas.width, canvas.height);
+});
+
+document.getElementById('recorteCancelar').addEventListener('click', () => {
+  document.getElementById('recorteModal').hidden = true;
+  recorteOnSave = null;
+  recorteImg = null;
+});
+
+document.getElementById('recorteGuardar').addEventListener('click', () => {
+  const canvas = document.getElementById('recorteCanvas');
+  canvas.toBlob((blob) => {
+    document.getElementById('recorteModal').hidden = true;
+    const cb = recorteOnSave;
+    recorteOnSave = null;
+    recorteImg = null;
+    if (cb && blob) cb(blob);
+  }, 'image/png');
+});
+
 async function loadTienda() {
   const [marcas, productos] = await Promise.all([api('/api/marcas'), api('/api/productos/todos')]);
 
@@ -507,7 +653,10 @@ async function loadTienda() {
       <td>${p.nombre}</td><td>${marcaNombre(p.marca_id)}</td><td>${p.categoria}</td>
       <td>$${p.precio.toLocaleString('es-CO')}</td>
       <td><input type="checkbox" data-destacado="${p.id}" ${p.destacado ? 'checked' : ''} /></td>
-      <td><button class="btn" data-del-prod="${p.id}">Eliminar</button></td>
+      <td style="white-space:nowrap;">
+        <button class="btn" data-recortar-prod="${p.id}" data-src="${p.imagen_url || p.imagen_transparente_url || ''}">✂️ Recortar</button>
+        <button class="btn" data-del-prod="${p.id}">Eliminar</button>
+      </td>
     </tr>
   `).join('');
   document.querySelectorAll('[data-destacado]').forEach(chk => chk.addEventListener('change', async () => {
@@ -518,6 +667,18 @@ async function loadTienda() {
   document.querySelectorAll('[data-del-prod]').forEach(btn => btn.addEventListener('click', async () => {
     await fetch(`/api/productos/${btn.dataset.delProd}`, { method: 'DELETE' });
     loadTienda();
+  }));
+  document.querySelectorAll('[data-recortar-prod]').forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.dataset.recortarProd;
+    const src = btn.dataset.src;
+    if (!src) { alert('Este producto todavía no tiene ninguna foto — sube la foto normal primero.'); return; }
+    recorteAbrir(src, async (blob) => {
+      const url = await subirBlobGenerico(blob);
+      await fetch(`/api/productos/${id}`, {
+        method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ imagen_transparente_url: url })
+      });
+      loadTienda();
+    });
   }));
 }
 
@@ -533,11 +694,24 @@ document.getElementById('agregarMarca').addEventListener('click', async () => {
   loadTienda();
 });
 
+let prodRecorteBlob = null;
+document.getElementById('prodRecortarBtn').addEventListener('click', () => {
+  const fileInput = document.getElementById('prodImagenFile');
+  if (!fileInput.files[0]) { alert('Primero elige la foto normal del producto, arriba, y luego recórtala aquí.'); return; }
+  const url = URL.createObjectURL(fileInput.files[0]);
+  recorteAbrir(url, (blob) => {
+    prodRecorteBlob = blob;
+    document.getElementById('prodRecortarBtn').textContent = '✅ Recorte listo — clic para rehacer';
+  });
+});
+
 document.getElementById('agregarProducto').addEventListener('click', async () => {
   const nombre = document.getElementById('prodNombre').value.trim();
   if (!nombre) { alert('Falta el nombre del producto.'); return; }
   const imagen_url = await subirImagenGenerica(document.getElementById('prodImagenFile'));
-  const imagen_transparente_url = await subirImagenGenerica(document.getElementById('prodImagenTransparenteFile'));
+  const imagen_transparente_url = prodRecorteBlob
+    ? await subirBlobGenerico(prodRecorteBlob)
+    : await subirImagenGenerica(document.getElementById('prodImagenTransparenteFile'));
   await fetch('/api/productos', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
@@ -557,6 +731,8 @@ document.getElementById('agregarProducto').addEventListener('click', async () =>
   document.getElementById('prodImagenFile').value = '';
   document.getElementById('prodImagenTransparenteFile').value = '';
   document.getElementById('prodDestacado').checked = false;
+  prodRecorteBlob = null;
+  document.getElementById('prodRecortarBtn').textContent = '✂️ o recórtala aquí mismo';
   loadTienda();
 });
 </script>

@@ -38,18 +38,22 @@ reportes en PDF.
 - **Encuentra tu montura ideal**: el visitante toma una foto con la cámara o
   sube una — la IA analiza la forma de su rostro (ovalado, redondo, cuadrado,
   etc.) y recomienda qué estilos le favorecen. Desde ahí puede entrar al
-  **probador virtual**: superpone en tiempo real, sobre su propia foto, las
-  monturas del catálogo que tengan una "foto sin fondo" cargada — con flechas
-  para ir rotando entre todas las disponibles (ordenadas primero las que la
-  IA recomendó), calculando la posición, el tamaño y la inclinación exacta
-  según sus ojos (con la misma tecnología de detección facial que usan apps
-  como la de Ray-Ban o Warby Parker — corre en el navegador del visitante,
-  sin costo de IA por cada uso). Termina con "Me gusta, agendar por WhatsApp"
-  para la montura que eligió. **Para que una montura aparezca en el
-  probador**, súbele su "foto sin fondo" desde `/admin` → Tienda → Productos
-  (un PNG de la montura sola, recortada — se puede hacer gratis en sitios
-  como remove.bg); las que no tengan esa foto igual aparecen normalmente en
-  la tienda, solo no salen en el probador. El análisis de forma de rostro
+  **probador virtual**, estilo filtro de Instagram/Snapchat: nombre y precio
+  sobrepuestos en la foto, flechas a los lados y una fila de miniaturas
+  abajo — tocar cualquier montura la prueba al instante, superpuesta en vivo
+  sobre su propia foto, calculando la posición, el tamaño y la inclinación
+  exacta según sus ojos (misma tecnología de detección facial que apps como
+  la de Ray-Ban o Warby Parker — corre en el navegador del visitante, sin
+  costo de IA por cada uso). Termina con "Me gusta, agendar por WhatsApp"
+  para la montura elegida.
+  **Para que una montura aparezca en el probador**, necesita su "foto sin
+  fondo" — y no hace falta ninguna herramienta externa: desde `/admin` →
+  Tienda → Productos, el botón **"✂️ Recortar"** (en cada producto ya
+  cargado) o **"✂️ o recórtala aquí mismo"** (al agregar uno nuevo) abre un
+  editor propio donde solo hay que hacer clic sobre el fondo de la foto para
+  volverlo transparente (repite el clic si el fondo tiene varias zonas o
+  colores) y guardar. Las monturas sin esa foto igual aparecen normalmente
+  en la tienda, solo no salen en el probador. El análisis de forma de rostro
   (con IA) y el probador virtual (sin IA, gratis) tienen límites de
   solicitudes por visitante independientes para evitar abuso.
 - **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
