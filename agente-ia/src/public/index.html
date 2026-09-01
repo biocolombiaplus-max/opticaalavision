@@ -314,23 +314,33 @@
   .montura-cam-wrap video{width:100%;display:block;transform:scaleX(-1);}
   .montura-cam-guide{position:absolute;inset:0;border:2px dashed rgba(255,255,255,.5);margin:32px 60px;border-radius:50%;pointer-events:none;}
 
-  /* ---------- Probador virtual (canvas con overlay) ---------- */
-  .probador-wrap{max-width:420px;margin:0 auto;position:relative;border-radius:10px;overflow:hidden;background:var(--paper);box-shadow:0 30px 70px -20px rgba(0,0,0,.45);}
+  /* ---------- Probador virtual (canvas con overlay, estilo filtro de celular) ---------- */
+  .probador-wrap{max-width:420px;margin:0 auto;position:relative;border-radius:14px;overflow:hidden;background:var(--paper);box-shadow:0 30px 70px -20px rgba(0,0,0,.45);}
   .probador-wrap canvas{width:100%;display:block;}
   .probador-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb, var(--surface) 85%, transparent);
-    font-size:13px;color:var(--ink-soft);font-weight:600;text-align:center;padding:20px;}
-  .probador-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px;}
-  .probador-arrow{width:44px;height:44px;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:border-color .15s ease, transform .15s ease;}
-  .probador-arrow:hover{border-color:var(--gold);transform:scale(1.06);}
-  .probador-arrow svg{width:18px;height:18px;}
-  .probador-info{text-align:center;min-width:0;}
-  .probador-info .nom{font-family:"Fraunces",serif;font-size:17px;font-weight:700;}
-  .probador-info .precio{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--gold-strong);font-weight:700;margin-top:2px;}
-  .probador-dots{display:flex;justify-content:center;gap:6px;margin-top:14px;}
-  .probador-dots i{width:6px;height:6px;border-radius:50%;background:var(--line);display:block;}
-  .probador-dots i.on{background:var(--gold);}
+    font-size:13px;color:var(--ink-soft);font-weight:600;text-align:center;padding:20px;z-index:3;}
+  .probador-topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;
+    padding:14px;background:linear-gradient(180deg, rgba(0,0,0,.5), transparent);z-index:2;pointer-events:none;}
+  .probador-topbar .nom{color:#fff;font-family:"Fraunces",serif;font-size:16px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.5);}
+  .probador-topbar .precio{color:#fff;font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.5);}
+  .probador-arrow{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.85);border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;pointer-events:auto;
+    transition:background .15s ease, transform .15s ease;box-shadow:0 4px 12px rgba(0,0,0,.25);}
+  .probador-arrow:hover{background:#fff;transform:scale(1.08);}
+  .probador-arrow svg{width:17px;height:17px;color:var(--ink);}
+  .probador-side-nav{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;padding:0 12px;
+    transform:translateY(-50%);z-index:2;}
+  .probador-thumbs{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;gap:10px;overflow-x:auto;
+    padding:16px 14px 18px;background:linear-gradient(0deg, rgba(0,0,0,.6), rgba(0,0,0,0));
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .probador-thumbs::-webkit-scrollbar{display:none;}
+  .probador-thumb{flex:0 0 auto;width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,.94);
+    border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;
+    scroll-snap-align:center;transition:border-color .15s ease, transform .15s ease;overflow:hidden;padding:7px;}
+  .probador-thumb img{max-width:100%;max-height:100%;object-fit:contain;}
+  .probador-thumb.selected{border-color:var(--gold);transform:scale(1.1);box-shadow:0 0 0 3px rgba(216,180,120,.45);}
   .probador-brutal{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-strong);text-align:center;margin-bottom:14px;}
+  .probador-hint{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:14px;}
 </style>
 </head>
 <body>
@@ -1271,8 +1281,10 @@
       <div class="probador-wrap">
         <canvas id="probadorCanvas"></canvas>
         <div class="probador-loading" id="probadorLoading">Cargando probador…</div>
+        <div id="probadorOverlay"></div>
       </div>
-      <div id="probadorControles"></div>
+      <div class="probador-hint" id="probadorHint"></div>
+      <div class="cta-row" style="max-width:340px;margin:16px auto 0;" id="probadorCtaRow"></div>
     `;
     document.getElementById('probadorBack').addEventListener('click', () => renderMonturaResultado(data));
 
@@ -1377,34 +1389,62 @@
   function renderProbadorControles() {
     const producto = monturaProductosDisponibles[monturaProbadorIndex];
     const phone = window.ALAVISION_WA_NUMERO || '';
-    document.getElementById('probadorControles').innerHTML = `
-      <div class="probador-nav">
-        <div class="probador-arrow" id="probadorPrev" aria-label="Montura anterior">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
-        <div class="probador-info">
+    const varias = monturaProductosDisponibles.length > 1;
+
+    document.getElementById('probadorOverlay').innerHTML = `
+      <div class="probador-topbar">
+        <div>
           <div class="nom">${producto.nombre}</div>
           <div class="precio">${money(producto.precio)}</div>
         </div>
-        <div class="probador-arrow" id="probadorNext" aria-label="Siguiente montura">
+      </div>
+      ${varias ? `
+      <div class="probador-side-nav">
+        <button class="probador-arrow" id="probadorPrev" type="button" aria-label="Montura anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="probador-arrow" id="probadorNext" type="button" aria-label="Siguiente montura">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
+        </button>
       </div>
-      <div class="probador-dots">${monturaProductosDisponibles.map((_, i) => `<i class="${i === monturaProbadorIndex ? 'on' : ''}"></i>`).join('')}</div>
-      <div class="cta-row" style="max-width:340px;margin:18px auto 0;">
-        <a class="btn btn-gold" id="probadorWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;"><span>Me gusta, agendar por WhatsApp</span></a>
-      </div>
+      <div class="probador-thumbs" id="probadorThumbs">
+        ${monturaProductosDisponibles.map((p, i) => `
+          <div class="probador-thumb ${i === monturaProbadorIndex ? 'selected' : ''}" data-idx="${i}">
+            <img src="${p.imagen_transparente_url}" alt="${p.nombre}" />
+          </div>
+        `).join('')}
+      </div>` : ''}
     `;
-    document.getElementById('probadorPrev').addEventListener('click', () => cambiarProbador(-1));
-    document.getElementById('probadorNext').addEventListener('click', () => cambiarProbador(1));
+
+    document.getElementById('probadorHint').textContent = varias
+      ? 'Toca una montura para probártela, o desliza para ver más'
+      : 'Sube más fotos sin fondo desde el panel para poder comparar entre varias.';
+
+    document.getElementById('probadorCtaRow').innerHTML = `
+      <a class="btn btn-gold" id="probadorWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;"><span>Me gusta, agendar por WhatsApp</span></a>
+    `;
     document.getElementById('probadorWa').href = waLink(phone, `Hola, me estoy probando monturas virtualmente en la página y me gustó la ${producto.nombre}. ¿Está disponible?`);
+
+    if (varias) {
+      document.getElementById('probadorPrev').addEventListener('click', () => cambiarProbador(-1));
+      document.getElementById('probadorNext').addEventListener('click', () => cambiarProbador(1));
+      document.querySelectorAll('.probador-thumb').forEach(el => {
+        el.addEventListener('click', () => seleccionarProbador(Number(el.dataset.idx)));
+      });
+      const selEl = document.querySelector('.probador-thumb.selected');
+      if (selEl) selEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }
+
+  function seleccionarProbador(idx) {
+    monturaProbadorIndex = idx;
+    dibujarProbadorOverlay();
+    renderProbadorControles();
   }
 
   function cambiarProbador(delta) {
     const total = monturaProductosDisponibles.length;
-    monturaProbadorIndex = (monturaProbadorIndex + delta + total) % total;
-    dibujarProbadorOverlay();
-    renderProbadorControles();
+    seleccionarProbador((monturaProbadorIndex + delta + total) % total);
   }
 
   renderMonturaIntro();
