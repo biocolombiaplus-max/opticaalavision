@@ -60,6 +60,7 @@ monturaPublicRouter.post("/api/montura/analizar", upload.single("archivo"), asyn
         categoria: p.categoria,
         precio: p.precio,
         imagen_url: p.imagen_url,
+        imagen_transparente_url: p.imagen_transparente_url,
       })),
     });
   } catch (err) {

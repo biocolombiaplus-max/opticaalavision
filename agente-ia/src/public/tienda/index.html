@@ -148,7 +148,7 @@ function renderGrid() {
   }
   el.innerHTML = list.map(p => `
     <div class="card">
-      <div class="card-img">${p.imagen_url ? `<img src="${p.imagen_url}" alt="${p.nombre}"/>` : '👓'}</div>
+      <div class="card-img">${(p.imagen_url || p.imagen_transparente_url) ? `<img src="${p.imagen_url || p.imagen_transparente_url}" alt="${p.nombre}"/>` : '👓'}</div>
       <div class="card-body">
         <div class="card-brand">${marcaById[p.marca_id] || p.categoria}</div>
         <div class="card-name">${p.nombre}</div>

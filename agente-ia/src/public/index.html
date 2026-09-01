@@ -746,7 +746,7 @@
     }
     el.innerHTML = destacados.map(p => `
       <a class="prod-card" href="/tienda">
-        <div class="prod-img">${p.imagen_url ? `<img src="${p.imagen_url}" alt="${p.nombre}"/>` : '👓'}</div>
+        <div class="prod-img">${(p.imagen_url || p.imagen_transparente_url) ? `<img src="${p.imagen_url || p.imagen_transparente_url}" alt="${p.nombre}"/>` : '👓'}</div>
         <div class="prod-body">
           <div class="prod-brand">${p.categoria}</div>
           <div class="prod-name">${p.nombre}</div>
@@ -1228,7 +1228,7 @@
     const phone = window.ALAVISION_WA_NUMERO || '';
     const productosHtml = (data.productos || []).map(p => `
       <a class="montura-prod" href="/tienda">
-        <div class="img">${p.imagen_url ? `<img src="${p.imagen_url}" alt="${p.nombre}"/>` : '👓'}</div>
+        <div class="img">${(p.imagen_url || p.imagen_transparente_url) ? `<img src="${p.imagen_url || p.imagen_transparente_url}" alt="${p.nombre}"/>` : '👓'}</div>
         <div class="body">
           <div class="cat">${p.categoria}</div>
           <div class="nom">${p.nombre}</div>
