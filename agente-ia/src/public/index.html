@@ -1592,9 +1592,12 @@
     `;
 
     document.getElementById('probadorCtaRow').innerHTML = `
-      <a class="btn btn-gold" id="probadorWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;"><span>Me gusta, agendar por WhatsApp</span></a>
+      <a class="btn btn-gold" id="probadorWa" href="#" target="_blank" rel="noopener" style="justify-content:center;width:100%;">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.01 2c-5.5 0-9.98 4.48-9.98 9.98 0 1.76.46 3.48 1.34 5L2 22l5.17-1.35a9.96 9.96 0 0 0 4.84 1.23h.01c5.5 0 9.98-4.48 9.98-9.98S17.51 2 12.01 2Zm5.86 14.27c-.25.7-1.45 1.33-2 1.42-.51.08-1.15.11-1.86-.12-.43-.13-.98-.32-1.69-.62-2.97-1.28-4.9-4.27-5.05-4.47-.15-.2-1.21-1.6-1.21-3.06s.76-2.17 1.03-2.47c.27-.3.59-.37.79-.37h.57c.18 0 .43-.07.67.51.25.6.85 2.07.92 2.22.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.39-.44.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.15.2-.3.4-.25.67-.15.27.1 1.73.82 2.03.97.3.15.5.22.57.35.08.12.08.72-.17 1.42Z"/></svg>
+        <span>Comprar por WhatsApp</span>
+      </a>
     `;
-    document.getElementById('probadorWa').href = waLink(phone, `Hola, me estoy probando monturas en vivo en la página y me gustó la ${producto.nombre}. ¿Está disponible?`);
+    document.getElementById('probadorWa').href = waLink(phone, `Hola, me estoy probando monturas en vivo en la página y quiero comprar la ${producto.nombre} (${money(producto.precio)}). ¿Cómo hago el pedido?`);
 
     document.getElementById('probadorCapturar').addEventListener('click', () => {
       const canvas = document.getElementById('probadorCanvas');
