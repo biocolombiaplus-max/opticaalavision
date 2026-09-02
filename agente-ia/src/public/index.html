@@ -92,13 +92,60 @@
   .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
   .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,12,20,.55), rgba(10,12,20,.82));}
   .hero-decor{position:absolute;inset:0;pointer-events:none;opacity:.5;}
-  .hero .wrap{position:relative;z-index:2;color:#fff;padding-top:60px;padding-bottom:60px;}
-  .hero h1{font-size:clamp(38px,6vw,68px);color:#fff;max-width:16ch;line-height:1.05;}
-  .hero p.lead{font-size:18px;color:rgba(255,255,255,.82);max-width:46ch;margin:22px 0 34px;}
+  .hero .wrap{position:relative;z-index:2;color:#fff;padding-top:32px;padding-bottom:28px;}
+  .hero h1{font-size:clamp(30px,4.4vw,52px);color:#fff;max-width:16ch;line-height:1.08;}
+  .hero p.lead{font-size:15.5px;color:rgba(255,255,255,.82);max-width:46ch;margin:14px 0 22px;}
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
-  .hero-badges{display:flex;gap:28px;margin-top:56px;flex-wrap:wrap;}
-  .hero-badge{font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:8px;}
-  .hero-badge b{color:#fff;font-family:"IBM Plex Mono",monospace;}
+
+  /* ---------- Tarjeta destacada del test de visión, dentro del hero ---------- */
+  .hero-ai-card{position:relative;display:flex;align-items:center;gap:18px;max-width:600px;margin-top:18px;
+    padding:15px 22px 15px 15px;border-radius:20px;background:rgba(255,255,255,.07);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);
+    overflow:hidden;isolation:isolate;transition:transform .25s ease, background .25s ease;}
+  .hero-ai-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);}
+  .hero-ai-card::before{content:"";position:absolute;inset:-2px;z-index:-2;border-radius:24px;
+    background:conic-gradient(from var(--spin,0deg), var(--gold), transparent 25%, transparent 75%, var(--gold));
+    animation:heroSpin 5s linear infinite;}
+  .hero-ai-card::after{content:"";position:absolute;inset:1px;z-index:-1;border-radius:21px;background:var(--accent-strong);}
+  @keyframes heroSpin{to{ --spin:360deg; }}
+  @property --spin{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
+  .hero-ai-shine{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:21px;}
+  .hero-ai-shine::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;
+    background:linear-gradient(115deg, transparent, rgba(255,255,255,.18), transparent);
+    animation:heroShine 3.4s ease-in-out infinite;}
+  @keyframes heroShine{0%{left:-60%;}55%,100%{left:130%;}}
+  .hero-ai-badge{position:absolute;top:-13px;left:20px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
+    color:#1a1508;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;padding:5px 12px;border-radius:20px;box-shadow:0 6px 16px -4px rgba(0,0,0,.5);
+    animation:heroBadgePulse 2.2s ease-in-out infinite;}
+  @keyframes heroBadgePulse{0%,100%{box-shadow:0 6px 16px -4px rgba(0,0,0,.5);}50%{box-shadow:0 6px 22px -2px rgba(216,180,120,.65);}}
+  .hero-ai-media{position:relative;z-index:1;flex-shrink:0;width:60px;height:60px;border-radius:16px;overflow:hidden;
+    background:linear-gradient(135deg,var(--gold-tint,#241f14),rgba(255,255,255,.08));
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);}
+  .hero-ai-media img{width:100%;height:100%;object-fit:cover;}
+  .hero-ai-media svg{width:28px;height:28px;color:var(--gold);}
+  .hero-ai-body{position:relative;z-index:1;min-width:0;}
+  .hero-ai-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+  .hero-ai-title{font-family:"Fraunces",serif;font-size:17px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;}
+  .hero-ai-sub{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.45;max-width:38ch;}
+  .hero-ai-cta{margin-top:8px;font-size:12px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:5px;}
+  .hero-ai-cta svg{width:14px;height:14px;transition:transform .2s ease;}
+  .hero-ai-card:hover .hero-ai-cta svg{transform:translateX(4px);}
+  @media (prefers-reduced-motion: reduce){
+    .hero-ai-card::before, .hero-ai-shine::after, .hero-ai-badge{animation:none;}
+  }
+  @media (max-width:640px){
+    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;padding:26px 20px 20px;}
+    .hero-ai-sub{max-width:none;}
+  }
+  @media (max-height:820px) and (min-width:641px){
+    .hero .wrap{padding-top:22px;padding-bottom:18px;}
+    .hero h1{font-size:clamp(26px,3.8vw,42px);}
+    .hero p.lead{margin:8px 0 16px;}
+    .hero-ai-card{margin-top:12px;}
+    .hero-ai-sub{display:none;}
+  }
 
   /* ---------- Trust bar ---------- */
   /* ---------- Banda de marcas ---------- */
@@ -383,11 +430,20 @@
       <a class="btn btn-gold" href="#agenda"><span>Agenda tu cita</span></a>
       <a class="btn btn-whatsapp" id="heroWhatsapp" href="#" target="_blank" rel="noopener"><span>Escríbenos por WhatsApp</span></a>
     </div>
-    <div class="hero-badges">
-      <div class="hero-badge"><b>2</b>&nbsp;sedes en Cúcuta</div>
-      <div class="hero-badge"><b>+10</b>&nbsp;años de experiencia</div>
-      <div class="hero-badge"><b>1 año</b>&nbsp;de garantía</div>
-    </div>
+
+    <a class="hero-ai-card" href="#test-vision" aria-label="Descubre qué lente necesitas con inteligencia artificial">
+      <div class="hero-ai-shine"></div>
+      <div class="hero-ai-badge">✨ Nuevo · Con IA</div>
+      <div class="hero-ai-media" id="heroAiMedia">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-4 4-6 6-6s4.5 2 4 6c-.5 4-2.5 6-4.5 6S2.8 16 2 12Z"/><path d="M22 12c-1.5-4-4-6-6-6s-4.5 2-4 6c.5 4 2.5 6 4.5 6s5.7-2 5.5-6Z"/></svg>
+      </div>
+      <div class="hero-ai-body">
+        <div class="hero-ai-eyebrow">30 segundos · Gratis</div>
+        <div class="hero-ai-title">¿Sabes qué lente necesitas?</div>
+        <div class="hero-ai-sub">Sube tu foto o cuéntanos tu caso — nuestra IA analiza tu situación y te dice justo el combo que te conviene.</div>
+        <div class="hero-ai-cta">Descubrirlo ahora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -704,6 +760,9 @@
     }
     if (cfg.hero_image_url) {
       document.getElementById('heroBg').style.backgroundImage = `url(${cfg.hero_image_url})`;
+    }
+    if (cfg.test_hero_image_url) {
+      document.getElementById('heroAiMedia').innerHTML = `<img src="${cfg.test_hero_image_url}" alt="" />`;
     }
     const opacity = cfg.hero_opacity !== undefined ? cfg.hero_opacity : 0.7;
     document.getElementById('heroOverlay').style.background =

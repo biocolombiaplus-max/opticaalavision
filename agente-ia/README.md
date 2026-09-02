@@ -16,6 +16,13 @@ reportes en PDF.
   brillo/luz al pasar el mouse. Todo lo editable (logo, foto de portada,
   opacidad, direcciones, mapas, marcas, productos) sale del panel
   administrativo, no del código.
+- **Tarjeta destacada del test de visión en el hero**: justo debajo del
+  título y los botones principales, una tarjeta con vidrio esmerilado
+  ("glassmorphism"), borde dorado animado, un brillo que recorre la tarjeta y
+  una insignia pulsante "✨ Nuevo · Con IA" invita directamente a hacer el
+  **Encuentra tu combo ideal** — así el visitante lo ve de entrada, sin tener
+  que bajar por toda la página. Su imagen/ícono se sube desde el panel
+  (Configuración → "Tarjeta destacada del test de visión").
 - **Tienda virtual** (`/tienda`) — sub-landing estilo Shopify: catálogo
   filtrable por marca, carrito (guardado en el navegador) y checkout que arma
   el pedido y lo manda por WhatsApp (no hay pasarela de pagos conectada).
@@ -83,7 +90,8 @@ reportes en PDF.
     productos (imagen, precio, marca, categoría, si aparece en "más
     vendidos").
   - **Configuración**: subir logo y foto de portada, ajustar la opacidad del
-    overlay, direcciones y URLs de Google Maps de las 2 sedes, número de
+    overlay, la imagen de la tarjeta destacada del test de visión (ver
+    abajo), direcciones y URLs de Google Maps de las 2 sedes, número de
     WhatsApp.
   - **Reportes**: seguimiento en vivo (leads totales, de Meta Ads,
     convertidos, tasa de conversión, valor vendido), descarga de PDF por
