@@ -98,10 +98,10 @@
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
 
   /* ---------- Tarjeta destacada del test de visión, dentro del hero ---------- */
-  .hero-ai-card{position:relative;display:flex;align-items:center;gap:20px;max-width:600px;margin-top:38px;
-    padding:20px 26px 20px 18px;border-radius:20px;background:rgba(255,255,255,.07);
+  .hero-ai-card{position:relative;display:flex;align-items:center;gap:20px;max-width:600px;margin-top:44px;
+    padding:24px 26px 22px 18px;border-radius:20px;background:rgba(255,255,255,.07);
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);
-    overflow:hidden;isolation:isolate;transition:transform .25s ease, background .25s ease;}
+    isolation:isolate;transition:transform .25s ease, background .25s ease;}
   .hero-ai-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);}
   .hero-ai-card::before{content:"";position:absolute;inset:-2px;z-index:-2;border-radius:24px;
     background:conic-gradient(from var(--spin,0deg), var(--gold), transparent 25%, transparent 75%, var(--gold));
@@ -114,11 +114,11 @@
     background:linear-gradient(115deg, transparent, rgba(255,255,255,.18), transparent);
     animation:heroShine 3.4s ease-in-out infinite;}
   @keyframes heroShine{0%{left:-60%;}55%,100%{left:130%;}}
-  .hero-ai-badge{position:absolute;top:-14px;left:24px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
-    color:#1a1508;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;
-    text-transform:uppercase;padding:5px 12px;border-radius:20px;box-shadow:0 6px 16px -4px rgba(0,0,0,.5);
-    animation:heroBadgePulse 2.2s ease-in-out infinite;}
-  @keyframes heroBadgePulse{0%,100%{box-shadow:0 6px 16px -4px rgba(0,0,0,.5);}50%{box-shadow:0 6px 22px -2px rgba(216,180,120,.65);}}
+  .hero-ai-badge{position:absolute;top:-18px;left:24px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
+    color:#1a1508;font-family:"Inter",system-ui,sans-serif;font-size:13.5px;font-weight:800;letter-spacing:.01em;
+    padding:8px 18px;border-radius:24px;box-shadow:0 8px 18px -4px rgba(0,0,0,.55);white-space:nowrap;
+    animation:heroBadgePulse 1.8s ease-in-out infinite;}
+  @keyframes heroBadgePulse{0%,100%{box-shadow:0 8px 18px -4px rgba(0,0,0,.55);}50%{box-shadow:0 10px 26px -2px rgba(216,180,120,.75);}}
   .hero-ai-media{position:relative;z-index:1;flex-shrink:0;width:60px;height:60px;border-radius:16px;overflow:hidden;
     background:linear-gradient(135deg,var(--gold-tint,#241f14),rgba(255,255,255,.08));
     display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);}
@@ -129,22 +129,27 @@
     text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
   .hero-ai-title{font-family:"Fraunces",serif;font-size:17px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;}
   .hero-ai-sub{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.45;max-width:38ch;}
-  .hero-ai-cta{margin-top:8px;font-size:12px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:5px;}
-  .hero-ai-cta svg{width:14px;height:14px;transition:transform .2s ease;}
+  .hero-ai-cta{margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;
+    color:#1a1508;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
+    padding:9px 16px;border-radius:24px;box-shadow:0 6px 16px -4px rgba(0,0,0,.4);
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .hero-ai-card:hover .hero-ai-cta{transform:translateY(-1px);box-shadow:0 10px 22px -4px rgba(0,0,0,.5);}
+  .hero-ai-cta svg{width:15px;height:15px;transition:transform .2s ease;}
   .hero-ai-card:hover .hero-ai-cta svg{transform:translateX(4px);}
   @media (prefers-reduced-motion: reduce){
     .hero-ai-card::before, .hero-ai-shine::after, .hero-ai-badge{animation:none;}
   }
   @media (max-width:640px){
-    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;margin-top:36px;padding:30px 22px 22px;}
+    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;margin-top:40px;padding:34px 22px 24px;}
     .hero-ai-badge{left:50%;transform:translateX(-50%);}
     .hero-ai-sub{max-width:none;}
+    .hero-ai-cta{margin-left:auto;margin-right:auto;}
   }
   @media (max-height:820px) and (min-width:641px){
     .hero .wrap{padding-top:32px;padding-bottom:30px;}
     .hero h1{font-size:clamp(26px,3.8vw,42px);}
     .hero p.lead{margin:10px 0 22px;}
-    .hero-ai-card{margin-top:28px;}
+    .hero-ai-card{margin-top:32px;}
   }
 
   /* ---------- Trust bar ---------- */
@@ -438,12 +443,12 @@
 
     <a class="hero-ai-card" href="#test-vision" aria-label="Descubre qué lente necesitas con inteligencia artificial">
       <div class="hero-ai-shine"></div>
-      <div class="hero-ai-badge">✨ Nuevo · Con IA</div>
+      <div class="hero-ai-badge">👉 Haz clic aquí</div>
       <div class="hero-ai-media" id="heroAiMedia">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-4 4-6 6-6s4.5 2 4 6c-.5 4-2.5 6-4.5 6S2.8 16 2 12Z"/><path d="M22 12c-1.5-4-4-6-6-6s-4.5 2-4 6c.5 4 2.5 6 4.5 6s5.7-2 5.5-6Z"/></svg>
       </div>
       <div class="hero-ai-body">
-        <div class="hero-ai-eyebrow">30 segundos · Gratis</div>
+        <div class="hero-ai-eyebrow">✨ Nuevo · Con IA · 30 segundos · Gratis</div>
         <div class="hero-ai-title">¿Sabes qué lente necesitas?</div>
         <div class="hero-ai-sub">Sube tu foto o cuéntanos tu caso — nuestra IA analiza tu situación y te dice justo el combo que te conviene.</div>
         <div class="hero-ai-cta">Descubrirlo ahora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
