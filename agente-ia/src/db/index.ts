@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { mkdirSync } from "fs";
@@ -8,6 +8,23 @@ import { config } from "../config.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 mkdirSync(dirname(config.dbPath), { recursive: true });
+
+// Diagnóstico de arranque: en Railway, si DB_PATH no apunta a un Volume persistente montado en
+// /data, el archivo de la base de datos se borra en cada despliegue o reinicio del contenedor
+// (productos, marcas, logos, fotos, leads y conversaciones incluidos). Esto ha pasado varias
+// veces, así que lo dejamos bien visible en los logs de arranque en vez de tener que
+// diagnosticarlo cada vez a mano.
+const dbYaExistia = existsSync(config.dbPath);
+console.log(`💾 Base de datos: ${config.dbPath} (${dbYaExistia ? "ya existía, reusando datos" : "no existía — se crea una NUEVA, vacía"})`);
+if (!config.dbPath.startsWith("/data")) {
+  console.warn(
+    `⚠️  ADVERTENCIA: DB_PATH ("${config.dbPath}") no apunta a un Volume persistente.\n` +
+      `   Si esto corre en Railway, TODOS los datos (productos, marcas, logos, fotos, leads,\n` +
+      `   conversaciones) se BORRARÁN en el próximo despliegue o reinicio.\n` +
+      `   Solución: en Railway, agrega un Volume montado en /data y define la variable de\n` +
+      `   entorno DB_PATH=/data/alavision.db en la pestaña "Variables" del servicio.`,
+  );
+}
 
 export const db = new Database(config.dbPath);
 db.pragma("journal_mode = WAL");
