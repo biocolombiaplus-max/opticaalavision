@@ -202,6 +202,10 @@
   .vt-option{padding:13px 16px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;font-size:14px;font-weight:600;
     transition:border-color .15s ease, background .15s ease;}
   .vt-option:hover{border-color:var(--gold);background:var(--gold-tint);}
+  .vt-option-big{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px 18px;
+    font-size:15.5px;border-radius:10px;border-color:var(--gold);background:var(--gold-tint);
+    box-shadow:0 4px 14px -8px rgba(0,0,0,.2);}
+  .vt-option-big:hover{background:var(--gold);}
   .vt-form input, .vt-form textarea{width:100%;padding:12px 14px;border-radius:6px;border:1px solid var(--line);font-size:14px;margin-bottom:12px;font-family:inherit;background:var(--surface);color:var(--ink);}
   .vt-form textarea{resize:vertical;min-height:110px;}
   .vt-file{border:1.5px dashed var(--line);border-radius:6px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;transition:border-color .15s ease, background .15s ease;}
@@ -952,24 +956,21 @@
       ${vtBack()}
       <div class="vt-doctor"><div class="avatar">DA</div><div><div class="name">Vale</div><div class="role">Análisis personalizado</div></div></div>
       <div class="vt-question">Sube una foto clara de tu fórmula optométrica.</div>
-      <label class="vt-file" id="vtFileLabel">
-        📷 Toca para elegir la foto
-        <div class="fname" id="vtFname"></div>
-        <input type="file" id="vtFileInput" accept="image/png,image/jpeg,image/webp" />
-      </label>
-      <button class="btn btn-gold" id="vtFileNext" style="width:100%;justify-content:center;" disabled><span>Continuar →</span></button>
+      <div class="vt-options">
+        <div class="vt-option vt-option-big" id="vtBtnCam">📷 <b>Tomar la foto ahora</b></div>
+        <div class="vt-option vt-option-big" id="vtBtnGaleria">🖼️ <b>Subir desde mi galería</b></div>
+      </div>
+      <input type="file" id="vtFileInputCam" accept="image/png,image/jpeg,image/webp" capture="environment" style="display:none;" />
+      <input type="file" id="vtFileInputGaleria" accept="image/png,image/jpeg,image/webp" style="display:none;" />
+      <div class="vt-disclaimer">Que se alcancen a leer bien los números — con buena luz y sin reflejos.</div>
     `;
     bindBack(renderVisionIntro);
-    const input = document.getElementById('vtFileInput');
-    const next = document.getElementById('vtFileNext');
-    input.addEventListener('change', () => {
-      if (input.files[0]) {
-        vtFile = input.files[0];
-        document.getElementById('vtFname').textContent = vtFile.name;
-        next.disabled = false;
-      }
-    });
-    next.addEventListener('click', () => { if (vtFile) renderContactForm(); });
+    const camInput = document.getElementById('vtFileInputCam');
+    const galInput = document.getElementById('vtFileInputGaleria');
+    document.getElementById('vtBtnCam').addEventListener('click', () => camInput.click());
+    document.getElementById('vtBtnGaleria').addEventListener('click', () => galInput.click());
+    camInput.addEventListener('change', () => { if (camInput.files[0]) { vtFile = camInput.files[0]; renderContactForm(); } });
+    galInput.addEventListener('change', () => { if (galInput.files[0]) { vtFile = galInput.files[0]; renderContactForm(); } });
   }
 
   function renderSituacionForm() {
