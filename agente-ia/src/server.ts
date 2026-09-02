@@ -46,6 +46,19 @@ app.use(remarketingAdminRouter);
 app.use(reportsAdminRouter);
 app.use(catalogoAdminRouter);
 
+// Manejador de errores global: sin esto, un error de multer (ej. una foto que supera el límite
+// de tamaño) lo respondía Express con una página de error en HTML en vez de JSON, y el
+// fetch().then(r => r.json()) del navegador fallaba con un mensaje genérico y poco útil.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Error no manejado:", err);
+  if (err?.code === "LIMIT_FILE_SIZE") {
+    res.status(413).json({ error: "Esa foto pesa demasiado. Intenta con una más liviana." });
+    return;
+  }
+  res.status(500).json({ error: err?.message || "Ocurrió un error inesperado. Intenta de nuevo." });
+});
+
 app.listen(config.port, () => {
   console.log(`Óptica ALaVision — servidor escuchando en el puerto ${config.port}`);
 });

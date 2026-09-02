@@ -803,6 +803,31 @@
     return `https://wa.me/${digits}?text=${encodeURIComponent(text || 'Hola, quiero información sobre monturas y lentes.')}`;
   }
 
+  // Las fotos que salen directo de la cámara del celular (fórmulas, selfies) pueden pesar
+  // varios MB — más de lo que el servidor acepta. Se redimensionan aquí mismo, en el
+  // navegador, antes de subirlas, para que nunca fallen por tamaño y además suban más rápido.
+  function redimensionarImagen(file, maxLado = 1600, calidad = 0.85) {
+    return new Promise((resolve) => {
+      if (!file || !file.type?.startsWith('image/')) { resolve(file); return; }
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxLado || height > maxLado) {
+          if (width > height) { height = Math.round((height * maxLado) / width); width = maxLado; }
+          else { width = Math.round((width * maxLado) / height); height = maxLado; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', calidad);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+
   // Mientras el hero está a la vista ya hay botones grandes de WhatsApp/cita y la
   // tarjeta del test con IA — se ocultan los atajos flotantes para que no la tapen.
   const heroSection = document.getElementById('top');
@@ -1031,7 +1056,7 @@
     fd.append('origen_campana', sessionStorage.getItem('alavision_origen') || 'directo');
     if (vtModo === 'cuestionario') fd.append('respuestas', JSON.stringify(vtRespuestas));
     if (vtModo === 'texto') fd.append('situacion', vtSituacion);
-    if (vtModo === 'formula' && vtFile) fd.append('archivo', vtFile);
+    if (vtModo === 'formula' && vtFile) fd.append('archivo', await redimensionarImagen(vtFile), 'formula.jpg');
 
     try {
       const res = await fetch('/api/asesoria/analizar', { method: 'POST', body: fd });
@@ -1221,7 +1246,7 @@
     fd.append('session_id', chatSessionId);
     fd.append('texto', texto);
     fd.append('origen_campana', sessionStorage.getItem('alavision_origen') || 'chat_web');
-    if (archivo) fd.append('archivo', archivo);
+    if (archivo) fd.append('archivo', await redimensionarImagen(archivo), 'adjunto.jpg');
 
     try {
       const res = await fetch('/api/chat/mensaje', { method: 'POST', body: fd });
@@ -1347,7 +1372,7 @@
     document.getElementById('monturaCard').innerHTML = '<div class="vt-loading">Analizando tu rostro… un momento 👓</div>';
     const fd = new FormData();
     if (nombre) fd.append('nombre', nombre);
-    fd.append('archivo', monturaArchivo);
+    fd.append('archivo', await redimensionarImagen(monturaArchivo), 'selfie.jpg');
     try {
       const res = await fetch('/api/montura/analizar', { method: 'POST', body: fd });
       const data = await res.json();
@@ -1639,7 +1664,7 @@
     const panel = document.getElementById('toolModalPanel');
     if (tipo === 'formula' || tipo === 'quiz') {
       panel.appendChild(document.getElementById('visionCard'));
-      if (tipo === 'formula') renderFormulaUpload(); else renderVisionIntro();
+      if (tipo === 'formula') { vtModo = 'formula'; renderFormulaUpload(); } else renderVisionIntro();
     } else if (tipo === 'probador') {
       panel.appendChild(document.getElementById('monturaCard'));
       renderProbadorEnVivo([], renderMonturaIntro);
