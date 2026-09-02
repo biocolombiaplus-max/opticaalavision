@@ -99,62 +99,67 @@
   .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
   .hero-actions .btn{min-width:200px;}
 
-  /* ---------- Tarjeta destacada del test de visión, dentro del hero ---------- */
-  .hero-ai-card{position:relative;display:flex;align-items:center;gap:20px;max-width:600px;margin-top:44px;
-    padding:24px 26px 22px 18px;border-radius:20px;background:rgba(255,255,255,.07);
-    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);
-    isolation:isolate;transition:transform .25s ease, background .25s ease;}
-  .hero-ai-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);}
-  .hero-ai-card::before{content:"";position:absolute;inset:-2px;z-index:-2;border-radius:24px;
-    background:conic-gradient(from var(--spin,0deg), var(--gold), transparent 25%, transparent 75%, var(--gold));
-    animation:heroSpin 5s linear infinite;}
-  .hero-ai-card::after{content:"";position:absolute;inset:1px;z-index:-1;border-radius:21px;background:var(--accent-strong);}
-  @keyframes heroSpin{to{ --spin:360deg; }}
-  @property --spin{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
-  .hero-ai-shine{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:21px;}
-  .hero-ai-shine::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;
-    background:linear-gradient(115deg, transparent, rgba(255,255,255,.18), transparent);
-    animation:heroShine 3.4s ease-in-out infinite;}
-  @keyframes heroShine{0%{left:-60%;}55%,100%{left:130%;}}
-  .hero-ai-badge{position:absolute;top:-18px;left:24px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
-    color:#1a1508;font-family:"Inter",system-ui,sans-serif;font-size:13.5px;font-weight:800;letter-spacing:.01em;
-    padding:8px 18px;border-radius:24px;box-shadow:0 8px 18px -4px rgba(0,0,0,.55);white-space:nowrap;
-    animation:heroBadgePulse 1.8s ease-in-out infinite;}
-  @keyframes heroBadgePulse{0%,100%{box-shadow:0 8px 18px -4px rgba(0,0,0,.55);}50%{box-shadow:0 10px 26px -2px rgba(216,180,120,.75);}}
-  .hero-ai-media{position:relative;z-index:1;flex-shrink:0;width:60px;height:60px;border-radius:16px;overflow:hidden;
-    background:linear-gradient(135deg,var(--gold-tint,#241f14),rgba(255,255,255,.08));
-    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);}
-  .hero-ai-media img{width:100%;height:100%;object-fit:cover;}
-  .hero-ai-media svg{width:28px;height:28px;color:var(--gold);}
-  .hero-ai-body{position:relative;z-index:1;min-width:0;}
-  .hero-ai-eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
-  .hero-ai-title{font-family:"Fraunces",serif;font-size:17px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:4px;}
-  .hero-ai-sub{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.45;max-width:38ch;}
-  .hero-ai-cta{margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;
-    color:#1a1508;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
-    padding:9px 16px;border-radius:24px;box-shadow:0 6px 16px -4px rgba(0,0,0,.4);
-    transition:transform .2s ease, box-shadow .2s ease;}
-  .hero-ai-card:hover .hero-ai-cta{transform:translateY(-1px);box-shadow:0 10px 22px -4px rgba(0,0,0,.5);}
-  .hero-ai-cta svg{width:15px;height:15px;transition:transform .2s ease;}
-  .hero-ai-card:hover .hero-ai-cta svg{transform:translateX(4px);}
-  @media (prefers-reduced-motion: reduce){
-    .hero-ai-card::before, .hero-ai-shine::after, .hero-ai-badge{animation:none;}
-  }
   @media (max-width:640px){
     .hero-actions{flex-direction:column;align-items:stretch;}
     .hero-actions .btn{width:100%;min-width:0;}
-    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;margin-top:40px;padding:34px 22px 24px;}
-    .hero-ai-badge{left:50%;transform:translateX(-50%);}
-    .hero-ai-sub{max-width:none;}
-    .hero-ai-cta{margin-left:auto;margin-right:auto;}
   }
   @media (max-height:820px) and (min-width:641px){
     .hero .wrap{padding-top:32px;padding-bottom:30px;}
     .hero h1{font-size:clamp(26px,3.8vw,42px);}
     .hero p.lead{margin:10px 0 22px;}
-    .hero-ai-card{margin-top:32px;}
+    .hero-features{margin-top:28px;}
   }
+
+  /* ---------- 3 herramientas con IA, destacadas en el hero ---------- */
+  .hero-features-label{margin-top:40px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--gold);line-height:1.5;}
+  .hero-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin-top:16px;}
+  .hero-feature{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
+    padding:22px 20px 20px;border-radius:18px;background:rgba(255,255,255,.07);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);
+    cursor:pointer;font:inherit;color:inherit;isolation:isolate;overflow:hidden;appearance:none;-webkit-appearance:none;
+    transition:transform .25s ease, background .25s ease, border-color .25s ease;}
+  .hero-feature:hover, .hero-feature:focus-visible{transform:translateY(-5px);background:rgba(255,255,255,.12);
+    border-color:rgba(216,180,120,.5);outline:none;}
+  .hero-feature::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.16) 50%, transparent 70%);
+    transform:translateX(-130%);transition:transform .6s ease;}
+  .hero-feature:hover::after{transform:translateX(130%);}
+  .hero-feature-icon{position:relative;z-index:1;width:46px;height:46px;border-radius:14px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));color:#1a1508;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px -8px rgba(0,0,0,.55);
+    margin-bottom:6px;overflow:hidden;}
+  .hero-feature-icon svg{width:24px;height:24px;}
+  .hero-feature-icon img{width:100%;height:100%;object-fit:cover;}
+  .hero-feature-tag{position:relative;z-index:1;font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--gold);}
+  .hero-feature-title{position:relative;z-index:1;font-family:"Fraunces",serif;font-size:16.5px;font-weight:700;
+    color:#fff;line-height:1.25;}
+  .hero-feature-sub{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.68);line-height:1.4;}
+  .hero-feature-cta{position:relative;z-index:1;margin-top:10px;display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:800;color:#1a1508;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
+    padding:8px 14px;border-radius:20px;box-shadow:0 6px 14px -4px rgba(0,0,0,.4);
+    transition:transform .2s ease, box-shadow .2s ease;}
+  .hero-feature:hover .hero-feature-cta{transform:translateY(-1px);box-shadow:0 10px 20px -4px rgba(0,0,0,.5);}
+  .hero-feature-cta svg{width:13px;height:13px;transition:transform .2s ease;}
+  .hero-feature:hover .hero-feature-cta svg{transform:translateX(3px);}
+  @media (max-width:900px){ .hero-features{grid-template-columns:1fr;max-width:440px;} }
+  @media (max-width:640px){
+    .hero-feature{flex-direction:column;align-items:center;text-align:center;}
+    .hero-feature-cta{margin-left:auto;margin-right:auto;}
+  }
+
+  /* ---------- Modal para abrir las herramientas de IA sin salir del hero ---------- */
+  .tool-modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:center;
+    padding:44px 16px;overflow-y:auto;}
+  .tool-modal.open{display:flex;}
+  .tool-modal-backdrop{position:fixed;inset:0;background:rgba(8,10,18,.75);backdrop-filter:blur(3px);}
+  .tool-modal-panel{position:relative;z-index:1;width:100%;max-width:680px;margin:auto;}
+  .tool-modal-close{position:absolute;top:-16px;right:-16px;width:38px;height:38px;border-radius:50%;
+    background:#fff;color:var(--ink);border:none;font-size:16px;line-height:1;cursor:pointer;z-index:2;
+    box-shadow:0 8px 20px -6px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;}
+  .tool-modal-close:hover{background:var(--gold-tint);}
+  @media (max-width:480px){ .tool-modal{padding:52px 10px 20px;} .tool-modal-close{top:-40px;right:0;} }
 
   /* ---------- Trust bar ---------- */
   /* ---------- Banda de marcas ---------- */
@@ -451,21 +456,45 @@
       </a>
     </div>
 
-    <a class="hero-ai-card" href="#test-vision" aria-label="Descubre qué lente necesitas con inteligencia artificial">
-      <div class="hero-ai-shine"></div>
-      <div class="hero-ai-badge">👉 Haz clic aquí</div>
-      <div class="hero-ai-media" id="heroAiMedia">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c1.5-4 4-6 6-6s4.5 2 4 6c-.5 4-2.5 6-4.5 6S2.8 16 2 12Z"/><path d="M22 12c-1.5-4-4-6-6-6s-4.5 2-4 6c.5 4 2.5 6 4.5 6s5.7-2 5.5-6Z"/></svg>
-      </div>
-      <div class="hero-ai-body">
-        <div class="hero-ai-eyebrow">✨ Nuevo · Con IA · 30 segundos · Gratis</div>
-        <div class="hero-ai-title">¿Sabes qué lente necesitas?</div>
-        <div class="hero-ai-sub">Sube tu foto o cuéntanos tu caso — nuestra IA analiza tu situación y te dice justo el combo que te conviene.</div>
-        <div class="hero-ai-cta">Descubrirlo ahora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      </div>
-    </a>
+    <div class="hero-features-label">✨ Novedades con inteligencia artificial — pruébalas aquí mismo</div>
+    <div class="hero-features">
+      <button type="button" class="hero-feature" id="heroFeatureProbador" aria-label="Pruébate las monturas en video con tu cámara">
+        <div class="hero-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="15" r="3.2"/><circle cx="18" cy="15" r="3.2"/><path d="M9.2 15h5.6M2.5 15l1.2-6.5a2 2 0 0 1 2-1.6M21.5 15l-1.2-6.5a2 2 0 0 0-2-1.6"/></svg>
+        </div>
+        <div class="hero-feature-tag">Cámara en vivo</div>
+        <div class="hero-feature-title">Pruébate las monturas</div>
+        <div class="hero-feature-sub">Activa tu cámara y velas puestas en tu propio rostro, en tiempo real.</div>
+        <div class="hero-feature-cta">Probármelas ya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </button>
+      <button type="button" class="hero-feature" id="heroFeatureFormula" aria-label="Sube la foto de tu fórmula para que la IA te recomiende">
+        <div class="hero-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>
+        </div>
+        <div class="hero-feature-tag">Foto o archivo</div>
+        <div class="hero-feature-title">Sube tu fórmula</div>
+        <div class="hero-feature-sub">Tómale una foto o súbela — la IA la lee y te dice el combo exacto que necesitas.</div>
+        <div class="hero-feature-cta">Subirla ahora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </button>
+      <button type="button" class="hero-feature" id="heroFeatureQuiz" aria-label="Descubre qué lente necesitas con inteligencia artificial">
+        <div class="hero-feature-icon" id="heroAiMedia">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="hero-feature-tag">30 segundos · Gratis</div>
+        <div class="hero-feature-title">¿Qué lente necesito?</div>
+        <div class="hero-feature-sub">Responde unas preguntas o cuéntanos tu caso y te decimos justo qué te conviene.</div>
+        <div class="hero-feature-cta">Descubrirlo ahora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </button>
+    </div>
   </div>
 </section>
+
+<div class="tool-modal" id="toolModal" role="dialog" aria-modal="true">
+  <div class="tool-modal-backdrop" id="toolModalBackdrop"></div>
+  <div class="tool-modal-panel" id="toolModalPanel">
+    <button type="button" class="tool-modal-close" id="toolModalClose" aria-label="Cerrar">✕</button>
+  </div>
+</div>
 
 <div class="brands-band">
   <div class="brands-track" id="brandsTrack">
@@ -1597,6 +1626,49 @@
     const total = monturaProductosDisponibles.length;
     seleccionarProbador((monturaProbadorIndex + delta + total) % total);
   }
+
+  // ---- Botones grandes del hero: abren cada herramienta con IA en un modal,
+  // sin sacar al visitante de la portada. Reutilizan las mismas tarjetas y
+  // funciones del test de visión y del probador de monturas.
+  function abrirToolModal(tipo) {
+    const modal = document.getElementById('toolModal');
+    const panel = document.getElementById('toolModalPanel');
+    if (tipo === 'formula' || tipo === 'quiz') {
+      panel.appendChild(document.getElementById('visionCard'));
+      if (tipo === 'formula') renderFormulaUpload(); else renderVisionIntro();
+    } else if (tipo === 'probador') {
+      panel.appendChild(document.getElementById('monturaCard'));
+      renderProbadorEnVivo([], renderMonturaIntro);
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarToolModal() {
+    liveDetener();
+    const visionCard = document.getElementById('visionCard');
+    const monturaCard = document.getElementById('monturaCard');
+    const modal = document.getElementById('toolModal');
+    if (visionCard && modal.contains(visionCard)) {
+      document.querySelector('#test-vision .wrap').appendChild(visionCard);
+      renderVisionIntro();
+    }
+    if (monturaCard && modal.contains(monturaCard)) {
+      document.querySelector('#montura-ideal .wrap').appendChild(monturaCard);
+      renderMonturaIntro();
+    }
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('heroFeatureProbador').addEventListener('click', () => abrirToolModal('probador'));
+  document.getElementById('heroFeatureFormula').addEventListener('click', () => abrirToolModal('formula'));
+  document.getElementById('heroFeatureQuiz').addEventListener('click', () => abrirToolModal('quiz'));
+  document.getElementById('toolModalClose').addEventListener('click', cerrarToolModal);
+  document.getElementById('toolModalBackdrop').addEventListener('click', cerrarToolModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('toolModal').classList.contains('open')) cerrarToolModal();
+  });
 
   renderMonturaIntro();
 })();

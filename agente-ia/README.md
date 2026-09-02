@@ -16,13 +16,17 @@ reportes en PDF.
   brillo/luz al pasar el mouse. Todo lo editable (logo, foto de portada,
   opacidad, direcciones, mapas, marcas, productos) sale del panel
   administrativo, no del código.
-- **Tarjeta destacada del test de visión en el hero**: justo debajo del
-  título y los botones principales, una tarjeta con vidrio esmerilado
-  ("glassmorphism"), borde dorado animado, un brillo que recorre la tarjeta y
-  una insignia pulsante "✨ Nuevo · Con IA" invita directamente a hacer el
-  **Encuentra tu combo ideal** — así el visitante lo ve de entrada, sin tener
-  que bajar por toda la página. Su imagen/ícono se sube desde el panel
-  (Configuración → "Tarjeta destacada del test de visión").
+- **3 botones grandes con IA en el hero**: justo debajo del título y los
+  botones principales, tres tarjetas con vidrio esmerilado ("glassmorphism")
+  invitan directamente a "Pruébate las monturas" (cámara en vivo), "Sube tu
+  fórmula" (foto o archivo) y "¿Qué lente necesito?" (el cuestionario de
+  **Encuentra tu combo ideal**) — así el visitante las ve de entrada, sin
+  tener que bajar por toda la página. Cada una abre su herramienta en una
+  ventana emergente sobre la misma portada (sin navegar a otra sección); al
+  cerrarla, la sección de más abajo queda igual de funcional para quien
+  llegue por ahí. El ícono de la tarjeta "¿Qué lente necesito?" se puede
+  reemplazar por una foto desde el panel (Configuración → "Tarjeta destacada
+  del test de visión").
 - **Tienda virtual** (`/tienda`) — sub-landing estilo Shopify: catálogo
   filtrable por marca, carrito (guardado en el navegador) y checkout que arma
   el pedido y lo manda por WhatsApp (no hay pasarela de pagos conectada).
