@@ -9,8 +9,19 @@ import {
   getRecentMessages,
   addMessage,
   setIaPausada,
-  db,
+  setEtapa,
+  type Etapa,
 } from "../db/index.js";
+
+const ETAPAS_VALIDAS: Etapa[] = [
+  "nuevo",
+  "calificando",
+  "propuesta_enviada",
+  "objecion",
+  "cita_agendada",
+  "ganado",
+  "perdido",
+];
 
 export const crmRouter = Router();
 
@@ -103,9 +114,10 @@ crmRouter.post("/api/leads/:id/etapa", (req, res) => {
     return;
   }
   const { etapa } = req.body as { etapa: string };
-  db.prepare("UPDATE leads SET etapa = ?, actualizado_en = datetime('now') WHERE id = ?").run(
-    etapa,
-    lead.id,
-  );
+  if (!ETAPAS_VALIDAS.includes(etapa as Etapa)) {
+    res.status(400).json({ error: "Etapa no válida." });
+    return;
+  }
+  setEtapa(lead.id, etapa as Etapa);
   res.json({ ok: true });
 });

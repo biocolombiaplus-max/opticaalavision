@@ -60,10 +60,19 @@ reportes en PDF.
   en la tienda, solo no salen en el probador. El análisis de forma de rostro
   (con IA) y el probador virtual (sin IA, gratis) tienen límites de
   solicitudes por visitante independientes para evitar abuso.
-- **Panel administrativo** (`/admin`, con usuario y clave) con 7 secciones:
+- **Panel administrativo** (`/admin`, con usuario y clave) con 8 secciones:
   - **Conversaciones**: el CRM — ver cada chat, pausar la IA y escribir como
     humano, marcar un lead como cliente (con el valor de la venta), correo
     rápido.
+  - **Embudo**: tablero por etapas (Nuevo, Calificando, Propuesta enviada,
+    Objeción, Cita agendada, Ganado, Perdido), igual a los de Kommo o
+    HubSpot — cada lead que llega, incluyendo los que entran desde un
+    anuncio de Meta Ads (se les ve una etiqueta azul "📣" con el nombre de
+    la campaña), aparece como una tarjeta en su etapa actual. Arrastra una
+    tarjeta a otra columna para cambiar su etapa, o usa el enlace "Mover
+    a..." de la tarjeta; un clic en la tarjeta abre esa conversación
+    completa. Un filtro "Solo leads de Meta Ads" deja ver nada más los que
+    vienen de pauta, para priorizar el remarketing sobre esos.
   - **Citas**: todas las reservas hechas desde la landing, con su estado.
   - **Remarketing**: hasta 10 mensajes por lead, en secuencia — el botón de
     "Enviar" solo se activa cuando ya pasó el tiempo configurado desde el

@@ -84,6 +84,26 @@
   .recorte-controls label{font-size:12.5px;font-weight:700;}
   .recorte-controls input[type=range]{flex:1;min-width:120px;}
   .recorte-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap;}
+
+  /* Embudo (Kanban) */
+  .kanban{display:flex;gap:14px;overflow-x:auto;padding-bottom:14px;align-items:flex-start;}
+  .kanban-col{background:var(--surface-2);border-radius:10px;min-width:270px;max-width:270px;flex:0 0 auto;
+    display:flex;flex-direction:column;max-height:calc(100vh - 230px);}
+  .kanban-col-head{padding:12px 14px;font-weight:800;font-size:13px;color:var(--accent-strong);
+    display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+  .kanban-col-head .count{background:var(--surface);border-radius:12px;padding:1px 9px;font-size:11.5px;color:var(--ink-soft);font-weight:700;}
+  .kanban-col-body{padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;flex:1;min-height:60px;transition:background .15s ease;}
+  .kanban-col-body.dragover{background:var(--accent-tint);}
+  .kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:grab;font-size:12.5px;}
+  .kanban-card:active{cursor:grabbing;}
+  .kanban-card.dragging{opacity:.35;}
+  .kanban-card .nom{font-weight:700;font-size:13px;margin-bottom:2px;}
+  .kanban-card .meta{color:var(--ink-faint);font-size:11px;margin-bottom:6px;}
+  .kanban-card .badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+  .kanban-card .campana-badge{background:#e3ecff;color:#2952cc;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;}
+  .kanban-card .avanzar{font-size:11px;color:var(--accent-strong);cursor:pointer;font-weight:700;text-align:right;}
+  .kanban-card .avanzar:hover{text-decoration:underline;}
+  .kanban-empty{font-size:12px;color:var(--ink-faint);text-align:center;padding:16px 6px;}
 </style>
 </head>
 <body>
@@ -113,6 +133,7 @@
 </div>
 <div class="tabs">
   <div class="tab active" data-view="conversaciones">Conversaciones</div>
+  <div class="tab" data-view="embudo">Embudo</div>
   <div class="tab" data-view="citas">Citas</div>
   <div class="tab" data-view="remarketing">Remarketing</div>
   <div class="tab" data-view="tienda">Tienda</div>
@@ -124,6 +145,19 @@
   <div class="shell">
     <div class="leads" id="leads"></div>
     <div class="conv" id="conv"><div class="empty">Selecciona una conversación</div></div>
+  </div>
+</div>
+
+<div class="view" id="view-embudo">
+  <div class="panel" style="max-width:100%;">
+    <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <span>Embudo de ventas</span>
+      <label style="font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="embudoSoloCampana" /> Solo leads de Meta Ads
+      </label>
+    </div>
+    <p class="hint">Arrastra una tarjeta a otra columna para cambiar su etapa, o usa el enlace "Mover a..." — así organizas quién sigue en el proceso y a quién insistirle con remarketing.</p>
+    <div class="kanban" id="kanban"></div>
   </div>
 </div>
 
@@ -225,6 +259,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    if (tab.dataset.view === 'embudo') loadEmbudo();
     if (tab.dataset.view === 'citas') loadCitas();
     if (tab.dataset.view === 'remarketing') { loadRemarketing(); loadPlantillas(); }
     if (tab.dataset.view === 'tienda') loadTienda();
@@ -242,6 +277,11 @@ async function api(path, opts) {
 // ---------- Conversaciones ----------
 let currentId = null;
 
+const ETAPA_LABELS = {
+  nuevo: 'Nuevo', calificando: 'Calificando', propuesta_enviada: 'Propuesta enviada',
+  objecion: 'Objeción', cita_agendada: 'Cita agendada', ganado: 'Ganado', perdido: 'Perdido',
+};
+
 function badgeInteres(nivel) { return `<span class="badge ${nivel === 'alto' ? 'alto' : ''}">${nivel}</span>`; }
 
 function renderLeads(leads) {
@@ -249,7 +289,7 @@ function renderLeads(leads) {
   el.innerHTML = leads.map(l => `
     <div class="lead-item ${l.id === currentId ? 'active' : ''}" data-id="${l.id}">
       <div class="lead-name">${l.nombre || l.wa_id}</div>
-      <div class="lead-meta">${l.etapa} · ${l.origen_campana || 'directo'} · ${new Date(l.actualizado_en).toLocaleString('es-CO')}</div>
+      <div class="lead-meta">${ETAPA_LABELS[l.etapa] || l.etapa} · ${l.origen_campana || 'directo'} · ${new Date(l.actualizado_en).toLocaleString('es-CO')}</div>
       <div class="badges">
         ${badgeInteres(l.nivel_interes)}
         ${l.necesita_humano ? '<span class="badge humano">necesita humano</span>' : ''}
@@ -275,8 +315,8 @@ function renderConv(lead, mensajes) {
       <div><b>${lead.nombre || lead.wa_id}</b> — ${lead.wa_id} <span style="color:var(--ink-faint)">(${lead.origen_campana || 'directo'})</span></div>
       <div style="display:flex;gap:8px;align-items:center;">
         <select id="etapaSelect">
-          ${['nuevo','calificando','propuesta_enviada','objecion','cita_agendada','ganado','perdido']
-            .map(e => `<option value="${e}" ${e === lead.etapa ? 'selected' : ''}>${e}</option>`).join('')}
+          ${Object.keys(ETAPA_LABELS)
+            .map(e => `<option value="${e}" ${e === lead.etapa ? 'selected' : ''}>${ETAPA_LABELS[e]}</option>`).join('')}
         </select>
         <button class="primary" id="pauseBtn">${lead.ia_pausada ? 'Reactivar IA' : 'Pausar IA'}</button>
         <button class="gold" id="convertBtn">${lead.convertido ? 'Quitar "cliente"' : 'Marcar cliente'}</button>
@@ -364,7 +404,99 @@ async function openLead(id) {
 }
 
 loadLeads();
-setInterval(() => { loadLeads(); if (currentId) openLead(currentId); }, 8000);
+setInterval(() => {
+  loadLeads();
+  if (currentId) openLead(currentId);
+  if (document.getElementById('view-embudo').classList.contains('active')) loadEmbudo();
+}, 8000);
+
+// ---------- Embudo (Kanban) ----------
+const ETAPAS_EMBUDO = Object.keys(ETAPA_LABELS).map(key => ({ key, label: ETAPA_LABELS[key] }));
+
+function tiempoRelativo(fechaStr) {
+  const diffMin = Math.round((Date.now() - new Date(fechaStr).getTime()) / 60000);
+  if (diffMin < 1) return 'ahora mismo';
+  if (diffMin < 60) return `hace ${diffMin} min`;
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return `hace ${diffH} h`;
+  return `hace ${Math.round(diffH / 24)} d`;
+}
+
+function kanbanCardHtml(l, colIndex) {
+  const siguiente = ETAPAS_EMBUDO[colIndex + 1];
+  return `
+    <div class="kanban-card" draggable="true" data-id="${l.id}">
+      <div class="nom">${l.nombre || l.wa_id}</div>
+      <div class="meta">${tiempoRelativo(l.actualizado_en)}</div>
+      <div class="badges">
+        ${l.origen_campana && l.origen_campana !== 'directo' ? `<span class="campana-badge">📣 ${l.origen_campana}</span>` : ''}
+        ${badgeInteres(l.nivel_interes)}
+        ${l.necesita_humano ? '<span class="badge humano">necesita humano</span>' : ''}
+        ${l.convertido ? '<span class="badge convertido">✓ cliente</span>' : ''}
+      </div>
+      ${siguiente ? `<div class="avanzar" data-id="${l.id}" data-next="${siguiente.key}">Mover a "${siguiente.label}" →</div>` : ''}
+    </div>
+  `;
+}
+
+async function moverEtapaLead(id, etapa) {
+  await api(`/api/leads/${id}/etapa`, {
+    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ etapa })
+  });
+  loadEmbudo();
+}
+
+async function loadEmbudo() {
+  let leads = await api('/api/leads');
+  if (document.getElementById('embudoSoloCampana').checked) {
+    leads = leads.filter(l => l.origen_campana && l.origen_campana !== 'directo');
+  }
+  const kanban = document.getElementById('kanban');
+  kanban.innerHTML = ETAPAS_EMBUDO.map((et, i) => {
+    const enEtapa = leads.filter(l => l.etapa === et.key);
+    return `
+      <div class="kanban-col">
+        <div class="kanban-col-head">${et.label} <span class="count">${enEtapa.length}</span></div>
+        <div class="kanban-col-body" data-etapa="${et.key}">
+          ${enEtapa.length ? enEtapa.map(l => kanbanCardHtml(l, i)).join('') : '<div class="kanban-empty">Sin leads aquí</div>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  kanban.querySelectorAll('.kanban-card').forEach(card => {
+    card.addEventListener('dragstart', (e) => {
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('avanzar')) return;
+      document.querySelector('.tab[data-view="conversaciones"]').click();
+      openLead(Number(card.dataset.id));
+    });
+  });
+  kanban.querySelectorAll('.avanzar').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moverEtapaLead(Number(btn.dataset.id), btn.dataset.next);
+    });
+  });
+  kanban.querySelectorAll('.kanban-col-body').forEach(col => {
+    col.addEventListener('dragover', (e) => { e.preventDefault(); col.classList.add('dragover'); });
+    col.addEventListener('dragleave', () => col.classList.remove('dragover'));
+    col.addEventListener('drop', (e) => {
+      e.preventDefault();
+      col.classList.remove('dragover');
+      const dragging = kanban.querySelector('.kanban-card.dragging');
+      if (!dragging) return;
+      moverEtapaLead(Number(dragging.dataset.id), col.dataset.etapa);
+    });
+  });
+}
+
+document.getElementById('embudoSoloCampana').addEventListener('change', loadEmbudo);
 
 // ---------- Citas ----------
 async function loadCitas() {
