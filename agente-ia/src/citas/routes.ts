@@ -29,6 +29,18 @@ citasPublicRouter.post("/api/citas", async (req, res) => {
     return;
   }
 
+  // Las citas solo se agendan dentro de los próximos 7 días (para cerrar la venta rápido, en
+  // vez de dejar la cita abierta a semanas o meses) — el selector de la landing ya solo ofrece
+  // esas fechas, esto es un respaldo por si llega una solicitud fuera de ese rango.
+  const hoy = new Date();
+  const fechaISO = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const limite = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 7);
+  if (body.fecha < fechaISO(hoy) || body.fecha > fechaISO(limite)) {
+    res.status(400).json({ error: "Elige una fecha dentro de los próximos 7 días." });
+    return;
+  }
+
   const waId = body.telefono.replace(/\D/g, "");
   const lead = getLeadByWaId(waId);
 

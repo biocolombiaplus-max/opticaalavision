@@ -291,17 +291,28 @@
   .booking{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
   @media (max-width:880px){ .booking-grid{grid-template-columns:1fr;} }
-  form.cita{display:flex;flex-direction:column;gap:14px;}
-  .field{display:flex;flex-direction:column;gap:6px;}
+  .booking-urgency{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:10px 16px;
+    border-radius:20px;background:var(--gold-tint);color:var(--gold-strong);font-size:13px;font-weight:700;}
+  form.cita{display:flex;flex-direction:column;gap:18px;background:var(--paper);border:1px solid var(--line);
+    border-radius:12px;padding:28px;box-shadow:var(--shadow);}
+  .field{display:flex;flex-direction:column;gap:7px;}
   .field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
-  .field input, .field select{font-family:inherit;font-size:14.5px;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--line);background:var(--paper);color:var(--ink);}
+  .field input, .field select{font-family:inherit;font-size:14.5px;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);}
   .field input:focus, .field select:focus{outline:2px solid var(--accent);outline-offset:1px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   @media (max-width:520px){ .row2{grid-template-columns:1fr;} }
-  #citaMsg{font-size:13.5px;margin-top:6px;min-height:18px;}
+  #citaMsg{font-size:13.5px;margin-top:2px;min-height:18px;font-weight:600;}
   #citaMsg.ok{color:#1e7a45;}
   #citaMsg.err{color:#a8460b;}
   .booking-note{font-size:13px;color:var(--ink-soft);margin-top:16px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:13px;font-weight:700;
+    cursor:pointer;background:var(--surface);color:var(--ink);text-align:center;line-height:1.3;
+    transition:border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease;}
+  .chip .sub{display:block;font-size:10.5px;font-weight:600;color:var(--ink-faint);margin-top:1px;text-transform:none;}
+  .chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+  .chip.selected{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .chip.selected .sub{color:rgba(255,255,255,.72);}
 
   /* ---------- Footer ---------- */
   footer{background:var(--accent-strong);color:rgba(255,255,255,.75);padding:56px 0 30px;font-size:13.5px;}
@@ -697,6 +708,7 @@
         <div class="eyebrow">Agenda tu cita</div>
         <h2 style="font-size:clamp(26px,3.4vw,36px);">Reserva en un minuto</h2>
         <p style="color:var(--ink-soft);margin-top:14px;max-width:44ch;">Te confirmamos por correo (con cómo llegar) y por WhatsApp. Si prefieres, también puedes escribirnos directamente.</p>
+        <div class="booking-urgency">📅 Cupos disponibles para los próximos 7 días</div>
         <div class="booking-note">Al agendar, autorizas el uso de tus datos para confirmar tu cita, según la Ley 1581 de 2012.</div>
       </div>
       <form class="cita" id="citaForm">
@@ -720,10 +732,16 @@
             </select>
           </div>
         </div>
-        <div class="row2">
-          <div class="field"><label for="fecha">Fecha</label><input id="fecha" name="fecha" type="date" required /></div>
-          <div class="field"><label for="hora">Hora</label><input id="hora" name="hora" type="time" required /></div>
+        <div class="field">
+          <label>¿Qué día te queda mejor?</label>
+          <div class="chips" id="dayChips"></div>
         </div>
+        <div class="field">
+          <label>¿A qué hora?</label>
+          <div class="chips" id="timeChips"></div>
+        </div>
+        <input type="hidden" id="fecha" name="fecha" />
+        <input type="hidden" id="hora" name="hora" />
         <button class="btn btn-primary" type="submit" style="margin-top:6px;"><span>Confirmar cita</span></button>
         <div id="citaMsg"></div>
       </form>
@@ -1095,12 +1113,60 @@
 
   renderVisionIntro();
 
+  // ---------- Agenda tu cita: días y horas en chips (máx. 7 días, para cerrar rápido) ----------
+  function fechaISO(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function generarDiasDisponibles() {
+    const nombres = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const hoy = new Date();
+    const dias = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + i);
+      dias.push({
+        iso: fechaISO(d),
+        label: i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : nombres[d.getDay()],
+        sub: `${d.getDate()} ${meses[d.getMonth()]}`,
+      });
+    }
+    return dias;
+  }
+  const HORAS_DISPONIBLES = [
+    ['09:00', '9:00 a.m.'], ['10:00', '10:00 a.m.'], ['11:00', '11:00 a.m.'], ['12:00', '12:00 m.'],
+    ['14:00', '2:00 p.m.'], ['15:00', '3:00 p.m.'], ['16:00', '4:00 p.m.'], ['17:00', '5:00 p.m.'],
+  ];
+  function seleccionarChip(cont, el, inputId) {
+    cont.querySelectorAll('.chip').forEach((c) => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(inputId).value = el.dataset.valor;
+  }
+  function renderChipsAgenda() {
+    const dayCont = document.getElementById('dayChips');
+    dayCont.innerHTML = generarDiasDisponibles().map((d) =>
+      `<div class="chip" data-valor="${d.iso}" tabindex="0" role="button">${d.label}<span class="sub">${d.sub}</span></div>`
+    ).join('');
+    dayCont.querySelectorAll('.chip').forEach((el) => el.addEventListener('click', () => seleccionarChip(dayCont, el, 'fecha')));
+
+    const timeCont = document.getElementById('timeChips');
+    timeCont.innerHTML = HORAS_DISPONIBLES.map(([valor, label]) =>
+      `<div class="chip" data-valor="${valor}" tabindex="0" role="button">${label}</div>`
+    ).join('');
+    timeCont.querySelectorAll('.chip').forEach((el) => el.addEventListener('click', () => seleccionarChip(timeCont, el, 'hora')));
+  }
+  renderChipsAgenda();
+
   document.getElementById('citaForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     const msg = document.getElementById('citaMsg');
     const data = Object.fromEntries(new FormData(form).entries());
     data.origen_campana = sessionStorage.getItem('alavision_origen') || 'directo';
+    if (!data.fecha || !data.hora) {
+      msg.className = 'err';
+      msg.textContent = 'Elige un día y una hora para tu cita.';
+      return;
+    }
     msg.className = ''; msg.textContent = 'Enviando...';
     try {
       const res = await fetch('/api/citas', {
@@ -1110,6 +1176,7 @@
       msg.className = 'ok';
       msg.textContent = '¡Listo! Te confirmamos por correo y WhatsApp muy pronto.';
       form.reset();
+      renderChipsAgenda();
     } catch (err) {
       msg.className = 'err';
       msg.textContent = 'No pudimos agendar automáticamente. Escríbenos por WhatsApp y te ayudamos directo.';
@@ -1695,6 +1762,12 @@
   document.getElementById('heroFeatureQuiz').addEventListener('click', () => abrirToolModal('quiz'));
   document.getElementById('toolModalClose').addEventListener('click', cerrarToolModal);
   document.getElementById('toolModalBackdrop').addEventListener('click', cerrarToolModal);
+  // Si dentro del modal hay un enlace (ej. "O agenda aquí mismo" -> #agenda, o "Agendar por
+  // WhatsApp"), hay que cerrar el modal primero — si no, el enlace navega o abre WhatsApp pero
+  // el modal se queda tapando toda la página y parece que "no pasó nada".
+  document.getElementById('toolModalPanel').addEventListener('click', (e) => {
+    if (e.target.closest('a')) cerrarToolModal();
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && document.getElementById('toolModal').classList.contains('open')) cerrarToolModal();
   });
