@@ -92,14 +92,14 @@
   .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
   .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,12,20,.55), rgba(10,12,20,.82));}
   .hero-decor{position:absolute;inset:0;pointer-events:none;opacity:.5;}
-  .hero .wrap{position:relative;z-index:2;color:#fff;padding-top:32px;padding-bottom:28px;}
+  .hero .wrap{position:relative;z-index:2;color:#fff;padding-top:48px;padding-bottom:48px;}
   .hero h1{font-size:clamp(30px,4.4vw,52px);color:#fff;max-width:16ch;line-height:1.08;}
-  .hero p.lead{font-size:15.5px;color:rgba(255,255,255,.82);max-width:46ch;margin:14px 0 22px;}
-  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .hero p.lead{font-size:15.5px;color:rgba(255,255,255,.82);max-width:46ch;margin:16px 0 28px;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
 
   /* ---------- Tarjeta destacada del test de visión, dentro del hero ---------- */
-  .hero-ai-card{position:relative;display:flex;align-items:center;gap:18px;max-width:600px;margin-top:18px;
-    padding:15px 22px 15px 15px;border-radius:20px;background:rgba(255,255,255,.07);
+  .hero-ai-card{position:relative;display:flex;align-items:center;gap:20px;max-width:600px;margin-top:38px;
+    padding:20px 26px 20px 18px;border-radius:20px;background:rgba(255,255,255,.07);
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);
     overflow:hidden;isolation:isolate;transition:transform .25s ease, background .25s ease;}
   .hero-ai-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.1);}
@@ -114,7 +114,7 @@
     background:linear-gradient(115deg, transparent, rgba(255,255,255,.18), transparent);
     animation:heroShine 3.4s ease-in-out infinite;}
   @keyframes heroShine{0%{left:-60%;}55%,100%{left:130%;}}
-  .hero-ai-badge{position:absolute;top:-13px;left:20px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
+  .hero-ai-badge{position:absolute;top:-14px;left:24px;z-index:2;background:linear-gradient(135deg,var(--gold),var(--gold-strong,#8c6d3e));
     color:#1a1508;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;
     text-transform:uppercase;padding:5px 12px;border-radius:20px;box-shadow:0 6px 16px -4px rgba(0,0,0,.5);
     animation:heroBadgePulse 2.2s ease-in-out infinite;}
@@ -136,15 +136,15 @@
     .hero-ai-card::before, .hero-ai-shine::after, .hero-ai-badge{animation:none;}
   }
   @media (max-width:640px){
-    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;padding:26px 20px 20px;}
+    .hero-ai-card{flex-direction:column;text-align:center;align-items:center;margin-top:36px;padding:30px 22px 22px;}
+    .hero-ai-badge{left:50%;transform:translateX(-50%);}
     .hero-ai-sub{max-width:none;}
   }
   @media (max-height:820px) and (min-width:641px){
-    .hero .wrap{padding-top:22px;padding-bottom:18px;}
+    .hero .wrap{padding-top:32px;padding-bottom:30px;}
     .hero h1{font-size:clamp(26px,3.8vw,42px);}
-    .hero p.lead{margin:8px 0 16px;}
-    .hero-ai-card{margin-top:12px;}
-    .hero-ai-sub{display:none;}
+    .hero p.lead{margin:10px 0 22px;}
+    .hero-ai-card{margin-top:28px;}
   }
 
   /* ---------- Trust bar ---------- */
@@ -292,12 +292,17 @@
   footer a:hover{color:#fff;}
   .foot-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:36px;padding-top:20px;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 
-  .wa-float{position:fixed;bottom:22px;right:22px;z-index:50;background:#25d366;color:#06210f;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);}
+  .wa-float{position:fixed;bottom:22px;right:22px;z-index:50;background:#25d366;color:#06210f;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);
+    transition:opacity .25s ease, transform .25s ease;}
   .asesoria-float{position:fixed;bottom:92px;right:22px;z-index:50;display:flex;align-items:center;gap:9px;
     background:linear-gradient(135deg, var(--gold), var(--gold-strong));color:#1a1508;padding:12px 18px 12px 14px;
     border-radius:32px;box-shadow:0 10px 24px -6px rgba(0,0,0,.4);font-weight:700;font-size:13px;
-    animation:glow 3.5s ease-in-out infinite;cursor:pointer;border:none;font-family:inherit;}
+    animation:glow 3.5s ease-in-out infinite;cursor:pointer;border:none;font-family:inherit;
+    transition:opacity .25s ease, transform .25s ease;}
   .asesoria-float:hover{box-shadow:0 16px 32px -8px rgba(0,0,0,.5);}
+  /* En el hero ya hay botones grandes de WhatsApp/cita y la tarjeta de IA: se ocultan los
+     atajos flotantes ahí mismo para que no tapen la tarjeta, y reaparecen al bajar. */
+  body.en-hero .wa-float, body.en-hero .asesoria-float{opacity:0;transform:translateY(10px);pointer-events:none;}
   @media (prefers-reduced-motion: reduce){ .asesoria-float{animation:none;} }
   @media (max-width:560px){ .asesoria-float span{display:none;} .asesoria-float{padding:14px;bottom:90px;} }
 
@@ -748,6 +753,16 @@
   function waLink(phone, text) {
     const digits = (phone || '').replace(/\D/g, '');
     return `https://wa.me/${digits}?text=${encodeURIComponent(text || 'Hola, quiero información sobre monturas y lentes.')}`;
+  }
+
+  // Mientras el hero está a la vista ya hay botones grandes de WhatsApp/cita y la
+  // tarjeta del test con IA — se ocultan los atajos flotantes para que no la tapen.
+  const heroSection = document.getElementById('top');
+  if (heroSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (entries) => { document.body.classList.toggle('en-hero', entries[0].isIntersecting); },
+      { threshold: 0.2 }
+    ).observe(heroSection);
   }
 
   function applyConfig(cfg) {
