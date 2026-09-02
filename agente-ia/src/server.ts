@@ -29,6 +29,11 @@ app.use(asesoriaPublicRouter);
 app.use(chatPublicRouter);
 app.use(monturaPublicRouter);
 app.use("/uploads", express.static(uploadsDir));
+// El probador de monturas en vivo carga estos archivos (modelos de reconocimiento facial y la
+// librería face-api.js) — no cambian entre despliegues, así que se cachean varios días en el
+// navegador para que la cámara en vivo abra rápido en visitas siguientes.
+app.use("/models", express.static(join(__dirname, "public", "models"), { maxAge: "7d", immutable: true }));
+app.use("/vendor", express.static(join(__dirname, "public", "vendor"), { maxAge: "7d", immutable: true }));
 app.use(express.static(join(__dirname, "public"))); // sirve "/" -> landing/index.html, "/tienda" -> tienda/index.html
 
 // --- Todo lo de abajo requiere usuario/clave del panel administrativo ---

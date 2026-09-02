@@ -1672,6 +1672,13 @@
   });
 
   renderMonturaIntro();
+
+  // Precarga en segundo plano los modelos de reconocimiento facial del probador en vivo,
+  // para que cuando el visitante toque "Pruébate las monturas" la cámara abra al instante
+  // en vez de tener que esperar a que se descarguen en ese momento.
+  const precargarModelos = () => cargarModelosFaceApi().catch(() => {});
+  if ('requestIdleCallback' in window) requestIdleCallback(precargarModelos, { timeout: 4000 });
+  else setTimeout(precargarModelos, 2000);
 })();
 </script>
 </body>
